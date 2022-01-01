@@ -1,60 +1,55 @@
 /* eslint-disable @next/next/no-img-element */
 import type {
   GetServerSideProps,
+  GetStaticProps,
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
 import { useRef, useState } from "react";
 import cities from "../../constants/cities";
-import TdxApi, { Activity } from "../../libs/TdxApi";
+import { getActivity, Activity } from "../../libs/tdxApi/apis/activity";
+import { Coordinate } from "../../libs/types";
 
 interface TourismPageProps {
   defaultActivities: Activity[];
 }
 
-export const getServerSideProps: GetServerSideProps<TourismPageProps> = async (
-  context
-) => {
-  const tdxApi = new TdxApi(
-    process.env.NEXT_PUBLIC_APP_ID!,
-    process.env.NEXT_PUBLIC_APP_KEY!
-  );
+export const getServerSideProps: GetServerSideProps<TourismPageProps> =
+  async () => {
+    let defaultActivities: Activity[] = [];
+    try {
+      defaultActivities = await getActivity({
+        $top: 4,
+        city: "all",
+        curDate: new Date(),
+        needImage: true,
+      });
+    } catch (err) {
+      console.error(err);
+    }
 
-  let defaultActivities: Activity[] = [];
-  try {
-    defaultActivities = await tdxApi.getActivity({ $top: 4, $skip: 40 }, true);
-  } catch (err) {
-    console.error(err);
-  }
-
-  return {
-    props: {
-      defaultActivities,
-    }, // will be passed to the page component as props
+    return {
+      props: {
+        defaultActivities,
+      },
+    };
   };
-};
-
-type Coordinate = {
-  latitude: number;
-  longitude: number;
-};
 
 type Category = "all" | "tourism" | "activity";
 
-const Tourism: NextPage<TourismPageProps> = (props) => {
+const Tourism: NextPage<TourismPageProps> = ({ defaultActivities }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [mode, setMode] = useState<"welcome" | "search">("welcome");
+  const [searchDate, setSearchDate] = useState<null | Date>(null);
   const [keyword, setKeyword] = useState("");
   const [category, setCategory] = useState<Category>("all");
   const [city, setCity] = useState("all");
   const [coordiante, setCoordinate] = useState<null | Coordinate>(null);
-  const [activityList, setActivityList] = useState<Activity[]>(
-    props.defaultActivities
-  );
+  const [activityList, setActivityList] =
+    useState<Activity[]>(defaultActivities);
 
   const handleClickLocationButton = () => {
     navigator.geolocation.getCurrentPosition((position) => {
-      setMode("search");
+      setSearchDate(new Date());
       setCoordinate({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
@@ -62,23 +57,23 @@ const Tourism: NextPage<TourismPageProps> = (props) => {
     });
   };
 
-  console.log(props.defaultActivities);
+  console.log(defaultActivities);
 
   const handleClickSearchButton = () => {
     if (searchInputRef.current) {
-      setMode("search");
+      setSearchDate(new Date());
       setKeyword(searchInputRef.current.value);
       searchInputRef.current.value = "";
     }
   };
 
   const handleCategoryChange = (newCategory: Category) => {
-    setMode("search");
+    setSearchDate(new Date());
     setCategory(newCategory);
   };
 
   const handleCityChange = (newCity: string) => {
-    setMode("search");
+    setSearchDate(new Date());
     setCity(newCity);
   };
 
@@ -123,7 +118,7 @@ const Tourism: NextPage<TourismPageProps> = (props) => {
             <img
               src={activity.Picture.PictureUrl1}
               alt={activity.Picture.PictureDescription1}
-              width={300}
+              height={150}
             />
             <p>{activity.Description}</p>
             <p>{activity.Location}</p>

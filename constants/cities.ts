@@ -1,4 +1,28 @@
-const cities: ReadonlyArray<{ text: string; value: string }> = [
+export type City =
+  | "Taipei"
+  | "NewTaipei"
+  | "Taoyuan"
+  | "Taichung"
+  | "Tainan"
+  | "Kaohsiung"
+  | "Keelung"
+  | "Hsinchu"
+  | "HsinchuCounty"
+  | "MiaoliCounty"
+  | "ChanghuaCounty"
+  | "NantouCounty"
+  | "YunlinCounty"
+  | "ChiayiCounty"
+  | "Chiayi"
+  | "PingtungCounty"
+  | "YilanCounty"
+  | "HualienCounty"
+  | "TaitungCounty"
+  | "KinmenCounty"
+  | "PenghuCounty"
+  | "LienchiangCounty";
+
+const cities: ReadonlyArray<{ text: string; value: City }> = [
   { text: "Taipei", value: "Taipei" },
   { text: "NewTaipei", value: "NewTaipei" },
   { text: "Taoyuan", value: "Taoyuan" },
