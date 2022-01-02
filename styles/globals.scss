@@ -1,0 +1,11 @@
+@use "./variable" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $color-lightgray;
+}

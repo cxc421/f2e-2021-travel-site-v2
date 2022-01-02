@@ -1,0 +1,14 @@
+@use "../../styles/variable" as *;
+
+.container {
+  background-color: $color-white;
+  height: 104px;
+
+  @media (max-width: $screen-tablet) {
+    height: 84px;
+  }
+
+  @media (max-width: $screen-mobile) {
+    height: 191px;
+  }
+}
