@@ -33,3 +33,28 @@
     top: 15px;
   }
 }
+
+.navLinkList {
+  position: absolute;
+  right: 108px;
+  bottom: 18px;
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+
+  li + li {
+    margin-left: 27px;
+  }
+
+  @media (max-width: $screen-tablet) {
+    right: 16px;
+    bottom: 17px;
+  }
+
+  @media (max-width: $screen-mobile) {
+    display: none;
+  }
+}

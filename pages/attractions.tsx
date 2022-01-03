@@ -3,12 +3,13 @@ import Head from "next/head";
 import Image from "next/image";
 import { Header } from "../components/header/header";
 
-const Home: NextPage = () => {
+const Attractions: NextPage = () => {
   return (
     <>
       <Header />
+      <h1>Attractions</h1>
     </>
   );
 };
 
-export default Home;
+export default Attractions;
