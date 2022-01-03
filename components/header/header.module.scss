@@ -1,6 +1,7 @@
 @use "../../styles/variable" as *;
 
 .container {
+  position: relative;
   background-color: $color-white;
   height: 104px;
 
@@ -10,5 +11,25 @@
 
   @media (max-width: $screen-mobile) {
     height: 191px;
+  }
+}
+
+.logo {
+  position: absolute;
+  width: 99px;
+  left: 108px;
+  top: 29px;
+
+  @media (max-width: $screen-tablet) {
+    width: 86px;
+    left: 40px;
+    top: 17px;
+  }
+
+  @media (max-width: $screen-mobile) {
+    width: 90px;
+    left: 50%;
+    margin-left: -45px;
+    top: 15px;
   }
 }
