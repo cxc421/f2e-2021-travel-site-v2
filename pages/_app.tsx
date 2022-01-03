@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { useState } from "react";
 import Head from "next/head";
+import { Header } from "../components/header/header";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
@@ -14,6 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Taiwan Travel Site</title>
       </Head>
+      <Header />
       <Component {...pageProps} />
       <ReactQueryDevtools />
     </QueryClientProvider>
