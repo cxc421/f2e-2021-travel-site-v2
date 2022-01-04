@@ -11,3 +11,31 @@ $color-black: #0d0b0c;
 $screen-desktop: 1280px;
 $screen-tablet: 768px;
 $screen-mobile: 576px;
+
+// Color Mixins
+@mixin bg-color {
+  &.green {
+    background-color: $color-green;
+  }
+
+  &.red {
+    background-color: $color-red;
+  }
+
+  &.yellow {
+    background-color: $color-yellow;
+  }
+}
+@mixin font-color {
+  &.green {
+    color: $color-green;
+  }
+
+  &.red {
+    color: $color-red;
+  }
+
+  &.yellow {
+    color: $color-yellow;
+  }
+}
