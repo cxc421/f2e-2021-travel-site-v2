@@ -46,6 +46,7 @@ export const Header: FC<HeaderProps> = () => {
         <Logo />
         <NavLinkList />
       </div>
+      <div className={style.shadow} />
       <div className={style.placeHolder} />
     </>
   );

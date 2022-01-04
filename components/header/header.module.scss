@@ -27,6 +27,64 @@
   }
 }
 
+.shadow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  // background: lightblue;
+  z-index: -1;
+  display: none;
+
+  @media (max-width: $screen-tablet) {
+    display: block;
+    height: 101px;
+
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      width: 387.22px;
+      height: 52px;
+      background: #0d0b0c;
+      opacity: 0.3;
+      filter: blur(4.3px);
+    }
+
+    &::before {
+      left: 16px;
+      transform-origin: left bottom;
+      // const getRad = (w,h) => Math.atan(h/w);
+      transform: skewY(-0.1335rad);
+    }
+
+    &::after {
+      right: 16px;
+      transform-origin: right bottom;
+      transform: skewY(0.1335rad);
+    }
+  }
+
+  @media (max-width: $screen-mobile) {
+    height: 205px;
+
+    &::before,
+    &::after {
+      width: 171.51px;
+      height: 37px;
+    }
+
+    &::before {
+      transform: skewY(-0.2125rad);
+    }
+
+    &::after {
+      transform: skewY(0.2125rad);
+    }
+  }
+}
+
 .logo {
   position: absolute;
   width: 99px;
