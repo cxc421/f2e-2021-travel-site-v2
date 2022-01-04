@@ -118,12 +118,9 @@ export const SelectBox: FC<SelectBoxProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const [showList, setShowList] = useShowList(ref);
   const maxHeight = useMaxHeight(ref, showList);
-  const selectChild = Children.toArray(children).find((child) =>
+  const selectOption = Children.toArray(children).find((child) =>
     isValidElement(child) ? child.props.value === value : false
   );
-  const selectText = isValidElement(selectChild)
-    ? selectChild.props.children
-    : "";
   const contextValue: SelectContent = {
     value,
     handleOptionMouseDown(newValue) {
@@ -137,7 +134,7 @@ export const SelectBox: FC<SelectBoxProps> = ({
   return (
     <div ref={ref} className={cn(style.container, className)}>
       <SelectCtx.Provider value={contextValue}>
-        <SelectOption value={value}>{selectText}</SelectOption>
+        {selectOption}
         <div className={style.dropdownImgArea}>
           <Image
             src={dropdownImgSrc}
