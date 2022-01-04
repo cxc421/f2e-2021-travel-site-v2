@@ -13,7 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <Head>
-        <title>Taiwan Travel Site</title>
+        <title>Taiwan° Tourguide</title>
       </Head>
       <Header />
       <Component {...pageProps} />
