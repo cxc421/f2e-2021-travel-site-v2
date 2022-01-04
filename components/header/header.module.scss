@@ -172,3 +172,16 @@
     display: flex;
   }
 }
+
+.mobileFilterArea {
+  position: absolute;
+  top: 132px;
+  left: 16px;
+  right: 16px;
+  height: 40px;
+
+  display: none;
+  @media (max-width: $screen-mobile) {
+    display: block;
+  }
+}

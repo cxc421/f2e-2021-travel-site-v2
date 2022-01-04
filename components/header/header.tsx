@@ -9,8 +9,7 @@ import style from "./header.module.scss";
 import logoSrc from "./images/taiwan-logo.png";
 import gpsImgSrc from "./images/gps.png";
 import searchImgSrc from "./images/search.png";
-
-export interface HeaderProps {}
+import { CategorySelectbox } from "../category-selectbox/category-selectbox";
 
 const Logo = () => (
   <Link href="/">
@@ -93,6 +92,14 @@ const MobileNavList = () => {
   );
 };
 
+const MobileFilterArea = () => (
+  <div className={style.mobileFilterArea}>
+    <CategorySelectbox />
+  </div>
+);
+
+export interface HeaderProps {}
+
 export const Header: FC<HeaderProps> = () => {
   return (
     <>
@@ -101,6 +108,7 @@ export const Header: FC<HeaderProps> = () => {
         <NavLinkList />
         <MobileButtonArea />
         <MobileNavList />
+        <MobileFilterArea />
       </div>
       <div className={style.shadow} />
       <div className={style.placeHolder} />
