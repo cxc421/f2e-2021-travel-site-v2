@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import type { FC } from "react";
+import cn from "classnames";
 import { Button } from "../button/button";
 import { NavLink } from "../nav-link/nav-link";
 import style from "./header.module.scss";
@@ -39,35 +40,67 @@ const NavLinkList = () => (
   </ul>
 );
 
-export const Header: FC<HeaderProps> = () => {
-  const router = useRouter();
-  console.log(router.pathname);
+const MobileButtonArea = () => (
+  <div className={style.mobileButtonArea}>
+    <Button size={30} bgColor="red">
+      <Image
+        src={searchImgSrc}
+        width={18}
+        height={18}
+        title="Go to search page"
+        alt="search"
+      />
+    </Button>
+    <Button size={30} bgColor="yellow">
+      <Image
+        src={gpsImgSrc}
+        width={16}
+        height={22}
+        title="Get current location"
+        alt="gps"
+      />
+    </Button>
+  </div>
+);
 
+const MobileNavList = () => {
+  const { pathname } = useRouter();
+
+  return (
+    <ul className={style.mobileNavList}>
+      <li>
+        <Link href="/attractions">
+          <a className={cn({ [style.selected]: pathname === "/attractions" })}>
+            台灣景點
+          </a>
+        </Link>
+      </li>
+      <li>
+        <Link href="/restaurant">
+          <a className={cn({ [style.selected]: pathname === "/restaurant" })}>
+            美食住宿
+          </a>
+        </Link>
+      </li>
+      <li>
+        <Link href="/traffic">
+          <a className={cn({ [style.selected]: pathname === "/traffic" })}>
+            景點交通
+          </a>
+        </Link>
+      </li>
+    </ul>
+  );
+};
+
+export const Header: FC<HeaderProps> = () => {
   return (
     <>
       <div className={style.container}>
         <Logo />
         <NavLinkList />
-        <div className={style.mobileButtonArea}>
-          <Button size={30} bgColor="red">
-            <Image
-              src={searchImgSrc}
-              width={18}
-              height={18}
-              title="Go to search page"
-              alt="search"
-            />
-          </Button>
-          <Button size={30} bgColor="yellow">
-            <Image
-              src={gpsImgSrc}
-              width={16}
-              height={22}
-              title="Get current location"
-              alt="gps"
-            />
-          </Button>
-        </div>
+        <MobileButtonArea />
+        <MobileNavList />
       </div>
       <div className={style.shadow} />
       <div className={style.placeHolder} />
