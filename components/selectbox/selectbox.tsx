@@ -7,15 +7,16 @@ import {
   useState,
   Children,
 } from "react";
+import Image from "next/image";
 import cn from "classnames";
 import style from "./selectbox.module.scss";
+import dropdownImgSrc from "./images/dropdown.png";
 
 /**
  * Select Context
  */
 interface SelectContent {
   value: string;
-  showList: boolean;
   handleOptionMouseDown: (optionValue: string) => void;
 }
 
@@ -41,11 +42,11 @@ export const SelectOption: FC<SelectOptionProps> = ({
   value: optionValue,
   children,
 }) => {
-  const { value, showList, handleOptionMouseDown } = useSelectContent();
+  const { value, handleOptionMouseDown } = useSelectContent();
 
   return (
     <div
-      className={cn(style.option, { [style.inList]: showList })}
+      className={cn(style.option)}
       data-selected={value === optionValue}
       onMouseDown={() => handleOptionMouseDown(optionValue)}
     >
@@ -58,23 +59,22 @@ export const SelectOption: FC<SelectOptionProps> = ({
  * Select Box
  */
 function useMaxHeight(ref: RefObject<HTMLDivElement>, showList: boolean) {
-  const [maxHeight, setMaxHeight] = useState(40);
+  const [maxHeight, setMaxHeight] = useState(0);
 
   useEffect(() => {
     if (showList) {
       if (ref && ref.current) {
-        const { top } = ref.current.getBoundingClientRect();
+        const { top, height } = ref.current.getBoundingClientRect();
         const viewHight = document.documentElement.clientHeight;
-        const optionHeight = 40;
         const maxDisplayOptionNum = Math.max(
           2,
-          Math.floor((viewHight - top) / optionHeight) - 1
+          Math.floor((viewHight - top) / height) - 1
         );
-        const maxHeight = maxDisplayOptionNum * optionHeight;
+        const maxHeight = maxDisplayOptionNum * height;
         setMaxHeight(maxHeight);
       }
     } else {
-      setMaxHeight(40);
+      setMaxHeight(0);
     }
   }, [ref, showList]);
 
@@ -106,11 +106,13 @@ function useShowList(
 export interface SelectBoxProps {
   value: string;
   onChange: (newValue: string) => void;
+  className?: string;
 }
 
 export const SelectBox: FC<SelectBoxProps> = ({
   value,
   onChange,
+  className,
   children,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -124,7 +126,6 @@ export const SelectBox: FC<SelectBoxProps> = ({
     : "";
   const contextValue: SelectContent = {
     value,
-    showList,
     handleOptionMouseDown(newValue) {
       setShowList((show) => !show);
       if (newValue !== value) {
@@ -134,20 +135,23 @@ export const SelectBox: FC<SelectBoxProps> = ({
   };
 
   return (
-    <div ref={ref} className={style.container} style={{ maxHeight }}>
+    <div ref={ref} className={cn(style.container, className)}>
       <SelectCtx.Provider value={contextValue}>
-        {!showList ? (
-          <>
-            <SelectOption value={value}>{selectText}</SelectOption>
-            {/* <img
-              className={styles.dropdownIcon}
-              src={downIconSrc}
-              alt="drop down"
-              onMouseDown={() => setShowList(true)}
-            /> */}
-          </>
-        ) : (
-          children
+        <SelectOption value={value}>{selectText}</SelectOption>
+        <div className={style.dropdownImgArea}>
+          <Image
+            src={dropdownImgSrc}
+            width={25}
+            height={24}
+            alt="drop down"
+            onMouseDown={() => setShowList(true)}
+          />
+        </div>
+
+        {showList && (
+          <div className={style.dropdownList} style={{ maxHeight }}>
+            {children}
+          </div>
         )}
       </SelectCtx.Provider>
     </div>

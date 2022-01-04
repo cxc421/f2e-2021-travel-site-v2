@@ -9,7 +9,8 @@ import style from "./header.module.scss";
 import logoSrc from "./images/taiwan-logo.png";
 import gpsImgSrc from "./images/gps.png";
 import searchImgSrc from "./images/search.png";
-import { CategorySelectbox } from "../category-selectbox/category-selectbox";
+import { CategorySelectbox } from "../selectbox/category-selectbox";
+import { CitySelectbox } from "../selectbox/city-selectbox";
 
 const Logo = () => (
   <Link href="/">
@@ -94,7 +95,11 @@ const MobileNavList = () => {
 
 const MobileFilterArea = () => (
   <div className={style.mobileFilterArea}>
-    <CategorySelectbox />
+    <CategorySelectbox className={style.categorySelectbox} />
+    <CitySelectbox className={style.citySelectbox} />
+    <Button className={style.sendButton} bgColor="red" size={40}>
+      送出
+    </Button>
   </div>
 );
 
