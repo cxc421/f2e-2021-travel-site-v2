@@ -1,5 +1,12 @@
 @use "../../styles/variable" as *;
 
+.wrapper {
+  position: relative;
+  @media (max-width: $screen-mobile) {
+    display: none;
+  }
+}
+
 .container {
   position: relative;
   height: 536px;
@@ -71,5 +78,41 @@
     width: 430px;
     margin-left: -215px;
     top: 41px;
+  }
+}
+
+.shadow {
+  position: absolute;
+  z-index: -1;
+  top: 509px;
+  left: 0;
+  width: 100%;
+  height: 57px;
+  overflow: hidden;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 679.73px;
+    height: 52px;
+    @include shadow-background;
+  }
+
+  &::before {
+    left: -6px;
+    transform: skewY(-0.07635rad);
+    transform-origin: left;
+  }
+
+  &::after {
+    right: -6px;
+    transform: skewY(0.07635rad);
+    transform-origin: right;
+  }
+
+  @media (max-width: $screen-tablet) {
+    display: none;
   }
 }

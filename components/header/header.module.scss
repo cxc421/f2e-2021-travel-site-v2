@@ -47,9 +47,7 @@
       bottom: 0;
       width: 387.22px;
       height: 52px;
-      background: #0d0b0c;
-      opacity: 0.3;
-      filter: blur(4.3px);
+      @include shadow-background;
     }
 
     &::before {
