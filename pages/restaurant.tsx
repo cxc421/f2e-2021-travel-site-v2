@@ -4,6 +4,8 @@ import { Button } from "../components/button/button";
 import { Header } from "../components/header/header";
 import { CustomSelectbox } from "../components/selectbox/custom-selectbox";
 import cities from "../constants/cities";
+import bannerImgSrc from "../images/banner-room.png";
+import { Banner } from "../components/banner/banner";
 
 const MobileFilter = () => {
   const categoryOptions = [
@@ -36,6 +38,7 @@ const Restaurant: NextPage = () => {
   return (
     <>
       <Header mobileFilterContent={<MobileFilter />} />
+      <Banner bgSrc={bannerImgSrc} />
       <h1>Restaurant</h1>
     </>
   );

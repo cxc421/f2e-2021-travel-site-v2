@@ -1,0 +1,75 @@
+@use "../../styles/variable" as *;
+
+.container {
+  position: relative;
+  height: 536px;
+  padding: 23px 27px;
+  background-color: $color-white;
+
+  @media (max-width: $screen-tablet) {
+    height: 130px;
+    padding: 0;
+    background-color: transparent;
+  }
+
+  @media (max-width: $screen-mobile) {
+    display: none;
+  }
+}
+
+.bgImgWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  @media (max-width: $screen-tablet) {
+    display: none;
+  }
+}
+
+.sloganImgWrapper {
+  position: absolute;
+  top: 160px;
+  left: 50%;
+  width: 488px;
+  margin-left: -244px;
+
+  @media (max-width: $screen-tablet) {
+    display: none;
+  }
+}
+
+.sloganText {
+  position: absolute;
+  top: 239px;
+  left: 50%;
+  width: 488px;
+  margin-left: -244px;
+  text-align: left;
+  color: white;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 21px;
+
+  @media (max-width: $screen-tablet) {
+    display: none;
+  }
+}
+
+.filterArea {
+  position: absolute;
+  top: 270px;
+  left: 50%;
+  width: 490px;
+  margin-left: -245px;
+  height: 89px;
+  // background-color: pink;
+
+  @media (max-width: $screen-tablet) {
+    width: 430px;
+    margin-left: -215px;
+    top: 41px;
+  }
+}

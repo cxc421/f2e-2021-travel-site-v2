@@ -4,6 +4,8 @@ import { Header } from "../components/header/header";
 import { Button } from "../components/button/button";
 import { CustomSelectbox } from "../components/selectbox/custom-selectbox";
 import cities from "../constants/cities";
+import bannerImgSrc from "../images/banner-good-weather.png";
+import { Banner } from "../components/banner/banner";
 
 const MobileFilter = () => {
   const categoryOptions = [
@@ -36,6 +38,7 @@ const Attractions: NextPage = () => {
   return (
     <>
       <Header mobileFilterContent={<MobileFilter />} />
+      <Banner bgSrc={bannerImgSrc} />
       <h1>Attractions</h1>
     </>
   );
