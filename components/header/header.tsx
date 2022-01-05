@@ -9,8 +9,6 @@ import style from "./header.module.scss";
 import logoSrc from "./images/taiwan-logo.png";
 import gpsImgSrc from "./images/gps.png";
 import searchImgSrc from "./images/search.png";
-import { CategorySelectbox } from "../selectbox/category-selectbox";
-import { CitySelectbox } from "../selectbox/city-selectbox";
 
 const Logo = () => (
   <Link href="/">
@@ -93,19 +91,19 @@ const MobileNavList = () => {
   );
 };
 
-const MobileFilterArea = () => (
-  <div className={style.mobileFilterArea}>
-    <CategorySelectbox className={style.categorySelectbox} />
-    <CitySelectbox className={style.citySelectbox} />
-    <Button className={style.sendButton} bgColor="red" size={40}>
-      送出
-    </Button>
-  </div>
+interface MobileFilterAreaProps {
+  content?: JSX.Element;
+}
+
+const MobileFilterArea: FC<MobileFilterAreaProps> = ({ content }) => (
+  <div className={style.mobileFilterArea}>{content}</div>
 );
 
-export interface HeaderProps {}
+export interface HeaderProps {
+  mobileFilterContent?: JSX.Element;
+}
 
-export const Header: FC<HeaderProps> = () => {
+export const Header: FC<HeaderProps> = ({ mobileFilterContent }) => {
   return (
     <>
       <div className={style.container}>
@@ -113,7 +111,7 @@ export const Header: FC<HeaderProps> = () => {
         <NavLinkList />
         <MobileButtonArea />
         <MobileNavList />
-        <MobileFilterArea />
+        <MobileFilterArea content={mobileFilterContent} />
       </div>
       <div className={style.shadow} />
       <div className={style.placeHolder} />

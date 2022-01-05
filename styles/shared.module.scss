@@ -1,0 +1,15 @@
+@use "./variable" as *;
+
+.mobileFilterContainer {
+  display: flex;
+}
+
+.mobileSelectbox {
+  margin-right: 8px;
+}
+
+.sendButton {
+  flex-shrink: 0;
+  color: $color-white;
+  font-size: 14px;
+}

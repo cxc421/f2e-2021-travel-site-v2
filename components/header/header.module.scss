@@ -182,17 +182,6 @@
 
   display: none;
   @media (max-width: $screen-mobile) {
-    display: flex;
+    display: block;
   }
-}
-
-.categorySelectbox,
-.citySelectbox {
-  margin-right: 8px;
-}
-
-.sendButton {
-  flex-shrink: 0;
-  color: white;
-  font-size: 14px;
 }
