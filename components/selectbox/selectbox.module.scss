@@ -8,6 +8,10 @@
   background: $color-white;
   box-shadow: 0px 2px 4px rgba(13, 11, 12, 0.2);
   border-radius: 6px;
+
+  &.hideBackground {
+    background: transparent;
+  }
 }
 
 .option {

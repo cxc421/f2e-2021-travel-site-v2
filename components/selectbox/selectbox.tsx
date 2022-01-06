@@ -132,7 +132,12 @@ export const SelectBox: FC<SelectBoxProps> = ({
   };
 
   return (
-    <div ref={ref} className={cn(style.container, className)}>
+    <div
+      ref={ref}
+      className={cn(style.container, className, {
+        [style.hideBackground]: showList && maxHeight > 0,
+      })}
+    >
       <SelectCtx.Provider value={contextValue}>
         {selectOption}
         <div className={style.dropdownImgArea}>
