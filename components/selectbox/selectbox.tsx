@@ -1,3 +1,9 @@
+/**
+ * ToDo: Refactor to Generic Form
+ * - https://ordina-jworks.github.io/architecture/2021/02/12/react-generic-context.html
+ 
+ */
+
 import { Dispatch, SetStateAction, FC, RefObject, isValidElement } from "react";
 import {
   createContext,

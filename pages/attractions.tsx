@@ -2,34 +2,64 @@ import type { NextPage } from "next";
 import sharedStyle from "../styles/shared.module.scss";
 import { Header } from "../components/header/header";
 import { Button } from "../components/button/button";
-import { CustomSelectbox } from "../components/selectbox/custom-selectbox";
-import cities from "../constants/cities";
 import bannerImgSrc from "../images/banner-good-weather.png";
 import { Banner } from "../components/banner/banner";
 import { GpsButton } from "../components/button/gps-button";
 import { SearchButton } from "../components/button/search-button";
 import { Searchbox } from "../components/searchbox/searchbox";
-import { useState } from "react";
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react";
+import {
+  CategoryAttractions,
+  CategoryAttractionsSelectbox,
+} from "../components/selectbox/category-attractions-selectbox";
+import { City, CitySelectbox } from "../components/selectbox/city-selectbox";
 
-// Filter Options Definition
-const categoryOptions = [
-  { value: "", text: "類別" },
-  { value: "ScenicSpot", text: "景點" },
-  { value: "Activity", text: "活動" },
-];
-const cityOptions = [{ value: "", text: "所有縣市" }].concat(cities);
+/**
+ * Attraction Context
+ */
+export interface AttractionContext {
+  category: CategoryAttractions;
+  setCategory: Dispatch<SetStateAction<CategoryAttractions>>;
+  city: City;
+  setCity: Dispatch<SetStateAction<City>>;
+  searchText: string;
+  setSearchText: Dispatch<SetStateAction<string>>;
+}
 
+const AttractionCtx = createContext<AttractionContext | null>(null);
+
+function useAttractionContext() {
+  const value = useContext(AttractionCtx);
+  if (!value) {
+    throw new Error(
+      `useAttractionContext() must be used within attraction page`
+    );
+  }
+  return value;
+}
+
+/**
+ * Attraction Mobile Filter
+ */
 const MobileFilter = () => {
+  const { category, setCategory, city, setCity } = useAttractionContext();
+
   return (
     <div className={sharedStyle.mobileFilterContainer}>
-      <CustomSelectbox
-        options={categoryOptions}
-        defaultValue=""
+      <CategoryAttractionsSelectbox
+        value={category}
+        onChange={setCategory}
         className={sharedStyle.mobileSelectbox}
       />
-      <CustomSelectbox
-        options={cityOptions}
-        defaultValue=""
+      <CitySelectbox
+        value={city}
+        onChange={setCity}
         className={sharedStyle.mobileSelectbox}
       />
       <Button bgColor="red" size={40} className={sharedStyle.sendButton}>
@@ -39,8 +69,12 @@ const MobileFilter = () => {
   );
 };
 
+/**
+ * Attraction Tablet & Desktop Filter
+ */
 const TabletFiler = () => {
-  const [searchText, setSearchText] = useState("");
+  const { searchText, setSearchText, category, setCategory, city, setCity } =
+    useAttractionContext();
 
   return (
     <div className={sharedStyle.tabletFilterContainer}>
@@ -57,14 +91,14 @@ const TabletFiler = () => {
         />
       </div>
       <div>
-        <CustomSelectbox
-          options={categoryOptions}
-          defaultValue=""
+        <CategoryAttractionsSelectbox
+          value={category}
+          onChange={setCategory}
           className={sharedStyle.tabletInput}
         />
-        <CustomSelectbox
-          options={cityOptions}
-          defaultValue=""
+        <CitySelectbox
+          value={city}
+          onChange={setCity}
           className={sharedStyle.tabletInput}
         />
         <SearchButton
@@ -77,13 +111,30 @@ const TabletFiler = () => {
   );
 };
 
+/**
+ *  Attractions Page
+ */
+
 const Attractions: NextPage = () => {
+  const [searchText, setSearchText] = useState("");
+  const [category, setCategory] = useState<CategoryAttractions>("");
+  const [city, setCity] = useState<City>("");
+
+  const context: AttractionContext = {
+    city,
+    setCity,
+    category,
+    setCategory,
+    searchText,
+    setSearchText,
+  };
+
   return (
-    <>
+    <AttractionCtx.Provider value={context}>
       <Header mobileFilterContent={<MobileFilter />} />
       <Banner bgSrc={bannerImgSrc} filterContent={<TabletFiler />} />
       <h1>Attractions</h1>
-    </>
+    </AttractionCtx.Provider>
   );
 };
 
