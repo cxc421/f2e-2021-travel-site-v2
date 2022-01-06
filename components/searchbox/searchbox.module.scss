@@ -1,0 +1,18 @@
+@use "../../styles/variable" as *;
+
+.searchInput {
+  background-color: $color-white;
+  height: 40px;
+  width: 100%;
+  box-shadow: 0px 2px 4px rgba(13, 11, 12, 0.2);
+  border-radius: 6px;
+  outline: none;
+  border: none;
+  padding: 8.5px 16px;
+  font-size: 16px;
+  line-height: 23px;
+
+  &::placeholder {
+    color: #d2d2d2;
+  }
+}

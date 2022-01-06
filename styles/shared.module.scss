@@ -13,3 +13,22 @@
   color: $color-white;
   font-size: 14px;
 }
+
+.tabletFilterContainer {
+  > div {
+    display: flex;
+    // background-color: lightblue;
+  }
+
+  > div + div {
+    margin-top: 9px;
+  }
+}
+
+.tabletInput {
+  margin-right: 6px;
+}
+
+.tabletButton {
+  flex-shrink: 0;
+}
