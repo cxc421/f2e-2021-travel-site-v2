@@ -21,6 +21,7 @@ import {
 import { City, CitySelectbox } from "../components/selectbox/city-selectbox";
 import { MainSection } from "../components/main-section/main-section";
 import { MainTitle } from "../components/main-title/main-title";
+import { Footer } from "../components/footer/footer";
 
 /**
  * Attraction Context
@@ -140,6 +141,7 @@ const Attractions: NextPage = () => {
         <MainTitle type="triangle">熱門活動</MainTitle>
         <MainTitle type="rectangle">熱門餐飲</MainTitle>
       </MainSection>
+      <Footer />
     </AttractionCtx.Provider>
   );
 };
