@@ -2,16 +2,26 @@
 
 .container {
   position: relative;
+
   max-width: $screen-desktop;
   margin-left: auto;
   margin-right: auto;
   padding: 0 110px;
 
+  // To prevent margin collapsing
+  overflow: auto;
+
+  // Let footer in page bottom if main content is empty
+  // view height - header height - banner height - footer height
+  min-height: calc(100vh - 104px - 536px - 65px);
+
   @media (max-width: $screen-tablet) {
     padding: 0 65px;
+    min-height: calc(100vh - 84px - 130px - 32px);
   }
 
   @media (max-width: $screen-mobile) {
     padding: 0 25px;
+    min-height: calc(100vh - 191px - 0px - 32px);
   }
 }
