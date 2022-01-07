@@ -133,7 +133,6 @@ const Restaurant: NextPage = () => {
     <RestaurantCtx.Provider value={context}>
       <Header mobileFilterContent={<MobileFilter />} />
       <Banner bgSrc={bannerImgSrc} filterContent={<TabletFiler />} />
-      <h1>Restaurant</h1>
     </RestaurantCtx.Provider>
   );
 };

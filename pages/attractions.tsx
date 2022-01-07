@@ -19,6 +19,8 @@ import {
   CategoryAttractionsSelectbox,
 } from "../components/selectbox/category-attractions-selectbox";
 import { City, CitySelectbox } from "../components/selectbox/city-selectbox";
+import { MainSection } from "../components/main-section/main-section";
+import { MainTitle } from "../components/main-title/main-title";
 
 /**
  * Attraction Context
@@ -133,7 +135,11 @@ const Attractions: NextPage = () => {
     <AttractionCtx.Provider value={context}>
       <Header mobileFilterContent={<MobileFilter />} />
       <Banner bgSrc={bannerImgSrc} filterContent={<TabletFiler />} />
-      <h1>Attractions</h1>
+      <MainSection>
+        <MainTitle type="triangle">熱門城市</MainTitle>
+        <MainTitle type="triangle">熱門活動</MainTitle>
+        <MainTitle type="rectangle">熱門餐飲</MainTitle>
+      </MainSection>
     </AttractionCtx.Provider>
   );
 };

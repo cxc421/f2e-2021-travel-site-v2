@@ -1,0 +1,54 @@
+@use "../../styles/variable" as *;
+
+.container {
+  position: relative;
+
+  margin-top: 60px;
+  margin-bottom: 12px;
+  margin-left: 0;
+  margin-right: 0;
+
+  @media (max-width: $screen-tablet) {
+    margin-top: 36px;
+  }
+
+  @media (max-width: $screen-mobile) {
+    margin-top: 28px;
+
+    &:first-child {
+      margin-top: 43px;
+    }
+  }
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 10px 17.3px 10px;
+  border-color: transparent transparent $color-red transparent;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.rectangle {
+  width: 20px;
+  height: 20px;
+  background-color: $color-yellow;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.text {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 30px;
+  color: $color-black;
+  margin-left: 14px;
+  vertical-align: middle;
+
+  @media (max-width: $screen-tablet) {
+    font-size: 14px;
+    margin-left: 13px;
+  }
+}

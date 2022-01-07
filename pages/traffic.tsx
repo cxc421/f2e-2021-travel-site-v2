@@ -36,7 +36,6 @@ const Traffic: NextPage = () => {
   return (
     <>
       <Header mobileFilterContent={<MobileFilter />} />
-      <h1>Traffic</h1>
     </>
   );
 };
