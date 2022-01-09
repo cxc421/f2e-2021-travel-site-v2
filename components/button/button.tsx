@@ -4,7 +4,7 @@ import style from "./button.module.scss";
 
 export interface ButtonProps {
   size: number;
-  bgColor: "red" | "yellow" | "green";
+  bgColor: "red" | "yellow" | "green" | "black" | "white";
   className?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;
 }

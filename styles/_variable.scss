@@ -25,6 +25,14 @@ $screen-mobile: 576px;
   &.yellow {
     background-color: $color-yellow;
   }
+
+  &.black {
+    background-color: $color-black;
+  }
+
+  &.white {
+    background-color: $color-white;
+  }
 }
 @mixin font-color {
   &.green {
