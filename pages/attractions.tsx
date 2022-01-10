@@ -23,6 +23,7 @@ import { MainSection } from "../components/main-section/main-section";
 import { MainTitle } from "../components/main-title/main-title";
 import { Footer } from "../components/footer/footer";
 import { HorizontalScroll } from "../components/horizontal-scroll/horizontal-scroll";
+import { CityGallery } from "../components/city-gallery/city-gallery";
 
 /**
  * Attraction Context
@@ -139,7 +140,9 @@ const Attractions: NextPage = () => {
       <Banner bgSrc={bannerImgSrc} filterContent={<TabletFiler />} />
       <MainSection>
         <MainTitle type="triangle">熱門城市</MainTitle>
-        {/* <HorizontalScroll /> */}
+        <HorizontalScroll>
+          <CityGallery onSelectCity={setCity} />
+        </HorizontalScroll>
         <MainTitle type="triangle">熱門活動</MainTitle>
         <MainTitle type="rectangle">熱門餐飲</MainTitle>
       </MainSection>

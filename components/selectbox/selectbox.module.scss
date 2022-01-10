@@ -12,6 +12,9 @@
   &.hideBackground {
     background: transparent;
   }
+  * {
+    user-select: none;
+  }
 }
 
 .option {
@@ -55,6 +58,7 @@
   border-radius: 6px;
   overflow: auto;
   background: $color-white;
+  z-index: 10;
 
   .option[data-selected="true"] {
     background: $color-red;
