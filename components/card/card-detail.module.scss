@@ -1,0 +1,92 @@
+@use "../../styles/variable" as *;
+
+.container {
+  width: 522px;
+  width: calc((100% - 21px) / 2);
+
+  // height: 228px;
+  background-color: $color-white;
+
+  padding: 16px;
+  display: flex;
+}
+
+.imgArea {
+  flex-shrink: 1;
+
+  position: relative;
+  min-height: 196px;
+  width: 196px;
+  // background-color: black;
+}
+
+.content {
+  flex-shrink: 1;
+
+  position: relative;
+  width: 278px;
+  margin-left: 16px;
+  // background-color: yellow;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 0;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 23px;
+
+  flex-shrink: 0;
+}
+
+.description {
+  min-height: 102px;
+
+  margin: 14px 0;
+  font-size: 14px;
+  line-height: 21px;
+  color: $color-gray;
+
+  overflow: hidden;
+}
+
+.bottom {
+  width: 100%;
+  height: 40px;
+  // background-color: aquamarine;
+
+  flex-shrink: 0;
+
+  display: flex;
+  justify-content: space-between;
+
+  .location {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    > span {
+      font-size: 14px;
+      margin-left: 12px;
+    }
+  }
+
+  .detailButton {
+    height: 40px;
+    width: 136px;
+    line-height: 40px;
+    text-align: center;
+    border: 1px solid $color-red;
+    border-radius: 8px;
+    color: $color-red;
+    font-size: 14px;
+    cursor: pointer;
+    // transition: all 0.1s;
+
+    &:hover {
+      color: $color-white;
+      background: $color-red;
+    }
+  }
+}
