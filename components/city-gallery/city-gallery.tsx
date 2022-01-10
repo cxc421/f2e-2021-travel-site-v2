@@ -137,6 +137,7 @@ export const CityGallery: FC<CityGalleryProps> = ({ onSelectCity }) => {
                     className={style.cardImg}
                     src={galleryCity.imgSrc}
                     layout="fill"
+                    placeholder="blur"
                     alt={galleryCity.text}
                   />
                   <div className={style.cardContent}>

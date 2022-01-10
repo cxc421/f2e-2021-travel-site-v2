@@ -19,6 +19,7 @@ export const Banner: FC<Banner> = ({ bgSrc, filterContent }) => {
             alt="banner"
             layout="fill"
             objectFit="cover"
+            placeholder="blur"
             priority
           />
         </div>
