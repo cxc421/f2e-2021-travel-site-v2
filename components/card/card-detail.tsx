@@ -16,12 +16,6 @@ export const CardDetail: FC<CardDetailProps> = ({
   description = "",
   location = "",
 }) => {
-  const descriptionLimit = 96;
-  const displayDescription =
-    description.length > descriptionLimit
-      ? description.slice(0, descriptionLimit - 3) + "..."
-      : description;
-
   return (
     <div className={style.container}>
       <div className={style.imgArea}>
@@ -29,7 +23,7 @@ export const CardDetail: FC<CardDetailProps> = ({
       </div>
       <div className={style.content}>
         <h3 className={style.title}>{title}</h3>
-        <p className={style.description}>{displayDescription}</p>
+        <p className={style.description}>{description}</p>
         <div className={style.bottom}>
           <div className={style.location}>
             <Image src={gpsImgSrc} width={16} height={20} alt="gps" />
