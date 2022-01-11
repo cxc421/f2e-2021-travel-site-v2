@@ -26,6 +26,10 @@
     margin-top: 5px;
   }
 
+  @media (max-width: $screen-desktop-small) {
+    height: 192px;
+  }
+
   @media (max-width: $screen-tablet) {
     width: 159px;
     height: 192px;
@@ -59,7 +63,7 @@
     padding: 7px 8px;
   }
 
-  @media (max-width: $screen-tablet) {
+  @media (max-width: $screen-desktop-small) {
     &:first-child:last-child {
       padding: 11px 10px;
     }
@@ -105,7 +109,7 @@
     margin-top: 5px;
   }
 
-  @media (max-width: $screen-tablet) {
+  @media (max-width: $screen-desktop-small) {
     > span {
       font-size: 14px;
       line-height: 21px;
