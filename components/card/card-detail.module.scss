@@ -73,8 +73,9 @@
   min-width: 140px;
 
   position: relative;
-  // background-color: black;
+
   // ToDo: Loading CSS backgound
+  @include with-loading(lighten($color-gray, 20%));
 
   &::after {
     content: "";

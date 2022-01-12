@@ -54,3 +54,24 @@ $screen-mobile-small: 410px;
   opacity: 0.3;
   filter: blur(4.3px);
 }
+
+@keyframes loading {
+  0% {
+    background-position: 130%;
+  }
+  100% {
+    background-position: -30%;
+  }
+}
+
+@mixin with-loading($bgColor: #0d0b0c) {
+  background: linear-gradient(
+      110deg,
+      transparent 40%,
+      hsla(0, 0%, 100%, 0.5) 50%,
+      transparent 60%
+    ),
+    $bgColor;
+  background-size: 200% 100%;
+  animation: loading 1.5s ease-in-out infinite;
+}
