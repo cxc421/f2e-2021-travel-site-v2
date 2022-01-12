@@ -11,6 +11,11 @@ module.exports = {
     ];
   },
   images: {
-    domains: ["www.taiwan.net.tw"],
+    domains: [
+      "www.taiwan.net.tw",
+      "www.trimt-nsa.gov.tw",
+      "tourism.chcg.gov.tw",
+      "www.amazing-pingtung.com",
+    ],
   },
 };

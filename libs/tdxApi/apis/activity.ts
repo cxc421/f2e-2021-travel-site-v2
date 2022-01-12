@@ -42,20 +42,20 @@ export type Activity = {
 };
 
 export type ActivityFilter = {
-  city: City | "all";
+  city: City | "";
   curDate: Date;
   $top?: number;
   $skip?: number;
   needImage?: boolean;
+  needLocation?: boolean;
   position?: Coordinate;
   positionDistance?: number;
 };
 
 export async function getActivity(filter: ActivityFilter): Promise<Activity[]> {
-  const url =
-    filter.city === "all"
-      ? "/v2/Tourism/Activity"
-      : `/v2/Tourism/Activity/${filter.city}`;
+  const url = filter.city
+    ? `/v2/Tourism/Activity/${filter.city}`
+    : "/v2/Tourism/Activity";
 
   const response = await axiosInstance.get(url, {
     params: {
@@ -63,7 +63,9 @@ export async function getActivity(filter: ActivityFilter): Promise<Activity[]> {
       $skip: filter.$skip,
       $format: "JSON",
       $orderby: "EndTime",
-      $filter: `date(EndTime) ge ${filter.curDate.toISOString()}${
+      $filter: `date(EndTime) ge ${filter.curDate.toISOString()} ${
+        filter.needLocation ? `and Location ne 'to see the official site'` : ""
+      } ${
         filter.needImage
           ? " and Picture/PictureUrl1 ne null and Picture/PictureDescription1 ne null"
           : ""
