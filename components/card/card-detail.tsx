@@ -1,8 +1,9 @@
 import Image from "next/image";
-import { FC } from "react";
+import { FC, useState } from "react";
 import cn from "classnames";
 import style from "./card-detail.module.scss";
 import gpsImgSrc from "./images/gps.png";
+import noImgSrc from "./images/no-img.png";
 
 export interface CardDetailProps {
   img?: string;
@@ -17,17 +18,33 @@ export const CardDetail: FC<CardDetailProps> = ({
   description = "",
   location = "",
 }) => {
+  const [loadImgFailed, setLoadImgFailed] = useState(false);
+
   return (
     <div className={style.wrapper}>
       <div className={style.container}>
         <div className={style.imgArea}>
-          <Image
-            className={style.img}
-            src={img || ""}
-            layout="fill"
-            alt={title}
-            objectFit="cover"
-          />
+          {loadImgFailed ? (
+            <div className={style.errorImgWrapper}>
+              <Image
+                className={style.errorImg}
+                width={67}
+                height={44}
+                src={noImgSrc}
+                alt="No Image"
+              />
+            </div>
+          ) : (
+            <Image
+              className={style.img}
+              src={img || ""}
+              layout="fill"
+              alt={title}
+              objectFit="cover"
+              onError={() => setLoadImgFailed(true)}
+            />
+          )}
+
           <div role="button" className={cn(style.detailButton, style.active)}>
             活動詳情
           </div>
