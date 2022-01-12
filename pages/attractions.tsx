@@ -1,4 +1,4 @@
-import type { NextPage, GetServerSideProps } from "next";
+import type { NextPage, GetStaticProps } from "next";
 import sharedStyle from "../styles/shared.module.scss";
 import { Header } from "../components/header/header";
 import { Button } from "../components/button/button";
@@ -33,12 +33,14 @@ import { getActivity, Activity } from "../libs/tdxApi/apis/activity";
  */
 interface AttractionsPageProps {
   defaultActivities: Activity[];
+  serverErrors?: string[];
 }
 
-export const getServerSideProps: GetServerSideProps<
+export const getStaticProps: GetStaticProps<
   AttractionsPageProps
 > = async () => {
   let defaultActivities: Activity[] = [];
+  let serverErrors: string[] = [];
   try {
     defaultActivities = await getActivity({
       $top: 4,
@@ -47,14 +49,32 @@ export const getServerSideProps: GetServerSideProps<
       needImage: true,
       needLocation: true,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error: any) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+      const { data, status, headers } = error.response;
+      serverErrors.push(JSON.stringify({ data, status, headers }));
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      serverErrors.push(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      serverErrors.push(error.message);
+    }
   }
 
   return {
     props: {
       defaultActivities,
+      serverErrors,
     },
+    revalidate: 60, // 60 sec
   };
 };
 
@@ -153,7 +173,10 @@ const TabletFiler = () => {
  *  Attractions Page
  */
 
-const Attractions: NextPage<AttractionsPageProps> = ({ defaultActivities }) => {
+const Attractions: NextPage<AttractionsPageProps> = ({
+  defaultActivities,
+  serverErrors,
+}) => {
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryAttractions>("");
   const [city, setCity] = useState<City>("");
@@ -168,6 +191,9 @@ const Attractions: NextPage<AttractionsPageProps> = ({ defaultActivities }) => {
   };
 
   // console.log(defaultActivities);
+  if (serverErrors?.length) {
+    serverErrors.forEach((errorMsg) => console.error(errorMsg));
+  }
 
   return (
     <AttractionCtx.Provider value={context}>
