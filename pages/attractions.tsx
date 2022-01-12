@@ -20,7 +20,7 @@ import {
 } from "../components/selectbox/category-attractions-selectbox";
 import { City, CitySelectbox } from "../components/selectbox/city-selectbox";
 import { MainSection } from "../components/main-section/main-section";
-import { MainTitle } from "../components/main-title/main-title";
+import { MainTitle } from "../components/main-section/main-title";
 import { Footer } from "../components/footer/footer";
 import { HorizontalScroll } from "../components/horizontal-scroll/horizontal-scroll";
 import { CityGallery } from "../components/city-gallery/city-gallery";

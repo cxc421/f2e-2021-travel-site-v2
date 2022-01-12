@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import type { FC } from "react";
 import cn from "classnames";
-import { NavLink } from "../nav-link/nav-link";
+import { NavLink } from "./nav-link";
 import style from "./header.module.scss";
 import logoSrc from "./images/taiwan-logo.png";
 import { SearchButton } from "../button/search-button";
