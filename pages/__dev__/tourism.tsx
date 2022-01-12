@@ -14,26 +14,27 @@ interface TourismPageProps {
   defaultActivities: Activity[];
 }
 
-export const getServerSideProps: GetServerSideProps<TourismPageProps> =
-  async () => {
-    let defaultActivities: Activity[] = [];
-    try {
-      defaultActivities = await getActivity({
-        $top: 4,
-        city: "all",
-        curDate: new Date(),
-        needImage: true,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+export const getServerSideProps: GetServerSideProps<
+  TourismPageProps
+> = async () => {
+  let defaultActivities: Activity[] = [];
+  try {
+    defaultActivities = await getActivity({
+      $top: 4,
+      city: "",
+      curDate: new Date(),
+      needImage: true,
+    });
+  } catch (err) {
+    console.error(err);
+  }
 
-    return {
-      props: {
-        defaultActivities,
-      },
-    };
+  return {
+    props: {
+      defaultActivities,
+    },
   };
+};
 
 type Category = "all" | "tourism" | "activity";
 
