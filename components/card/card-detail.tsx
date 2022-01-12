@@ -50,8 +50,10 @@ export const CardDetail: FC<CardDetailProps> = ({
           </div>
         </div>
         <div className={style.content}>
-          <h3 className={style.title}>{title}</h3>
-          <p className={style.description}>{description}</p>
+          <div>
+            <h3 className={style.title}>{title}</h3>
+            <p className={style.description}>{description}</p>
+          </div>
           <div className={style.bottom}>
             <div className={style.location}>
               <Image src={gpsImgSrc} width={16} height={20} alt="gps" />
