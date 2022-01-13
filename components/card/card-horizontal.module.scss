@@ -9,7 +9,6 @@
 }
 
 .container {
-  // width: calc((100% - 21px) / 2);
   background-color: $color-white;
   padding: 16px;
   display: flex;
@@ -30,38 +29,12 @@
       }
     }
 
-    .img {
-      transform-origin: center center;
-      // transform: scale(1.1);
-    }
-
     .bottom {
       .detailButton {
         color: $color-white;
         background-color: $color-red;
       }
     }
-  }
-}
-
-.detailButton {
-  flex-basis: 50%;
-
-  height: 40px;
-  width: 136px;
-  line-height: 40px;
-  text-align: center;
-  border: 1px solid $color-red;
-  border-radius: 8px;
-  color: $color-red;
-  font-size: 14px;
-  cursor: pointer;
-  background-color: $color-white;
-  transition: all 0.4s;
-
-  &.active {
-    background-color: $color-red;
-    color: $color-white;
   }
 }
 
@@ -74,8 +47,8 @@
 
   position: relative;
 
-  // ToDo: Loading CSS backgound
-  @include with-loading(lighten($color-gray, 20%));
+  // Loading CSS backgound
+  @include with-loading-bg(lighten($color-gray, 20%));
 
   &::after {
     content: "";
@@ -99,11 +72,6 @@
     z-index: 1;
     transition: all 0.4s;
     display: none;
-    width: 80%;
-    border-radius: 25px;
-    height: 36px;
-    line-height: 36px;
-    font-size: 14px;
   }
 
   @media (max-width: $screen-desktop-small) {
@@ -133,10 +101,6 @@
   }
 }
 
-.img {
-  transition: transform 0.4s;
-}
-
 .errorImgWrapper {
   position: relative;
   width: 100%;
@@ -144,10 +108,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.errorImg {
-  max-width: 80%;
+  .errorImg {
+    max-width: 80%;
+  }
 }
 
 .content {
@@ -176,17 +140,12 @@
 
   flex-shrink: 0;
 
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  @include with-line-clamp(1);
 
   @media (max-width: $screen-desktop-small) {
     white-space: normal;
 
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    @include with-line-clamp(3);
   }
 
   @media (max-width: $screen-tablet) {
@@ -208,10 +167,7 @@
   line-height: 21px;
   color: $color-gray;
 
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  @include with-line-clamp(5);
 
   @media (max-width: $screen-desktop-small) {
     display: none;
@@ -248,9 +204,7 @@
       flex-basis: 100%;
 
       > span {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        @include with-line-clamp(1);
       }
     }
 
@@ -263,6 +217,8 @@
   }
 
   .detailButton {
+    flex-basis: 50%;
+
     @media (max-width: $screen-desktop-small) {
       display: none;
     }

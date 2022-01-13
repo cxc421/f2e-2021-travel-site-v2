@@ -27,6 +27,8 @@ import { CityGallery } from "../components/city-gallery/city-gallery";
 import { CardHorizontal } from "../components/card/card-horizontal";
 import { MainCardHorizontalArea } from "../components/main-section/main-card-horizontal-area";
 import { getActivity, Activity } from "../libs/tdxApi/apis/activity";
+import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
+import { CardVertical } from "../components/card/card-vertical";
 
 /**
  *  Server Side Code
@@ -232,6 +234,43 @@ const Attractions: NextPage<AttractionsPageProps> = ({
           ))}
         </MainCardHorizontalArea>
         <MainTitle type="rectangle">熱門餐飲</MainTitle>
+        <MainCardVerticalArea>
+          <CardVertical
+            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+            title="合歡山國際暗空公園-星空清境跨年活動"
+            location="臺北市 北投區"
+          />
+          <CardVertical
+            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+            title="合歡山國際暗空公園-星空清境跨年活動"
+            location="臺北市 北投區"
+          />
+          <CardVertical
+            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+            title="合歡山國際暗空公園-星空清境跨年活動"
+            location="臺北市 北投區"
+          />
+          <CardVertical
+            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728"
+            title="合歡山國際暗空公園-星空清境跨年活動"
+            location="臺北市 北投區"
+          />
+          <CardVertical
+            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+            title="合歡山國際暗空公園-星空清境跨年活動"
+            location="臺北市 北投區"
+          />
+          <CardVertical
+            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+            title="合歡山國際暗空公園-星空清境跨年活動"
+            location="臺北市 北投區"
+          />
+          <CardVertical
+            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+            title="合歡山國際暗空公園-星空清境跨年活動"
+            location="臺北市 北投區"
+          />
+        </MainCardVerticalArea>
       </MainSection>
       <Footer />
     </AttractionCtx.Provider>

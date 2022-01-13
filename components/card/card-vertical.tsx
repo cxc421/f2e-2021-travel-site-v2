@@ -1,21 +1,19 @@
-import Image from "next/image";
 import { FC, useState } from "react";
-import style from "./card-horizontal.module.scss";
-import gpsImgSrc from "./images/gps.png";
+import Image from "next/image";
+import style from "./card-vertical.module.scss";
 import noImgSrc from "./images/no-img.png";
+import gpsSmImgSrc from "./images/gps-sm.png";
 import { CardDetailButton } from "./card-detail-button";
 
-export interface CardHorizontalProps {
+export interface CardVerticalProps {
   img?: string;
   title?: string;
-  description?: string;
   location?: string;
 }
 
-export const CardHorizontal: FC<CardHorizontalProps> = ({
+export const CardVertical: FC<CardVerticalProps> = ({
   img = "",
   title = "",
-  description = "",
   location = "",
 }) => {
   const [loadImgFailed, setLoadImgFailed] = useState(false);
@@ -36,7 +34,6 @@ export const CardHorizontal: FC<CardHorizontalProps> = ({
             </div>
           ) : (
             <Image
-              className={style.img}
               src={img || ""}
               layout="fill"
               alt={title}
@@ -46,18 +43,10 @@ export const CardHorizontal: FC<CardHorizontalProps> = ({
           )}
           <CardDetailButton active rounded className={style.detailButton} />
         </div>
-        <div className={style.content}>
-          <div>
-            <h3 className={style.title}>{title}</h3>
-            <p className={style.description}>{description}</p>
-          </div>
-          <div className={style.bottom}>
-            <div className={style.location}>
-              <Image src={gpsImgSrc} width={16} height={20} alt="gps" />
-              <span>{location}</span>
-            </div>
-            <CardDetailButton className={style.detailButton} />
-          </div>
+        <div className={style.title}>{title}</div>
+        <div className={style.location}>
+          <Image width={11} height={14} src={gpsSmImgSrc} alt="gps" />
+          <span>{location}</span>
         </div>
       </div>
       <div className={style.shadow} />

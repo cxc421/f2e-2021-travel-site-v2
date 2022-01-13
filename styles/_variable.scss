@@ -11,6 +11,7 @@ $color-black: #0d0b0c;
 $screen-desktop: 1280px;
 $screen-desktop-small: 992px;
 $screen-tablet: 768px;
+$screen-tablet-small: 672px;
 $screen-mobile: 576px;
 $screen-mobile-small: 410px;
 
@@ -64,7 +65,7 @@ $screen-mobile-small: 410px;
   }
 }
 
-@mixin with-loading($bgColor: #0d0b0c) {
+@mixin with-loading-bg($bgColor: #0d0b0c) {
   background: linear-gradient(
       110deg,
       transparent 40%,
@@ -74,4 +75,18 @@ $screen-mobile-small: 410px;
     $bgColor;
   background-size: 200% 100%;
   animation: loading 1.5s ease-in-out infinite;
+}
+
+// Text Mixins
+@mixin with-line-clamp($max-line-num) {
+  @if ($max-line-num > 1) {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: $max-line-num;
+    -webkit-box-orient: vertical;
+  } @else {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
