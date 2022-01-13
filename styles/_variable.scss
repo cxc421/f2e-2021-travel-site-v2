@@ -15,6 +15,11 @@ $screen-tablet-small: 672px;
 $screen-mobile: 576px;
 $screen-mobile-small: 410px;
 
+// Z Index
+$z-index-selecbox-list: 3;
+$z-index-header: 2;
+$z-index-card-button: 1;
+
 // Color Mixins
 @mixin bg-color {
   &.green {

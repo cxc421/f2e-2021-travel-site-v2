@@ -58,7 +58,7 @@
   border-radius: 6px;
   overflow: auto;
   background: $color-white;
-  z-index: 10;
+  z-index: $z-index-selecbox-list;
 
   .option[data-selected="true"] {
     background: $color-red;
