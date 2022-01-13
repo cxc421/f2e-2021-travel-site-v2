@@ -41,8 +41,8 @@ export type ScenicSpot = {
   Remarks: string;
   Keyword: string;
   City?: string;
-  SrcUpdateTime: "2022-01-13T06:16:36.669Z";
-  UpdateTime: "2022-01-13T06:16:36.669Z";
+  SrcUpdateTime: string;
+  UpdateTime: string;
 };
 
 export type ScenicSpotFilter = {
