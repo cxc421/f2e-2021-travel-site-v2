@@ -1,18 +1,18 @@
 import Image from "next/image";
 import { FC, useState } from "react";
 import cn from "classnames";
-import style from "./card-detail.module.scss";
+import style from "./card-horizontal.module.scss";
 import gpsImgSrc from "./images/gps.png";
 import noImgSrc from "./images/no-img.png";
 
-export interface CardDetailProps {
+export interface CardHorizontalProps {
   img?: string;
   title?: string;
   description?: string;
   location?: string;
 }
 
-export const CardDetail: FC<CardDetailProps> = ({
+export const CardHorizontal: FC<CardHorizontalProps> = ({
   img = "",
   title = "",
   description = "",
