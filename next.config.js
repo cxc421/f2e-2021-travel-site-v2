@@ -16,6 +16,12 @@ module.exports = {
       "www.trimt-nsa.gov.tw",
       "tourism.chcg.gov.tw",
       "www.amazing-pingtung.com",
+      "www.eastcoast-nsa.gov.tw",
+      "www.penghu-nsa.gov.tw",
+      "travel.nantou.gov.tw",
+      "www.matsu-nsa.gov.tw",
+      "www.sunmoonlake.gov.tw",
+      "newtaipei.travel",
     ],
   },
 };

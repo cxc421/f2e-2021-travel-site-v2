@@ -16,7 +16,7 @@ export const CardVertical: FC<CardVerticalProps> = ({
   title = "",
   location = "",
 }) => {
-  const [loadImgFailed, setLoadImgFailed] = useState(false);
+  const [loadImgFailed, setLoadImgFailed] = useState(img.length === 0);
 
   return (
     <div className={style.wrapper}>

@@ -1,5 +1,5 @@
 import { City } from "./../../../constants/cities";
-import { axiosInstance } from "../axiosConfig";
+import { axiosInstance } from "../axios-config";
 import { Coordinate } from "../../types";
 
 export type Activity = {
