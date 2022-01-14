@@ -53,8 +53,9 @@ export const Modal: FC<ModalProps> = ({ children, show, onHide }) => {
     <div
       className={cn(style.container, style[trasnClassName])}
       onTransitionEnd={handleTransitionEnd}
+      onClick={toHide}
     >
-      <div className={style.content}>
+      <div className={style.content} onClick={(e) => e.stopPropagation()}>
         {children}
         <CloseButton
           className={style.closeBtn}
