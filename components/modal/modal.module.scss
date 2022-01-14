@@ -18,6 +18,7 @@
     opacity: 1;
     .content {
       transform: translate(0, 0);
+      transition: transform 0.25s ease-out;
     }
   }
 
@@ -25,6 +26,7 @@
     opacity: 0;
     .content {
       transform: translate(0, -10%);
+      transition: transform 0.15s ease-out;
     }
   }
 
@@ -46,7 +48,6 @@
   margin-left: -339px;
   background-color: white;
   max-height: calc(100% - 73px * 2);
-  transition: transform 0.25s ease-out;
 
   @media (max-width: $screen-desktop-small) {
     width: 608px;
