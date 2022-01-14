@@ -3,7 +3,7 @@ import Image from "next/image";
 import style from "./card-vertical.module.scss";
 import noImgSrc from "./images/no-img.png";
 import gpsSmImgSrc from "./images/gps-sm.png";
-import { CardDetailButton } from "./card-detail-button";
+import { CardButton } from "./card-button";
 
 export interface CardVerticalProps {
   img?: string;
@@ -43,9 +43,9 @@ export const CardVertical: FC<CardVerticalProps> = ({
               onError={() => setLoadImgFailed(true)}
             />
           )}
-          <CardDetailButton active rounded className={style.detailButton}>
+          <CardButton active rounded className={style.detailButton}>
             {imageButtonText}
-          </CardDetailButton>
+          </CardButton>
         </div>
         <div className={style.title}>{title}</div>
         <div className={style.location}>

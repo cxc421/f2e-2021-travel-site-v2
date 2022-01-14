@@ -3,7 +3,7 @@ import { FC, useState } from "react";
 import style from "./card-horizontal.module.scss";
 import gpsImgSrc from "./images/gps.png";
 import noImgSrc from "./images/no-img.png";
-import { CardDetailButton } from "./card-detail-button";
+import { CardButton } from "./card-button";
 
 export interface CardHorizontalProps {
   img?: string;
@@ -48,9 +48,9 @@ export const CardHorizontal: FC<CardHorizontalProps> = ({
               onError={() => setLoadImgFailed(true)}
             />
           )}
-          <CardDetailButton active rounded className={style.detailButton}>
+          <CardButton active rounded className={style.detailButton}>
             {imageButtonText}
-          </CardDetailButton>
+          </CardButton>
         </div>
         <div className={style.content}>
           <div>
@@ -62,7 +62,7 @@ export const CardHorizontal: FC<CardHorizontalProps> = ({
               <Image src={gpsImgSrc} width={16} height={20} alt="gps" />
               <span>{location}</span>
             </div>
-            <CardDetailButton className={style.detailButton} />
+            <CardButton className={style.detailButton} />
           </div>
         </div>
       </div>

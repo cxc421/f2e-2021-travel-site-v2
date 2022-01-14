@@ -1,14 +1,14 @@
 import { FC } from "react";
 import cn from "classnames";
-import style from "./card-detail-button.module.scss";
+import style from "./card-button.module.scss";
 
-export interface CardDetailButtonProps {
+export interface CardButtonProps {
   className?: string;
   active?: boolean;
   rounded?: boolean;
 }
 
-export const CardDetailButton: FC<CardDetailButtonProps> = ({
+export const CardButton: FC<CardButtonProps> = ({
   children,
   className,
   active,
