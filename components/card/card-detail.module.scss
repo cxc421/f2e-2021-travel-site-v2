@@ -1,0 +1,41 @@
+@use "../../styles/variable" as *;
+
+.container {
+  background-color: $color-white;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  max-height: 100%;
+  gap: 22px;
+}
+
+.imgArea {
+  position: relative;
+  flex-basis: 460px;
+
+  @include with-loading-bg(lighten($color-gray, 20%));
+}
+
+.buttonRow {
+  flex-basis: 32px;
+  flex-shrink: 0;
+  background-color: $color-gray;
+}
+
+.title {
+  flex-basis: 26px;
+  flex-shrink: 0;
+  background-color: $color-gray;
+}
+
+.description {
+  flex-basis: 63px;
+  flex-shrink: 0;
+  background-color: $color-gray;
+}
+
+.infoArea {
+  flex-basis: 68px;
+  flex-shrink: 0;
+  background-color: $color-gray;
+}
