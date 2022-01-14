@@ -3,28 +3,28 @@
 .container {
   position: fixed;
   width: 100%;
-  height: 104px;
+  height: $header-desktop-height;
   background-color: $color-white;
   z-index: $z-index-header;
 
   @media (max-width: $screen-tablet) {
-    height: 84px;
+    height: $header-tablet-height;
   }
 
   @media (max-width: $screen-mobile) {
-    height: 191px;
+    height: $header-mobile-height;
   }
 }
 
 .placeHolder {
-  height: 104px;
+  height: $header-desktop-height;
 
   @media (max-width: $screen-tablet) {
-    height: 84px;
+    height: $header-tablet-height;
   }
 
   @media (max-width: $screen-mobile) {
-    height: 191px;
+    height: $header-mobile-height;
   }
 }
 

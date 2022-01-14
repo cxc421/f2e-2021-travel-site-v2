@@ -15,7 +15,13 @@ $screen-tablet-small: 672px;
 $screen-mobile: 576px;
 $screen-mobile-small: 410px;
 
+// Header Height (used by header & modal)
+$header-desktop-height: 104px;
+$header-tablet-height: 84px;
+$header-mobile-height: 191px;
+
 // Z Index
+$z-index-modal: 999;
 $z-index-selecbox-list: 3;
 $z-index-header: 2;
 $z-index-card-button: 1;

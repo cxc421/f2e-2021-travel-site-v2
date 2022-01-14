@@ -1,0 +1,102 @@
+@use "../../styles/variable" as *;
+
+.container {
+  position: fixed;
+  z-index: $z-index-modal;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: $header-desktop-height;
+  transition: opacity 0.15s linear;
+  overflow: hidden;
+
+  background: rgba(210, 210, 210, 0.75);
+  backdrop-filter: blur(7px);
+
+  &.show {
+    opacity: 1;
+    .content {
+      transform: translate(0, 0);
+    }
+  }
+
+  &.hide {
+    opacity: 0;
+    .content {
+      transform: translate(0, -15%);
+    }
+  }
+
+  @media (max-width: $screen-tablet) {
+    top: $header-tablet-height;
+  }
+
+  @media (max-width: $screen-mobile) {
+    top: $header-mobile-height;
+  }
+}
+
+.content {
+  position: absolute;
+  top: 73px;
+  left: 50%;
+  width: 678px;
+  height: 100%;
+  margin-left: -339px;
+  background-color: white;
+  max-height: calc(100% - 73px * 2);
+  transition: transform 0.25s ease-out;
+
+  @media (max-width: $screen-desktop-small) {
+    width: 608px;
+    margin-left: -304px;
+  }
+
+  @media (max-width: $screen-tablet) {
+    left: 46px;
+    width: calc(100% - 46px * 2);
+    margin-left: 0;
+
+    top: 100px;
+    max-height: calc(100% - 100px * 2);
+  }
+
+  @media (max-width: $screen-mobile) {
+    left: 32px;
+    width: calc(100% - 32px * 2);
+
+    top: 80px;
+    max-height: calc(100% - 80px * 2);
+  }
+}
+
+.closeBtn {
+  position: absolute;
+  top: 0;
+  right: -12px;
+  transform: translateX(100%);
+
+  &:active {
+    transform: translateX(100%);
+  }
+
+  @media (max-width: $screen-tablet) {
+    right: 0;
+    top: -12px;
+    transform: translateY(-100%);
+
+    &:active {
+      transform: translateY(-100%);
+    }
+  }
+
+  @media (max-width: $screen-mobile) {
+    transform-origin: right center;
+    transform: scale(0.88) translateY(-100%);
+
+    &:active {
+      transform: scale(0.88) translateY(-100%);
+    }
+  }
+}
