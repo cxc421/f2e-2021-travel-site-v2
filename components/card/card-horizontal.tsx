@@ -10,6 +10,8 @@ export interface CardHorizontalProps {
   title?: string;
   description?: string;
   location?: string;
+  onClick?: () => void;
+  imageButtonText?: string;
 }
 
 export const CardHorizontal: FC<CardHorizontalProps> = ({
@@ -17,12 +19,14 @@ export const CardHorizontal: FC<CardHorizontalProps> = ({
   title = "",
   description = "",
   location = "",
+  onClick,
+  imageButtonText,
 }) => {
   const [loadImgFailed, setLoadImgFailed] = useState(img.length === 0);
 
   return (
     <div className={style.wrapper}>
-      <div className={style.container}>
+      <div className={style.container} onClick={onClick}>
         <div className={style.imgArea}>
           {loadImgFailed ? (
             <div className={style.errorImgWrapper}>
@@ -44,7 +48,9 @@ export const CardHorizontal: FC<CardHorizontalProps> = ({
               onError={() => setLoadImgFailed(true)}
             />
           )}
-          <CardDetailButton active rounded className={style.detailButton} />
+          <CardDetailButton active rounded className={style.detailButton}>
+            {imageButtonText}
+          </CardDetailButton>
         </div>
         <div className={style.content}>
           <div>

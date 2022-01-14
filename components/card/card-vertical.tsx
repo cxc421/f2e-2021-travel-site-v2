@@ -9,12 +9,14 @@ export interface CardVerticalProps {
   img?: string;
   title?: string;
   location?: string;
+  imageButtonText?: string;
 }
 
 export const CardVertical: FC<CardVerticalProps> = ({
   img = "",
   title = "",
   location = "",
+  imageButtonText,
 }) => {
   const [loadImgFailed, setLoadImgFailed] = useState(img.length === 0);
 
@@ -41,7 +43,9 @@ export const CardVertical: FC<CardVerticalProps> = ({
               onError={() => setLoadImgFailed(true)}
             />
           )}
-          <CardDetailButton active rounded className={style.detailButton} />
+          <CardDetailButton active rounded className={style.detailButton}>
+            {imageButtonText}
+          </CardDetailButton>
         </div>
         <div className={style.title}>{title}</div>
         <div className={style.location}>
