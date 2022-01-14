@@ -271,6 +271,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
               title={activity.ActivityName}
               description={activity.Description}
               location={activity.Location}
+              imageButtonText="活動詳情"
             />
           ))}
         </MainCardHorizontalArea>
@@ -317,6 +318,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
               img={restaurant.Picture?.PictureUrl1}
               title={restaurant.RestaurantName}
               location={restaurant.City}
+              imageButtonText="餐飲詳情"
             />
           ))}
         </MainCardVerticalArea>
