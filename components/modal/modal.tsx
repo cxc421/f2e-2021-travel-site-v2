@@ -32,7 +32,8 @@ export const Modal: FC<ModalProps> = ({ children, show, onHide }) => {
 
   useEffect(() => {
     if (modalRoot && show) {
-      setTransClassName("show");
+      const key = setTimeout(() => setTransClassName("show"), 1);
+      return () => clearTimeout(key);
     }
   }, [modalRoot, show]);
 
@@ -57,12 +58,14 @@ export const Modal: FC<ModalProps> = ({ children, show, onHide }) => {
     >
       <div className={style.content} onClick={(e) => e.stopPropagation()}>
         {children}
-        <CloseButton
-          className={style.closeBtn}
-          size={45}
-          onClick={toHide}
-          title="Close"
-        />
+        <div className={style.closeBtnWrapper}>
+          <CloseButton
+            className={style.closeBtn}
+            size="100%"
+            onClick={toHide}
+            title="Close"
+          />
+        </div>
       </div>
     </div>,
     modalRoot

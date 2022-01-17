@@ -4,7 +4,7 @@ import { Button } from "./button";
 import closeImgSrc from "./images/close.png";
 
 export interface CloseButtonProps {
-  size: number;
+  size: number | string;
   className?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;
   title?: string;

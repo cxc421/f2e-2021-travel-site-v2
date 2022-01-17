@@ -3,7 +3,7 @@ import cn from "classnames";
 import style from "./button.module.scss";
 
 export interface ButtonProps {
-  size: number;
+  size: number | string;
   bgColor: "red" | "yellow" | "green" | "black" | "white";
   className?: string;
   onClick?: MouseEventHandler<HTMLDivElement>;

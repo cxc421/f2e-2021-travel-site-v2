@@ -41,13 +41,13 @@
 
 .content {
   position: absolute;
-  top: 73px;
+  top: 65px;
   left: 50%;
   width: 678px;
   height: 100%;
   margin-left: -339px;
   background-color: white;
-  max-height: calc(100% - 73px * 2);
+  max-height: calc(100% - 65px * 2);
 
   @media (max-width: $screen-desktop-small) {
     width: 608px;
@@ -59,45 +59,48 @@
     width: calc(100% - 46px * 2);
     margin-left: 0;
 
-    top: 100px;
-    max-height: calc(100% - 100px * 2);
+    top: 85px;
+    max-height: calc(100% - 85px * 2);
   }
 
   @media (max-width: $screen-mobile) {
     left: 32px;
     width: calc(100% - 32px * 2);
 
-    top: 80px;
-    max-height: calc(100% - 80px * 2);
+    top: 60px;
+    max-height: calc(100% - 60px * 2);
   }
 }
 
-.closeBtn {
+.closeBtnWrapper {
   position: absolute;
   top: 0;
   right: -12px;
   transform: translateX(100%);
-
-  &:active {
-    transform: translateX(100%);
-  }
+  width: 45px;
+  height: 45px;
 
   @media (max-width: $screen-tablet) {
     right: 0;
     top: -12px;
     transform: translateY(-100%);
-
-    &:active {
-      transform: translateY(-100%);
-    }
+    width: 40px;
+    height: 40px;
   }
 
   @media (max-width: $screen-mobile) {
-    transform-origin: right center;
-    transform: scale(0.88) translateY(-100%);
+    right: 0;
+    top: 0;
+    transform: translate(50%, -50%);
+    width: 40px;
+    height: 40px;
 
-    &:active {
-      transform: scale(0.88) translateY(-100%);
+    .closeBtn {
+      border-radius: 50%;
+
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
