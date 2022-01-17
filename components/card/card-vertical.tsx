@@ -10,6 +10,7 @@ export interface CardVerticalProps {
   title?: string;
   location?: string;
   imageButtonText?: string;
+  onClick?: () => void;
 }
 
 export const CardVertical: FC<CardVerticalProps> = ({
@@ -17,12 +18,13 @@ export const CardVertical: FC<CardVerticalProps> = ({
   title = "",
   location = "",
   imageButtonText,
+  onClick,
 }) => {
   const [loadImgFailed, setLoadImgFailed] = useState(img.length === 0);
 
   return (
     <div className={style.wrapper}>
-      <div className={style.container}>
+      <div className={style.container} onClick={onClick}>
         <div className={style.imgArea}>
           {loadImgFailed ? (
             <div className={style.errorImgWrapper}>
