@@ -31,6 +31,9 @@ import { MainCardVerticalArea } from "../components/main-section/main-card-verti
 import { CardVertical } from "../components/card/card-vertical";
 import { getRestaurant, Restaurant } from "../libs/tdxApi/apis/restaurant";
 import { Coordinate } from "../libs/types";
+import { Modal } from "../components/modal/modal";
+import { CardDetail, CardDetailProps } from "../components/card/card-detail";
+import { cardDetailTestData } from "../components/card/card-detail-test-data";
 
 /**
  *  Server Side Code
@@ -212,6 +215,9 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryAttractions>("");
   const [city, setCity] = useState<City>("");
+  const [detailCardData, setDetailCardData] = useState<CardDetailProps | null>(
+    null
+  );
 
   const context: AttractionContext = {
     city,
@@ -223,11 +229,10 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   };
 
   // console.log(defaultActivities);
+  // console.log(defaultRestaurants);
   if (serverErrors?.length) {
     serverErrors.forEach((errorMsg) => console.error(errorMsg));
   }
-
-  console.log(defaultRestaurants);
 
   return (
     <AttractionCtx.Provider value={context}>
@@ -240,30 +245,16 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         </HorizontalScroll>
         <MainTitle type="triangle">熱門活動</MainTitle>
         <MainCardHorizontalArea>
-          {/* <CardHorizontal
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            description="竹子湖海拔670公尺，位居大屯山、七星山與小觀音山間的谷地。曾是火山堰塞湖，湖水退去後留下肥沃的土壤，形成典型的農村聚落，近年結合在地花卉等產業與自然、人文資源發展休閒農業，成為臺北市第三個休閒農業區。「竹子湖」自民國58年（西元1969年）從日本引進白色海芋，每一株花的花期大約是8~10天，竹子湖受陽明山國家公園管制範圍的保護，擁有豐沛潔淨的山泉水源，經多年的努力推廣，目前竹子湖白色海芋年產量占全臺海芋產量百分之80~90，每年3~5月盛開時的浪漫氣氛，加上陽明山的自然風光，都吸引國內外眾多遊客前往竹子湖海芋田賞海芋、採海芋，品嚐在地美食佳餚。竹子湖海芋季迄今已辦理19年，同時思考多元發展，自民國101年（西元2012年）開始推動繡球花產業，民國106年（西元2017年）起辦理繡球花推廣活動，民國109年（西元2020年）首度將竹子湖海芋季與繡球花季串聯舉辦。活動以海芋季及繡球花季為主軸，辦理開幕式、花藝設計展、採海芋花體驗、假日免費生態人文導覽解說、平日付費生態農園體驗及花田有約等活動，近5年海芋季及繡球花季期間參與人次平均達50萬以上。"
-            location="臺北市 北投區"
-          />
-          <CardHorizontal
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            description="竹子湖海拔670公尺，位居大屯山、七星山與小觀音山間的谷地。"
-            location="臺北市 北投區"
-          />
-          <CardHorizontal
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            description="竹子湖海拔670公尺，位居大屯山、七星山與小觀音山間的谷地。曾是火山堰塞湖，湖水退去後留下肥沃的土壤，形成典型的農村聚落，近年結合在地花卉等產業與自然、人文資源發展休閒農業，成為臺北市第三個休閒農業區。"
-            location="臺北市 北投區"
-          />
-          <CardHorizontal
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            description="竹子湖海拔670公尺，位居大屯山、七星山與小觀音山間的谷地。曾是火山堰塞湖，湖水退去後留下肥沃的土壤，形成典型的農村聚落，近年結合在地花卉等產業與自然、人文資源發展休閒農業，成為臺北市第三個休閒農業區。「竹子湖」自民國58年（西元1969年）從日本引進白色海芋，每一株花的花期大約是8~10天，竹子湖受陽明山國家公園管制範圍的保護，擁有豐沛潔淨的山泉水源，經多年的努力推廣，目前竹子湖白色海芋年產量占全臺海芋產量百分之80~90，每年3~5月盛開時的浪漫氣氛，加上陽明山的自然風光，都吸引國內外眾多遊客前往竹子湖海芋田賞海芋、採海芋，品嚐在地美食佳餚。竹子湖海芋季迄今已辦理19年，同時思考多元發展，自民國101年（西元2012年）開始推動繡球花產業，民國106年（西元2017年）起辦理繡球花推廣活動，民國109年（西元2020年）首度將竹子湖海芋季與繡球花季串聯舉辦。"
-            location="臺北市 北投區"
-          /> */}
+          {/* {Array.from({ length: 4 }).map((_, idx) => (
+            <CardHorizontal
+              key={idx}
+              img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+              title="合歡山國際暗空公園-星空清境跨年活動"
+              description="竹子湖海拔670公尺，位居大屯山、七星山與小觀音山間的谷地。曾是火山堰塞湖，湖水退去後留下肥沃的土壤，形成典型的農村聚落，近年結合在地花卉等產業與自然、人文資源發展休閒農業，成為臺北市第三個休閒農業區。"
+              location="臺北市 北投區"
+              onClick={() => setDetailCardData(cardDetailTestData)}
+            />
+          ))} */}
           {defaultActivities.map((activity) => (
             <CardHorizontal
               key={activity.ActivityID}
@@ -277,41 +268,15 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         </MainCardHorizontalArea>
         <MainTitle type="rectangle">熱門餐飲</MainTitle>
         <MainCardVerticalArea>
-          {/* <CardVertical
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            location="臺北市 北投區"
-          />
-          <CardVertical
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            location="臺北市 北投區"
-          />
-          <CardVertical
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            location="臺北市 北投區"
-          />
-          <CardVertical
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            location="臺北市 北投區"
-          />
-          <CardVertical
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            location="臺北市 北投區"
-          />
-          <CardVertical
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            location="臺北市 北投區"
-          />
-          <CardVertical
-            img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-            title="合歡山國際暗空公園-星空清境跨年活動"
-            location="臺北市 北投區"
-          /> */}
+          {/* {Array.from({ length: 10 }).map((_, index) => (
+            <CardVertical
+              key={index}
+              img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+              title="合歡山國際暗空公園-星空清境跨年活動"
+              location="臺北市 北投區"
+              onClick={() => setDetailCardData(cardDetailTestData)}
+            />
+          ))} */}
           {defaultRestaurants.map((restaurant) => (
             <CardVertical
               key={restaurant.RestaurantID}
@@ -324,6 +289,12 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         </MainCardVerticalArea>
       </MainSection>
       <Footer />
+      <Modal
+        show={detailCardData !== null}
+        onHide={() => setDetailCardData(null)}
+      >
+        {detailCardData && <CardDetail {...detailCardData} />}
+      </Modal>
     </AttractionCtx.Provider>
   );
 };
