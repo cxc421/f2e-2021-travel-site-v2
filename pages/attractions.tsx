@@ -11,6 +11,7 @@ import {
   createContext,
   Dispatch,
   SetStateAction,
+  useCallback,
   useContext,
   useState,
 } from "react";
@@ -233,14 +234,11 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   useLogOnce(defaultRestaurants);
   useLogOnce(
     serverErrors,
-    () => Array.isArray(serverErrors) && serverErrors.length > 0
+    useCallback(
+      () => Array.isArray(serverErrors) && serverErrors.length > 0,
+      [serverErrors]
+    )
   );
-
-  // console.log(defaultActivities);
-  // console.log(defaultRestaurants);
-  // if (serverErrors?.length) {
-  //   serverErrors.forEach((errorMsg) => console.error(errorMsg));
-  // }
 
   const handleClickActivityCard = (activity: Activity) => {
     setDetailCardData({
