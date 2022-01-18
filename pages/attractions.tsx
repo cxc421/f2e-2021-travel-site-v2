@@ -34,6 +34,7 @@ import { Coordinate } from "../libs/types";
 import { Modal } from "../components/modal/modal";
 import { CardDetail, CardDetailProps } from "../components/card/card-detail";
 import { cardDetailTestData } from "../components/card/card-detail-test-data";
+import useLogOnce from "../utils/useLogOnce";
 
 /**
  *  Server Side Code
@@ -228,11 +229,74 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     setSearchText,
   };
 
+  useLogOnce(defaultActivities);
+  useLogOnce(defaultRestaurants);
+  useLogOnce(
+    serverErrors,
+    () => Array.isArray(serverErrors) && serverErrors.length > 0
+  );
+
   // console.log(defaultActivities);
   // console.log(defaultRestaurants);
-  if (serverErrors?.length) {
-    serverErrors.forEach((errorMsg) => console.error(errorMsg));
-  }
+  // if (serverErrors?.length) {
+  //   serverErrors.forEach((errorMsg) => console.error(errorMsg));
+  // }
+
+  const handleClickActivityCard = (activity: Activity) => {
+    setDetailCardData({
+      title: activity.ActivityName,
+      images: [
+        {
+          url: activity.Picture.PictureUrl1 || "",
+          description: activity.Picture.PictureDescription1 || "",
+        },
+        {
+          url: activity.Picture.PictureUrl2 || "",
+          description: activity.Picture.PictureDescription1 || "",
+        },
+        {
+          url: activity.Picture.PictureUrl3 || "",
+          description: activity.Picture.PictureDescription1 || "",
+        },
+      ].filter((img) => img.url.length > 0),
+      description: activity.Description,
+      time:
+        activity.StartTime && activity.EndTime
+          ? `${new Date(activity.StartTime).toLocaleDateString()} - ${new Date(
+              activity.EndTime
+            ).toLocaleDateString()}`
+          : undefined,
+      phone: activity.Phone,
+      price: activity.Charge || "免費",
+      address: activity.Address,
+      websiteUrl: activity.WebsiteUrl,
+    });
+  };
+
+  const handleClickRestauratnCard = (restaurant: Restaurant) => {
+    setDetailCardData({
+      title: restaurant.RestaurantName,
+      images: [
+        {
+          url: restaurant.Picture.PictureUrl1 || "",
+          description: restaurant.Picture.PictureDescription1 || "",
+        },
+        {
+          url: restaurant.Picture.PictureUrl2 || "",
+          description: restaurant.Picture.PictureDescription2 || "",
+        },
+        {
+          url: restaurant.Picture.PictureUrl3 || "",
+          description: restaurant.Picture.PictureDescription3 || "",
+        },
+      ].filter((img) => img.url.length > 0),
+      description: restaurant.Description,
+      time: restaurant.OpenTime,
+      phone: restaurant.Phone,
+      address: restaurant.Address,
+      websiteUrl: restaurant.WebsiteUrl,
+    });
+  };
 
   return (
     <AttractionCtx.Provider value={context}>
@@ -263,6 +327,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
               description={activity.Description}
               location={activity.Location}
               imageButtonText="活動詳情"
+              onClick={() => handleClickActivityCard(activity)}
             />
           ))}
         </MainCardHorizontalArea>
@@ -284,6 +349,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
               title={restaurant.RestaurantName}
               location={restaurant.City}
               imageButtonText="餐飲詳情"
+              onClick={() => handleClickRestauratnCard(restaurant)}
             />
           ))}
         </MainCardVerticalArea>

@@ -6,15 +6,15 @@ export type Activity = {
   ActivityID: string;
   ActivityName: string;
   Description: string;
-  Particpation: string;
+  // Particpation: string;
   Location: string;
   Address: string;
   Phone: string;
-  Organizer: string;
+  // Organizer: string;
   StartTime: string;
   EndTime: string;
-  Cycle: string;
-  NonCycle: string;
+  // Cycle: string;
+  // NonCycle: string;
   WebsiteUrl: string;
   Picture: {
     PictureUrl1?: string;
@@ -29,14 +29,14 @@ export type Activity = {
     PositionLat: number;
     GeoHash: string;
   };
-  Class1: string;
-  Class2: string;
-  MapUrl: string;
-  TravelInfo: string;
-  ParkingInfo: string;
+  // Class1: string;
+  // Class2: string;
+  // MapUrl: string;
+  // TravelInfo: string;
+  // ParkingInfo: string;
   Charge?: string;
-  Remarks: string;
-  City: string;
+  // Remarks: string;
+  City?: string;
   SrcUpdateTime: string;
   UpdateTime: string;
 };
@@ -61,6 +61,8 @@ export async function getActivity(filter: ActivityFilter): Promise<Activity[]> {
     params: {
       $top: filter.$top,
       $skip: filter.$skip,
+      $select:
+        "ActivityID,ActivityName,Description,Location,Address,Phone,StartTime,EndTime,WebsiteUrl,Picture,Position,Charge,City",
       $format: "JSON",
       $orderby: "EndTime",
       $filter: `date(EndTime) ge ${filter.curDate.toISOString()} ${

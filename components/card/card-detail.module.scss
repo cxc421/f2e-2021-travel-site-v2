@@ -88,6 +88,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 18px;
+  align-items: center;
 }
 
 .title {
@@ -103,7 +104,9 @@
   font-size: 14px;
   line-height: 21px;
 
-  @include with-line-clamp(5);
+  // @include with-line-clamp(5);
+  max-height: 126px; // 21 * 6
+  overflow: auto;
 }
 
 .infoArea {
@@ -121,7 +124,7 @@
 
 .item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 
   .itemText {
     margin-left: 10px;

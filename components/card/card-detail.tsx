@@ -48,10 +48,23 @@ export const CardDetail: FC<CardDetailProps> = ({
   phone,
   websiteUrl,
 }) => {
+  const [loadImgFailed, setLoadImgFailed] = useState(false);
   const [imageIdx, setImageIdx] = useState(() => (images.length > 0 ? 0 : -1));
-  const imgSrc = imageIdx >= 0 ? images[imageIdx].url : noImgSrc;
-  const imgDesciprion =
-    imageIdx >= 0 ? images[imageIdx].description : "No Image";
+  const validImgIdx = !loadImgFailed && imageIdx >= 0;
+  const imgSrc = validImgIdx ? images[imageIdx].url : noImgSrc;
+  const imgDesciprion = validImgIdx ? images[imageIdx].description : "No Image";
+
+  const toNextImg = () => {
+    const newImgIdx = imageIdx < images.length - 1 ? imageIdx + 1 : 0;
+    setImageIdx(newImgIdx);
+    setLoadImgFailed(false);
+  };
+
+  const toPrevImg = () => {
+    const newImgIdx = imageIdx > 0 ? imageIdx - 1 : images.length - 1;
+    setImageIdx(newImgIdx);
+    setLoadImgFailed(false);
+  };
 
   return (
     <div className={style.wrapper}>
@@ -61,20 +74,44 @@ export const CardDetail: FC<CardDetailProps> = ({
             src={imgSrc}
             layout="fill"
             alt={imgDesciprion}
+            title={imgDesciprion}
             objectFit="cover"
+            onError={() => setLoadImgFailed(true)}
           />
         </div>
-        <div className={style.buttonRow}>
-          <PreviousButton size={32} />
-          <NextButton size={32} />
-        </div>
-        <div className={style.title}>{title}</div>
+        {images.length > 1 && (
+          <div className={style.buttonRow}>
+            <PreviousButton size={32} onClick={toPrevImg} />
+            <span>
+              {imageIdx + 1} / {images.length}
+            </span>
+            <NextButton size={32} onClick={toNextImg} />
+          </div>
+        )}
+        {websiteUrl ? (
+          <a
+            className={style.title}
+            href={websiteUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {title}
+          </a>
+        ) : (
+          <div className={style.title}>{title}</div>
+        )}
         <div className={style.description}>{description}</div>
         <div className={style.infoArea}>
-          <CardDetailItem iconSrc={timeImgSrc}>{time}</CardDetailItem>
-          <CardDetailItem iconSrc={ticketImgSrc}>{price}</CardDetailItem>
-          <CardDetailItem iconSrc={gpsImgSrc}>{address}</CardDetailItem>
-          <CardDetailItem iconSrc={telImgSrc}>{phone}</CardDetailItem>
+          {time && <CardDetailItem iconSrc={timeImgSrc}>{time}</CardDetailItem>}
+          {price && (
+            <CardDetailItem iconSrc={ticketImgSrc}>{price}</CardDetailItem>
+          )}
+          {address && (
+            <CardDetailItem iconSrc={gpsImgSrc}>{address}</CardDetailItem>
+          )}
+          {phone && (
+            <CardDetailItem iconSrc={telImgSrc}>{phone}</CardDetailItem>
+          )}
         </div>
       </div>
       <div className={style.shadow} />

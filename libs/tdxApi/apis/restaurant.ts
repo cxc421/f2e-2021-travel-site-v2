@@ -7,7 +7,7 @@ export type Restaurant = {
   RestaurantName: string;
   Description: string;
   Address: string;
-  ZipCode: string;
+  // ZipCode: string;
   Phone: string;
   OpenTime: string;
   WebsiteUrl: string;
@@ -24,9 +24,9 @@ export type Restaurant = {
     PositionLat: number;
     GeoHash: string;
   };
-  Class: string;
-  MapUrl: string;
-  ParkingInfo: string;
+  // Class: string;
+  // MapUrl: string;
+  // ParkingInfo: string;
   City: string;
   SrcUpdateTime: string;
   UpdateTime: string;
@@ -75,6 +75,8 @@ export async function getRestaurant(
     params: {
       $top: filter.$top,
       $skip: filter.$skip,
+      $select:
+        "RestaurantID,RestaurantName,Description,Address,Phone,OpenTime,WebsiteUrl,Picture,Position,City",
       $format: "JSON",
       $filter: $filter || undefined,
       $orderby: filter.orderById ? "RestaurantID" : undefined,
