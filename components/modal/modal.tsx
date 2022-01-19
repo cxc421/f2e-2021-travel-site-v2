@@ -1,4 +1,10 @@
-import { FC, TransitionEventHandler, useEffect, useState } from "react";
+import {
+  FC,
+  TransitionEventHandler,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import cn from "classnames";
 import style from "./modal.module.scss";
@@ -20,6 +26,15 @@ function useModalRoot() {
   return modalRoot;
 }
 
+function useClickOutside(show: boolean, callback: () => void) {
+  useEffect(() => {
+    if (show) {
+      document.body.addEventListener("click", callback);
+      return () => document.body.removeEventListener("click", callback);
+    }
+  }, [show, callback]);
+}
+
 export interface ModalProps {
   show: boolean;
   onHide: () => void;
@@ -29,6 +44,9 @@ export const Modal: FC<ModalProps> = ({ children, show, onHide }) => {
   const modalRoot = useModalRoot();
   const [trasnClassName, setTransClassName] = useState<"show" | "hide">("hide");
   // const [trasnClassName, setTransClassName] = useState<"show" | "hide">("show");
+  const toHide = useCallback(() => setTransClassName("hide"), []);
+
+  useClickOutside(show, toHide);
 
   useEffect(() => {
     if (modalRoot && show) {
@@ -36,8 +54,6 @@ export const Modal: FC<ModalProps> = ({ children, show, onHide }) => {
       return () => clearTimeout(key);
     }
   }, [modalRoot, show]);
-
-  const toHide = () => setTransClassName("hide");
 
   const handleTransitionEnd: TransitionEventHandler<HTMLDivElement> = (e) => {
     if (trasnClassName === "hide" && e.propertyName === "opacity") {
