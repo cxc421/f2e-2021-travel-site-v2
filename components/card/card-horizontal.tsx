@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { FC, useState } from "react";
+import { FC } from "react";
 import style from "./card-horizontal.module.scss";
 import gpsImgSrc from "./images/gps.png";
-import noImgSrc from "./images/no-img.png";
 import { CardButton } from "./card-button";
+import { CardImage } from "./card-image";
 
 export interface CardHorizontalProps {
   img?: string;
@@ -22,32 +22,17 @@ export const CardHorizontal: FC<CardHorizontalProps> = ({
   onClick,
   imageButtonText,
 }) => {
-  const [loadImgFailed, setLoadImgFailed] = useState(img.length === 0);
-
   return (
     <div className={style.wrapper}>
       <div className={style.container} onClick={onClick}>
         <div className={style.imgArea}>
-          {loadImgFailed ? (
-            <div className={style.errorImgWrapper}>
-              <Image
-                className={style.errorImg}
-                width={67}
-                height={44}
-                src={noImgSrc}
-                alt="No Image"
-              />
-            </div>
-          ) : (
-            <Image
-              className={style.img}
-              src={img || ""}
-              layout="fill"
-              alt={title}
-              objectFit="cover"
-              onError={() => setLoadImgFailed(true)}
-            />
-          )}
+          <CardImage
+            className={style.img}
+            src={img || ""}
+            layout="fill"
+            alt={title}
+            objectFit="cover"
+          />
           <CardButton active rounded className={style.detailButton}>
             {imageButtonText}
           </CardButton>

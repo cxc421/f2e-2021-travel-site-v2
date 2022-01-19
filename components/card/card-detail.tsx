@@ -3,11 +3,12 @@ import { FC, useState } from "react";
 import { NextButton } from "../button/next-button";
 import { PreviousButton } from "../button/previous-button";
 import style from "./card-detail.module.scss";
-import noImgSrc from "./images/no-img.png";
 import gpsImgSrc from "./images/gps-lg.png";
 import timeImgSrc from "./images/time.png";
 import ticketImgSrc from "./images/ticket.png";
 import telImgSrc from "./images/tel.png";
+import { HorizontalWindow } from "../horizontal-window/horizontal-window";
+import { CardImage } from "./card-image";
 
 interface CardDetailItemProps {
   iconSrc: StaticImageData;
@@ -48,42 +49,38 @@ export const CardDetail: FC<CardDetailProps> = ({
   phone,
   websiteUrl,
 }) => {
-  const [loadImgFailed, setLoadImgFailed] = useState(false);
-  const [imageIdx, setImageIdx] = useState(() => (images.length > 0 ? 0 : -1));
-  const validImgIdx = !loadImgFailed && imageIdx >= 0;
-  const imgSrc = validImgIdx ? images[imageIdx].url : noImgSrc;
-  const imgDesciprion = validImgIdx ? images[imageIdx].description : "No Image";
+  const [imageShowIdx, setImageShowIdx] = useState(0);
 
   const toNextImg = () => {
-    const newImgIdx = imageIdx < images.length - 1 ? imageIdx + 1 : 0;
-    setImageIdx(newImgIdx);
-    setLoadImgFailed(false);
+    setImageShowIdx((idx) => (idx < images.length - 1 ? idx + 1 : idx));
   };
 
   const toPrevImg = () => {
-    const newImgIdx = imageIdx > 0 ? imageIdx - 1 : images.length - 1;
-    setImageIdx(newImgIdx);
-    setLoadImgFailed(false);
+    setImageShowIdx((idx) => (idx > 0 ? idx - 1 : idx));
   };
 
   return (
     <div className={style.wrapper}>
       <div className={style.container}>
         <div className={style.imgArea}>
-          <Image
-            src={imgSrc}
-            layout="fill"
-            alt={imgDesciprion}
-            title={imgDesciprion}
-            objectFit="cover"
-            onError={() => setLoadImgFailed(true)}
-          />
+          <HorizontalWindow showWindowIdx={imageShowIdx}>
+            {images.map((img, idx) => (
+              <CardImage
+                key={idx}
+                src={img.url}
+                layout="fill"
+                alt={img.description}
+                title={img.description}
+                objectFit="cover"
+              />
+            ))}
+          </HorizontalWindow>
         </div>
         {images.length > 1 && (
           <div className={style.buttonRow}>
             <PreviousButton size={32} onClick={toPrevImg} />
             <span>
-              {imageIdx + 1} / {images.length}
+              {imageShowIdx + 1} / {images.length}
             </span>
             <NextButton size={32} onClick={toNextImg} />
           </div>

@@ -101,19 +101,6 @@
   }
 }
 
-.errorImgWrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .errorImg {
-    max-width: 80%;
-  }
-}
-
 .content {
   flex-grow: 1;
   flex-shrink: 1;
