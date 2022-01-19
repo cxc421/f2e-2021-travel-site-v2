@@ -107,6 +107,10 @@
   // @include with-line-clamp(5);
   max-height: 126px; // 21 * 6
   overflow: auto;
+
+  @media (max-width: $screen-mobile) {
+    max-height: 63px; // 21 * 3
+  }
 }
 
 .infoArea {
