@@ -1,7 +1,15 @@
 @use "../../styles/variable" as *;
 
+.wraper {
+  position: sticky;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: $z-index-header;
+}
+
 .container {
-  position: fixed;
+  position: relative;
   width: 100%;
   height: $header-desktop-height;
   background-color: $color-white;
@@ -16,20 +24,8 @@
   }
 }
 
-.placeHolder {
-  height: $header-desktop-height;
-
-  @media (max-width: $screen-tablet) {
-    height: $header-tablet-height;
-  }
-
-  @media (max-width: $screen-mobile) {
-    height: $header-mobile-height;
-  }
-}
-
 .shadow {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;

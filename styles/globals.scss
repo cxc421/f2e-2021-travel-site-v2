@@ -11,6 +11,16 @@ body {
   font-family: "Noto Sans TC", "Roboto";
 }
 
+body,
+html {
+  height: 100%;
+}
+
+#__next {
+  height: 100%;
+  overflow: auto;
+}
+
 ul {
   list-style: none;
   margin: 0;

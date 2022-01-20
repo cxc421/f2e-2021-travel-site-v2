@@ -72,15 +72,17 @@ export const Modal: FC<ModalProps> = ({ children, show, onHide }) => {
       onTransitionEnd={handleTransitionEnd}
       onClick={toHide}
     >
-      <div className={style.content} onClick={(e) => e.stopPropagation()}>
-        {children}
-        <div className={style.closeBtnWrapper}>
-          <CloseButton
-            className={style.closeBtn}
-            size="100%"
-            onClick={toHide}
-            title="Close"
-          />
+      <div className={style.contentWrapper}>
+        <div className={style.content} onClick={(e) => e.stopPropagation()}>
+          {children}
+          <div className={style.closeBtnWrapper}>
+            <CloseButton
+              className={style.closeBtn}
+              size="100%"
+              onClick={toHide}
+              title="Close"
+            />
+          </div>
         </div>
       </div>
     </div>,

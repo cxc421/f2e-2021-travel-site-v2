@@ -88,7 +88,7 @@ export interface HeaderProps {
 
 export const Header: FC<HeaderProps> = ({ mobileFilterContent }) => {
   return (
-    <>
+    <div className={style.wraper}>
       <header className={style.container}>
         <Logo />
         <NavLinkList />
@@ -97,7 +97,6 @@ export const Header: FC<HeaderProps> = ({ mobileFilterContent }) => {
         <MobileFilterArea content={mobileFilterContent} />
       </header>
       <div className={style.shadow} />
-      <div className={style.placeHolder} />
-    </>
+    </div>
   );
 };
