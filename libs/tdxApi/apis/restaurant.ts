@@ -60,16 +60,16 @@ export async function getRestaurant(
       : undefined;
 
   const $filter = [
-    filter.needCity ? `City ne null` : "",
+    filter.needCity ? `City ne null` : undefined,
     filter.needImage
       ? `Picture/PictureUrl1 ne null and Picture/PictureDescription1 ne null`
-      : "",
-    keywordFilter ? `(${keywordFilter})` : "",
+      : undefined,
+    keywordFilter ? `(${keywordFilter})` : undefined,
   ]
-    .filter((expression) => expression.length)
+    .filter((expression) => typeof expression === "string")
     .join(" and ");
 
-  console.log({ $filter });
+  // console.log({ $filter });
 
   const response = await axiosInstance.get(url, {
     params: {
