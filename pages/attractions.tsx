@@ -43,72 +43,51 @@ import useLogOnce from "../utils/useLogOnce";
 interface AttractionsPageProps {
   defaultActivities: Activity[];
   defaultRestaurants: Restaurant[];
-  serverErrors?: string[];
+  defaultDataUpdateTime: string;
 }
 
 export const getStaticProps: GetStaticProps<
   AttractionsPageProps
 > = async () => {
-  let defaultActivities: Activity[] = [];
-  let defaultRestaurants: Restaurant[] = [];
-  let serverErrors: string[] = [];
+  // Default Activities
+  const defaultActivities = await getActivity({
+    $top: 4,
+    city: "",
+    curDate: new Date(),
+    needImage: true,
+    needLocation: true,
+  });
 
-  const setServerErrors = (error: any) => {
-    if (error.response) {
-      const { data, status, headers } = error.response;
-      serverErrors.push(JSON.stringify({ data, status, headers }));
-    } else if (error.request) {
-      serverErrors.push(error.request);
-    } else {
-      serverErrors.push(error.message);
-    }
+  // Default Restaurant
+  const TaipeiCoordinate: Coordinate = {
+    latitude: 25.02,
+    longitude: 121.32,
   };
 
-  try {
-    defaultActivities = await getActivity({
-      $top: 4,
-      city: "",
-      curDate: new Date(),
-      needImage: true,
-      needLocation: true,
-    });
-  } catch (error: any) {
-    setServerErrors(error);
-  }
+  const TaichugCoordinate: Coordinate = {
+    latitude: 24.1038,
+    longitude: 120.3848,
+  };
 
-  try {
-    const TaipeiCoordinate: Coordinate = {
-      latitude: 25.02,
-      longitude: 121.32,
-    };
+  const KaoshungCoordinate: Coordinate = {
+    latitude: 22.5991,
+    longitude: 120.32,
+  };
 
-    const TaichugCoordinate: Coordinate = {
-      latitude: 24.1038,
-      longitude: 120.3848,
-    };
-
-    const KaoshungCoordinate: Coordinate = {
-      latitude: 22.5991,
-      longitude: 120.32,
-    };
-
-    defaultRestaurants = await getRestaurant({
-      $top: 10,
-      city: "",
-      needImage: true,
-      needCity: true,
-      keywords: "好吃 美味 用餐",
-      position: TaipeiCoordinate,
-    });
-  } catch (error: any) {
-    setServerErrors(error);
-  }
+  const defaultRestaurants = await getRestaurant({
+    $top: 10,
+    city: "",
+    needImage: true,
+    needCity: true,
+    keywords: "好吃 美味 用餐",
+    position: TaipeiCoordinate,
+  });
 
   return {
     props: {
       defaultActivities,
       defaultRestaurants,
-      serverErrors,
+      defaultDataUpdateTime: new Date().toUTCString(),
     },
     revalidate: 60, // 60 sec
   };
@@ -212,7 +191,7 @@ const TabletFiler = () => {
 const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,
   defaultRestaurants,
-  serverErrors,
+  defaultDataUpdateTime,
 }) => {
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryAttractions>("");
@@ -233,10 +212,14 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   useLogOnce(defaultActivities);
   useLogOnce(defaultRestaurants);
   useLogOnce(
-    serverErrors,
+    defaultDataUpdateTime,
+    undefined,
     useCallback(
-      () => Array.isArray(serverErrors) && serverErrors.length > 0,
-      [serverErrors]
+      (dateString: string) =>
+        console.log(
+          `Default data update time: ${new Date(dateString).toLocaleString()}`
+        ),
+      []
     )
   );
 
