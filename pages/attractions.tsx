@@ -36,6 +36,7 @@ import { Modal } from "../components/modal/modal";
 import { CardDetail, CardDetailProps } from "../components/card/card-detail";
 import { cardDetailTestData } from "../components/card/card-detail-test-data";
 import useLogOnce from "../utils/useLogOnce";
+import { Loading } from "../components/loading/loading";
 
 /**
  *  Server Side Code
@@ -188,11 +189,14 @@ const TabletFiler = () => {
  *  Attractions Page
  */
 
+type DataState = "success" | "loading" | "error";
+
 const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,
   defaultRestaurants,
   defaultDataUpdateTime,
 }) => {
+  const [dataState, setDataState] = useState<DataState>("success");
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryAttractions>("");
   const [city, setCity] = useState<City>("");
@@ -279,11 +283,13 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     });
   };
 
-  return (
-    <AttractionCtx.Provider value={context}>
-      <Header mobileFilterContent={<MobileFilter />} />
-      <Banner bgSrc={bannerImgSrc} filterContent={<TabletFiler />} />
-      <MainSection>
+  let mainContent: JSX.Element | null = null;
+
+  if (dataState === "loading") {
+    mainContent = <Loading />;
+  } else if (dataState === "success") {
+    mainContent = (
+      <>
         <MainTitle type="triangle">熱門城市</MainTitle>
         <HorizontalScroll>
           <CityGallery onSelectCity={setCity} />
@@ -334,7 +340,15 @@ const Attractions: NextPage<AttractionsPageProps> = ({
             />
           ))}
         </MainCardVerticalArea>
-      </MainSection>
+      </>
+    );
+  }
+
+  return (
+    <AttractionCtx.Provider value={context}>
+      <Header mobileFilterContent={<MobileFilter />} />
+      <Banner bgSrc={bannerImgSrc} filterContent={<TabletFiler />} />
+      <MainSection>{mainContent}</MainSection>
       <Footer />
       <Modal
         show={detailCardData !== null}
