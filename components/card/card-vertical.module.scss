@@ -92,6 +92,10 @@
   // background-color: lightcyan;
   @include with-line-clamp(1);
 
+  > *:first-child {
+    flex-shrink: 0;
+  }
+
   > span {
     font-size: 12px;
     margin-left: 5px;

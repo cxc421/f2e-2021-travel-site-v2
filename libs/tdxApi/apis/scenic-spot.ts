@@ -63,16 +63,21 @@ export async function getScenicSpot(
     ? `/v2/Tourism/ScenicSpot/${filter.city}`
     : "/v2/Tourism/ScenicSpot";
 
+  const filterStr = [
+    filter.needCity ? `City ne null` : undefined,
+    filter.needImage
+      ? "Picture/PictureUrl1 ne null and Picture/PictureDescription1 ne null"
+      : undefined,
+  ]
+    .filter((item) => typeof item === "string")
+    .join(" and ");
+
   const response = await axiosInstance.get(url, {
     params: {
       $top: filter.$top,
       $skip: filter.$skip,
       $format: "JSON",
-      $filter: `${filter.needCity ? `City ne null` : ""} ${
-        filter.needImage
-          ? "and Picture/PictureUrl1 ne null and Picture/PictureDescription1 ne null"
-          : ""
-      }`,
+      $filter: filterStr.length > 0 ? filterStr : undefined,
       $orderby: filter.orderById ? "ScenicSpotID" : undefined,
       $spatialFilter: filter.position
         ? `nearby(${filter.position.latitude}, ${filter.position.longitude}, ${

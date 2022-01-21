@@ -10,7 +10,9 @@ export const CardImage: FC<ImageProps> = ({
   onError,
   ...otherProps
 }) => {
-  const [hasError, setHasError] = useState(false);
+  const [hasError, setHasError] = useState(
+    typeof src !== "string" || src.length === 0
+  );
   const imageSrcRef = useRef(src);
 
   useEffect(() => {

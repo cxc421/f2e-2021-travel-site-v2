@@ -8,6 +8,7 @@ import { GpsButton } from "../components/button/gps-button";
 import { SearchButton } from "../components/button/search-button";
 import { Searchbox } from "../components/searchbox/searchbox";
 import {
+  FC,
   createContext,
   Dispatch,
   SetStateAction,
@@ -19,7 +20,11 @@ import {
   CategoryAttractions,
   CategoryAttractionsSelectbox,
 } from "../components/selectbox/category-attractions-selectbox";
-import { City, CitySelectbox } from "../components/selectbox/city-selectbox";
+import {
+  City,
+  cityOptions,
+  CitySelectbox,
+} from "../components/selectbox/city-selectbox";
 import { MainSection } from "../components/main-section/main-section";
 import { MainTitle } from "../components/main-section/main-title";
 import { Footer } from "../components/footer/footer";
@@ -37,6 +42,9 @@ import { CardDetail, CardDetailProps } from "../components/card/card-detail";
 import { cardDetailTestData } from "../components/card/card-detail-test-data";
 import useLogOnce from "../utils/useLogOnce";
 import { Loading } from "../components/loading/loading";
+import { getScenicSpot, ScenicSpot } from "../libs/tdxApi/apis/scenic-spot";
+import { MainPageButtonsArea } from "../components/main-section/main-page-button-area";
+import { useScrollToId } from "../utils/useScrollToId";
 
 /**
  *  Server Side Code
@@ -58,6 +66,7 @@ export const getStaticProps: GetStaticProps<
     needImage: true,
     needLocation: true,
   });
+  // const defaultActivities: Activity[] = [];
 
   // Default Restaurant
   const TaipeiCoordinate: Coordinate = {
@@ -83,6 +92,7 @@ export const getStaticProps: GetStaticProps<
     keywords: "好吃 美味 用餐",
     position: TaipeiCoordinate,
   });
+  // const defaultRestaurants: Restaurant[] = [];
 
   return {
     props: {
@@ -186,23 +196,171 @@ const TabletFiler = () => {
 };
 
 /**
+ *  Welcome Section
+ */
+interface WelcomeSectionProps {
+  defaultActivities: Activity[];
+  defaultRestaurants: Restaurant[];
+  onSelectCity: (city: City) => void;
+  onClickActivity: (activity: Activity) => void;
+  onClickRestaurant: (restaurant: Restaurant) => void;
+}
+
+const WelcomeSection: FC<WelcomeSectionProps> = ({
+  defaultActivities,
+  defaultRestaurants,
+  onSelectCity,
+  onClickActivity,
+  onClickRestaurant,
+}) => (
+  <>
+    <MainTitle type="triangle">熱門城市</MainTitle>
+    <HorizontalScroll>
+      <CityGallery onSelectCity={onSelectCity} />
+    </HorizontalScroll>
+    <MainTitle type="triangle">熱門活動</MainTitle>
+    <MainCardHorizontalArea>
+      {/* {Array.from({ length: 4 }).map((_, idx) => (
+      <CardHorizontal
+        key={idx}
+        img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+        title="合歡山國際暗空公園-星空清境跨年活動"
+        description="竹子湖海拔670公尺，位居大屯山、七星山與小觀音山間的谷地。曾是火山堰塞湖，湖水退去後留下肥沃的土壤，形成典型的農村聚落，近年結合在地花卉等產業與自然、人文資源發展休閒農業，成為臺北市第三個休閒農業區。"
+        location="臺北市 北投區"
+        onClick={() => setDetailCardData(cardDetailTestData)}
+      />
+    ))} */}
+      {defaultActivities.map((activity) => (
+        <CardHorizontal
+          key={activity.ActivityID}
+          img={activity.Picture?.PictureUrl1}
+          title={activity.ActivityName}
+          description={activity.Description}
+          location={activity.Location}
+          imageButtonText="活動詳情"
+          onClick={() => onClickActivity(activity)}
+        />
+      ))}
+    </MainCardHorizontalArea>
+    <MainTitle type="rectangle">熱門餐飲</MainTitle>
+    <MainCardVerticalArea>
+      {/* {Array.from({ length: 10 }).map((_, index) => (
+      <CardVertical
+        key={index}
+        img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
+        title="合歡山國際暗空公園-星空清境跨年活動"
+        location="臺北市 北投區"
+        onClick={() => setDetailCardData(cardDetailTestData)}
+      />
+    ))} */}
+      {defaultRestaurants.map((restaurant) => (
+        <CardVertical
+          key={restaurant.RestaurantID}
+          img={restaurant.Picture?.PictureUrl1}
+          title={restaurant.RestaurantName}
+          location={restaurant.City}
+          imageButtonText="餐飲詳情"
+          onClick={() => onClickRestaurant(restaurant)}
+        />
+      ))}
+    </MainCardVerticalArea>
+  </>
+);
+
+/**
+ * Result Section
+ */
+interface ResultSectionProps {
+  data: any[];
+  dataType: "restaurant" | "activity" | "scenicSpot";
+  titleText: string;
+  onClickActivity: (activity: Activity) => void;
+  onClickRestaurant: (restaurant: Restaurant) => void;
+  onClickScenicSpot: (scenicSpot: ScenicSpot) => void;
+}
+
+const ResultSection: FC<ResultSectionProps> = ({
+  data,
+  dataType,
+  titleText,
+  onClickScenicSpot,
+}) => {
+  const PER_PAGE_DATA_NUM = 20;
+  const titleId = "result-title";
+  const [page, setPage] = useState<number>(1);
+  useScrollToId(page, "__next");
+
+  const startIdx = PER_PAGE_DATA_NUM * (page - 1);
+  const endIdx = startIdx + PER_PAGE_DATA_NUM;
+  const displayData = data.slice(startIdx, endIdx);
+  const showPageButton = data.length > PER_PAGE_DATA_NUM;
+
+  const handleClickNextBtn = () => {
+    const hasNextPage = endIdx < data.length;
+    if (hasNextPage) {
+      setPage((page) => page + 1);
+    }
+  };
+
+  const handleClickPrevBtn = () => {
+    const hasPrevPage = page > 1;
+    if (hasPrevPage) {
+      setPage((page) => page - 1);
+    }
+  };
+
+  let cardContent: JSX.Element[] | null = null;
+  if (dataType === "scenicSpot") {
+    const scenicSpots = displayData as ScenicSpot[];
+    cardContent = scenicSpots.map((scenicSpot) => (
+      <CardVertical
+        key={scenicSpot.ScenicSpotID}
+        img={scenicSpot.Picture?.PictureUrl1}
+        title={scenicSpot.ScenicSpotName}
+        location={scenicSpot.City || scenicSpot.Address}
+        imageButtonText="景點詳情"
+        onClick={() => onClickScenicSpot(scenicSpot)}
+      />
+    ));
+  }
+
+  return (
+    <>
+      <MainTitle type="triangle" id={titleId}>
+        {titleText}
+      </MainTitle>
+      <MainCardVerticalArea>{cardContent}</MainCardVerticalArea>
+      {showPageButton && (
+        <MainPageButtonsArea
+          onClickNextBtn={handleClickNextBtn}
+          onClickPrevBtn={handleClickPrevBtn}
+          page={page}
+        />
+      )}
+    </>
+  );
+};
+
+/**
  *  Attractions Page
  */
 
-type DataState = "success" | "loading" | "error";
+type DataState = "idle" | "success" | "loading" | "error";
 
 const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,
   defaultRestaurants,
   defaultDataUpdateTime,
 }) => {
-  const [dataState, setDataState] = useState<DataState>("success");
+  const [dataState, setDataState] = useState<DataState>("idle");
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryAttractions>("");
   const [city, setCity] = useState<City>("");
   const [detailCardData, setDetailCardData] = useState<CardDetailProps | null>(
     null
   );
+  const [data, setData] = useState<any[]>([]);
+  const [dataTitle, setDataTitle] = useState("");
 
   const context: AttractionContext = {
     city,
@@ -283,65 +441,87 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     });
   };
 
+  const handleClickScenicSpotCard = (scenicSpot: ScenicSpot) => {
+    setDetailCardData({
+      title: scenicSpot.ScenicSpotName,
+      images: [
+        {
+          url: scenicSpot.Picture.PictureUrl1 || "",
+          description: scenicSpot.Picture.PictureDescription1 || "",
+        },
+        {
+          url: scenicSpot.Picture.PictureUrl2 || "",
+          description: scenicSpot.Picture.PictureDescription2 || "",
+        },
+        {
+          url: scenicSpot.Picture.PictureUrl3 || "",
+          description: scenicSpot.Picture.PictureDescription3 || "",
+        },
+      ].filter((img) => img.url.length > 0),
+      description: scenicSpot.DescriptionDetail,
+      time: scenicSpot.OpenTime,
+      phone: scenicSpot.Phone,
+      address: scenicSpot.Address,
+      websiteUrl: scenicSpot.WebsiteUrl,
+    });
+  };
+
+  const handleClickCity = async (city: City) => {
+    setDataState("loading");
+    try {
+      const scenicSpots = await getScenicSpot({
+        city,
+        // $skip: 300,
+        // $top: 100,
+      });
+
+      setDataState("success");
+      setData(scenicSpots);
+      const cityText =
+        cityOptions.find((option) => option.value === city)?.text || "台灣";
+      setDataTitle(`${cityText}的景點`);
+    } catch (err) {
+      console.error(err);
+      setDataState("error");
+    }
+  };
+
   let mainContent: JSX.Element | null = null;
 
-  if (dataState === "loading") {
-    mainContent = <Loading />;
-  } else if (dataState === "success") {
-    mainContent = (
-      <>
-        <MainTitle type="triangle">熱門城市</MainTitle>
-        <HorizontalScroll>
-          <CityGallery onSelectCity={setCity} />
-        </HorizontalScroll>
-        <MainTitle type="triangle">熱門活動</MainTitle>
-        <MainCardHorizontalArea>
-          {/* {Array.from({ length: 4 }).map((_, idx) => (
-            <CardHorizontal
-              key={idx}
-              img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-              title="合歡山國際暗空公園-星空清境跨年活動"
-              description="竹子湖海拔670公尺，位居大屯山、七星山與小觀音山間的谷地。曾是火山堰塞湖，湖水退去後留下肥沃的土壤，形成典型的農村聚落，近年結合在地花卉等產業與自然、人文資源發展休閒農業，成為臺北市第三個休閒農業區。"
-              location="臺北市 北投區"
-              onClick={() => setDetailCardData(cardDetailTestData)}
-            />
-          ))} */}
-          {defaultActivities.map((activity) => (
-            <CardHorizontal
-              key={activity.ActivityID}
-              img={activity.Picture?.PictureUrl1}
-              title={activity.ActivityName}
-              description={activity.Description}
-              location={activity.Location}
-              imageButtonText="活動詳情"
-              onClick={() => handleClickActivityCard(activity)}
-            />
-          ))}
-        </MainCardHorizontalArea>
-        <MainTitle type="rectangle">熱門餐飲</MainTitle>
-        <MainCardVerticalArea>
-          {/* {Array.from({ length: 10 }).map((_, index) => (
-            <CardVertical
-              key={index}
-              img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-              title="合歡山國際暗空公園-星空清境跨年活動"
-              location="臺北市 北投區"
-              onClick={() => setDetailCardData(cardDetailTestData)}
-            />
-          ))} */}
-          {defaultRestaurants.map((restaurant) => (
-            <CardVertical
-              key={restaurant.RestaurantID}
-              img={restaurant.Picture?.PictureUrl1}
-              title={restaurant.RestaurantName}
-              location={restaurant.City}
-              imageButtonText="餐飲詳情"
-              onClick={() => handleClickRestauratnCard(restaurant)}
-            />
-          ))}
-        </MainCardVerticalArea>
-      </>
-    );
+  switch (dataState) {
+    case "idle": {
+      mainContent = (
+        <WelcomeSection
+          defaultActivities={defaultActivities}
+          defaultRestaurants={defaultRestaurants}
+          onSelectCity={handleClickCity}
+          onClickActivity={handleClickActivityCard}
+          onClickRestaurant={handleClickRestauratnCard}
+        />
+      );
+      break;
+    }
+    case "loading": {
+      mainContent = <Loading />;
+      break;
+    }
+    case "success": {
+      mainContent = (
+        <ResultSection
+          data={data}
+          dataType="scenicSpot"
+          titleText={dataTitle}
+          onClickActivity={handleClickActivityCard}
+          onClickRestaurant={handleClickRestauratnCard}
+          onClickScenicSpot={handleClickScenicSpotCard}
+        />
+      );
+      // console.log(data);
+      break;
+    }
+    default: {
+      mainContent = <h3>Something Wrong...</h3>;
+    }
   }
 
   return (

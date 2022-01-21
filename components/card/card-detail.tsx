@@ -23,7 +23,15 @@ const CardDetailItem: FC<CardDetailItemProps> = ({
   children,
 }) => (
   <div className={style.item}>
-    <Image src={iconSrc} width={iconWidth} height={iconHeight} alt="icon" />
+    <div className={style.itemIcon} style={{ width: iconWidth }}>
+      <Image
+        className={style.itemIcon}
+        src={iconSrc}
+        width={iconWidth}
+        height={iconHeight}
+        alt="icon"
+      />
+    </div>
     <span className={style.itemText}>{children}</span>
   </div>
 );
@@ -64,16 +72,26 @@ export const CardDetail: FC<CardDetailProps> = ({
       <div className={style.container}>
         <div className={style.imgArea}>
           <HorizontalWindow showWindowIdx={imageShowIdx}>
-            {images.map((img, idx) => (
+            {images.length > 0 ? (
+              images.map((img, idx) => (
+                <CardImage
+                  key={idx}
+                  src={img.url}
+                  layout="fill"
+                  alt={img.description}
+                  title={img.description}
+                  objectFit="cover"
+                />
+              ))
+            ) : (
               <CardImage
-                key={idx}
-                src={img.url}
+                src=""
                 layout="fill"
-                alt={img.description}
-                title={img.description}
+                alt="no-image"
+                title="no-image"
                 objectFit="cover"
               />
-            ))}
+            )}
           </HorizontalWindow>
         </div>
         {images.length > 1 && (
