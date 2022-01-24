@@ -37,6 +37,7 @@ export type IntegratedDataFilter = {
   smallestEndDate?: string;
   number?: number;
   orderBy?: "distance" | "shuffle";
+  _?: any;
 };
 
 export function isIntegratedDataFilter(

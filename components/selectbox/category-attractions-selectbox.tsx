@@ -1,15 +1,15 @@
 import { FC } from "react";
 import { SelectBox, SelectOption } from "./selectbox";
 
-export type CategoryAttractions = "" | "ScenicSpot" | "Activity";
+export type CategoryAttractions = "" | "scenicSpot" | "activity";
 
 export const categoryAttractionOptions: {
   value: CategoryAttractions;
   text: string;
 }[] = [
   { value: "", text: "類別" },
-  { value: "ScenicSpot", text: "景點" },
-  { value: "Activity", text: "活動" },
+  { value: "scenicSpot", text: "景點" },
+  { value: "activity", text: "活動" },
 ];
 
 export interface CategoryAttractionsSelectboxProps {

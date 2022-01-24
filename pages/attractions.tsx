@@ -12,7 +12,6 @@ import {
   createContext,
   Dispatch,
   SetStateAction,
-  useCallback,
   useContext,
   useState,
 } from "react";
@@ -34,10 +33,14 @@ import { CardHorizontal } from "../components/card/card-horizontal";
 import { MainCardHorizontalArea } from "../components/main-section/main-card-horizontal-area";
 import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
 import { CardVertical } from "../components/card/card-vertical";
-import { Coordinate, IntegratedData, TdxApiType } from "../libs/types";
+import {
+  Coordinate,
+  IntegratedData,
+  IntegratedDataFilter,
+  TdxApiType,
+} from "../libs/types";
 import { Modal } from "../components/modal/modal";
 import { CardDetail, CardDetailProps } from "../components/card/card-detail";
-import { cardDetailTestData } from "../components/card/card-detail-test-data";
 import useLogOnce from "../utils/useLogOnce";
 import { Loading } from "../components/loading/loading";
 import { MainPageButtonsArea } from "../components/main-section/main-page-button-area";
@@ -62,6 +65,7 @@ export const getStaticProps: GetStaticProps<
     smallestEndDate: new Date().toUTCString(),
     needPicture: true,
     needValidLocation: true,
+    orderBy: "shuffle",
   });
 
   // Default Restaurant
@@ -135,7 +139,11 @@ const MobileFilter = () => {
 /**
  * Attraction Tablet & Desktop Filter
  */
-const TabletFiler = () => {
+interface TabletFilerProps {
+  onClickSearch: () => void;
+}
+
+const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch }) => {
   const { searchText, setSearchText, category, setCategory, city, setCity } =
     useAttractionContext();
 
@@ -168,6 +176,7 @@ const TabletFiler = () => {
           size={40}
           title="Search"
           className={sharedStyle.tabletButton}
+          onClick={onClickSearch}
         />
       </div>
     </div>
@@ -267,6 +276,7 @@ const ResultSection: FC<ResultSectionProps> = ({
   const endIdx = startIdx + PER_PAGE_DATA_NUM;
   const displayData = data.slice(startIdx, endIdx);
   const showPageButton = data.length > PER_PAGE_DATA_NUM;
+  const totalPage = Math.ceil(data.length / PER_PAGE_DATA_NUM);
 
   const handleClickNextBtn = () => {
     const hasNextPage = endIdx < data.length;
@@ -300,7 +310,13 @@ const ResultSection: FC<ResultSectionProps> = ({
       key={data.id}
       img={data.picture[0]?.url}
       title={data.name}
-      location={data.location}
+      location={
+        data.location === "to see the official site" ||
+        data.location === "詳見官網" ||
+        data.location === undefined
+          ? data.city || data.address
+          : data.location
+      }
       imageButtonText={typeToImageBtnText(data.type)}
       onClick={() => onClickCard(data)}
     />
@@ -317,6 +333,7 @@ const ResultSection: FC<ResultSectionProps> = ({
           onClickNextBtn={handleClickNextBtn}
           onClickPrevBtn={handleClickPrevBtn}
           page={page}
+          totalPage={totalPage}
         />
       )}
     </>
@@ -355,6 +372,43 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   useLogOnce(defaultActivities);
   useLogOnce(defaultRestaurants);
 
+  const handleClickSearch = async () => {
+    const searchTerm = searchText.trim();
+
+    let filter: IntegratedDataFilter;
+    let title = "";
+    if (searchTerm.length > 0) {
+      filter = {
+        types: ["activity", "scenicSpot"],
+        searchTerm,
+      };
+      title = `含有 "${searchTerm}" 的景點與活動`;
+    } else if (category !== "") {
+      filter = {
+        types: [category],
+        city: city !== "" ? city : undefined,
+      };
+      const locationText = filter.city ? `${filter.city}的` : "台灣的";
+      const categoryText = category === "activity" ? "活動" : "景點";
+      title = locationText + categoryText;
+    } else {
+      alert("Please specify category or type some search terms.");
+      return;
+    }
+
+    setDataState("loading");
+    try {
+      const data = await getIntegratedData(filter);
+
+      setDataState("success");
+      setData(data);
+      setDataTitle(title);
+    } catch (err) {
+      console.error(err);
+      setDataState("error");
+    }
+  };
+
   const handleClickCard = (data: IntegratedData) => {
     setDetailCardData({
       title: data.name,
@@ -373,6 +427,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     try {
       const scenicSpots = await getIntegratedData({
         types: ["scenicSpot"],
+        city,
       });
 
       setDataState("success");
@@ -423,7 +478,10 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   return (
     <AttractionCtx.Provider value={context}>
       <Header mobileFilterContent={<MobileFilter />} />
-      <Banner bgSrc={bannerImgSrc} filterContent={<TabletFiler />} />
+      <Banner
+        bgSrc={bannerImgSrc}
+        filterContent={<TabletFiler onClickSearch={handleClickSearch} />}
+      />
       <MainSection>{mainContent}</MainSection>
       <Footer />
       <Modal

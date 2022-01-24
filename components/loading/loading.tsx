@@ -17,6 +17,7 @@ export const Loading: FC<LoadingProps> = ({ className }) => (
         width={394}
         height={300}
         alt="loading"
+        priority
       />
     </div>
   </div>

@@ -7,16 +7,20 @@ export interface MainPageButtonsAreaProps {
   onClickPrevBtn: () => void;
   onClickNextBtn: () => void;
   page: number;
+  totalPage: number;
 }
 
 export const MainPageButtonsArea: FC<MainPageButtonsAreaProps> = ({
   onClickNextBtn,
   onClickPrevBtn,
   page,
+  totalPage,
 }) => (
   <div className={style.container}>
     <PreviousButton size={32} onClick={onClickPrevBtn} bgColor="black" />
-    <span className={style.numberText}>{page}</span>
+    <span className={style.numberText}>
+      {page} / {totalPage}
+    </span>
     <NextButton size={32} onClick={onClickNextBtn} bgColor="red" />
   </div>
 );
