@@ -32,6 +32,7 @@ module.exports = {
       "www.erv-nsa.gov.tw",
       "www.ali-nsa.net",
       "tour.yunlin.gov.tw",
+      "penghutravel.com",
     ],
   },
 };

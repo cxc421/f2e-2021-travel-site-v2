@@ -46,6 +46,7 @@ import { Loading } from "../components/loading/loading";
 import { MainPageButtonsArea } from "../components/main-section/main-page-button-area";
 import { useScrollToId } from "../utils/useScrollToId";
 import { getIntegratedData } from "../libs/integrated-api/integrated-api";
+import { NoData } from "../components/no-data/no-data";
 
 /**
  *  Server Side Code
@@ -382,7 +383,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         types: ["activity", "scenicSpot"],
         searchTerm,
       };
-      title = `含有 "${searchTerm}" 的景點與活動`;
+      title = `含有 "${searchTerm}" 的景點或活動`;
     } else if (category !== "") {
       filter = {
         types: [category],
@@ -460,13 +461,16 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       break;
     }
     case "success": {
-      mainContent = (
-        <ResultSection
-          data={data}
-          titleText={dataTitle}
-          onClickCard={handleClickCard}
-        />
-      );
+      mainContent =
+        data.length > 0 ? (
+          <ResultSection
+            data={data}
+            titleText={dataTitle}
+            onClickCard={handleClickCard}
+          />
+        ) : (
+          <NoData />
+        );
       // console.log(data);
       break;
     }
