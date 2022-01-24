@@ -1,104 +1,104 @@
 import Image from "next/image";
 import { FC, MouseEventHandler, useState } from "react";
-import { City } from "../selectbox/city-selectbox";
+import { CityValue } from "../selectbox/city-selectbox";
 import style from "./city-gallery.module.scss";
 import mapImgSrc from "./images/map_M.png";
 
 type GalleryCityElement = {
   text: string;
-  value: City;
+  value: CityValue;
   imgSrc: StaticImageData;
 }[];
 
 const galleryCityList: GalleryCityElement[] = [
-  [{ text: "台北市", value: "Taipei", imgSrc: require("./images/taipei.png") }],
+  [{ text: "台北市", value: "臺北市", imgSrc: require("./images/taipei.png") }],
   [
     {
       text: "新北市",
-      value: "NewTaipei",
+      value: "新北市",
       imgSrc: require("./images/new-taipei.png"),
     },
     {
       text: "桃園市",
-      value: "Taoyuan",
+      value: "桃園市",
       imgSrc: require("./images/taoyuan.png"),
     },
   ],
   [
     {
       text: "新竹市",
-      value: "Hsinchu",
+      value: "新竹市",
       imgSrc: require("./images/hsinchu.png"),
     },
   ],
   [
     {
       text: "台中",
-      value: "Taichung",
+      value: "臺中市",
       imgSrc: require("./images/taichung.png"),
     },
     {
       text: "南投",
-      value: "NantouCounty",
+      value: "南投縣",
       imgSrc: require("./images/nantou.png"),
     },
   ],
   [
     {
       text: "嘉義",
-      value: "Chiayi",
+      value: "嘉義市",
       imgSrc: require("./images/chiayi.png"),
     },
   ],
   [
     {
       text: "台南",
-      value: "Tainan",
+      value: "臺南市",
       imgSrc: require("./images/tainan.png"),
     },
   ],
   [
     {
       text: "高雄",
-      value: "Kaohsiung",
+      value: "高雄市",
       imgSrc: require("./images/kaohsiung.png"),
     },
     {
       text: "屏東",
-      value: "PingtungCounty",
+      value: "屏東縣",
       imgSrc: require("./images/pingtung.png"),
     },
   ],
   [
     {
       text: "宜蘭",
-      value: "YilanCounty",
+      value: "宜蘭縣",
       imgSrc: require("./images/yilan.png"),
     },
   ],
   [
     {
       text: "花蓮",
-      value: "HualienCounty",
+      value: "花蓮縣",
       imgSrc: require("./images/hualien.png"),
     },
     {
       text: "台東",
-      value: "TaitungCounty",
+      value: "臺東縣",
       imgSrc: require("./images/taitung.png"),
     },
   ],
   [
     {
       text: "連江",
-      value: "LienchiangCounty",
+      value: "連江縣",
       imgSrc: require("./images/tpkm.png"),
     },
   ],
 ];
 
 export interface CityGalleryProps {
-  onSelectCity: (city: City) => void;
+  onSelectCity: (city: CityValue) => void;
 }
 
 type MouseDownPosition = {
@@ -112,7 +112,7 @@ export const CityGallery: FC<CityGalleryProps> = ({ onSelectCity }) => {
   const handleMouseDown: MouseEventHandler<HTMLDivElement> = (e) =>
     setMdPos({ pageX: e.pageX, pageY: e.pageY });
 
-  const handleMouseUp = (pageX: number, pageY: number, city: City) => {
+  const handleMouseUp = (pageX: number, pageY: number, city: CityValue) => {
     if (pageX === mdPos.pageX && pageY === mdPos.pageY) {
       onSelectCity(city);
     }

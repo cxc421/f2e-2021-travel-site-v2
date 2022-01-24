@@ -15,7 +15,10 @@ import {
   useContext,
   useState,
 } from "react";
-import { City, CitySelectbox } from "../components/selectbox/city-selectbox";
+import {
+  CityValue,
+  CitySelectbox,
+} from "../components/selectbox/city-selectbox";
 import { Searchbox } from "../components/searchbox/searchbox";
 import { GpsButton } from "../components/button/gps-button";
 import { SearchButton } from "../components/button/search-button";
@@ -26,8 +29,8 @@ import { SearchButton } from "../components/button/search-button";
 export interface RestaurantContext {
   category: CategoryRestaurant;
   setCategory: Dispatch<SetStateAction<CategoryRestaurant>>;
-  city: City;
-  setCity: Dispatch<SetStateAction<City>>;
+  city: CityValue;
+  setCity: Dispatch<SetStateAction<CityValue>>;
   searchText: string;
   setSearchText: Dispatch<SetStateAction<string>>;
 }
@@ -118,7 +121,7 @@ const TabletFiler = () => {
 const Restaurant: NextPage = () => {
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryRestaurant>("");
-  const [city, setCity] = useState<City>("");
+  const [city, setCity] = useState<CityValue>("");
 
   const context: RestaurantContext = {
     city,

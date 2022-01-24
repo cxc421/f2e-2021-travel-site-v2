@@ -21,7 +21,7 @@ import {
   CategoryAttractionsSelectbox,
 } from "../components/selectbox/category-attractions-selectbox";
 import {
-  City,
+  CityValue,
   cityOptions,
   CitySelectbox,
 } from "../components/selectbox/city-selectbox";
@@ -32,73 +32,52 @@ import { HorizontalScroll } from "../components/horizontal-scroll/horizontal-scr
 import { CityGallery } from "../components/city-gallery/city-gallery";
 import { CardHorizontal } from "../components/card/card-horizontal";
 import { MainCardHorizontalArea } from "../components/main-section/main-card-horizontal-area";
-import { getActivity, Activity } from "../libs/tdxApi/apis/activity";
 import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
 import { CardVertical } from "../components/card/card-vertical";
-import { getRestaurant, Restaurant } from "../libs/tdxApi/apis/restaurant";
-import { Coordinate } from "../libs/types";
+import { Coordinate, IntegratedData, TdxApiType } from "../libs/types";
 import { Modal } from "../components/modal/modal";
 import { CardDetail, CardDetailProps } from "../components/card/card-detail";
 import { cardDetailTestData } from "../components/card/card-detail-test-data";
 import useLogOnce from "../utils/useLogOnce";
 import { Loading } from "../components/loading/loading";
-import { getScenicSpot, ScenicSpot } from "../libs/tdxApi/apis/scenic-spot";
 import { MainPageButtonsArea } from "../components/main-section/main-page-button-area";
 import { useScrollToId } from "../utils/useScrollToId";
+import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 
 /**
  *  Server Side Code
  */
 interface AttractionsPageProps {
-  defaultActivities: Activity[];
-  defaultRestaurants: Restaurant[];
-  defaultDataUpdateTime: string;
+  defaultActivities: IntegratedData[];
+  defaultRestaurants: IntegratedData[];
 }
 
 export const getStaticProps: GetStaticProps<
   AttractionsPageProps
 > = async () => {
   // Default Activities
-  const defaultActivities = await getActivity({
-    $top: 4,
-    city: "",
-    curDate: new Date(),
-    needImage: true,
-    needLocation: true,
+  const defaultActivities = await getIntegratedData({
+    types: ["activity"],
+    number: 4,
+    smallestEndDate: new Date().toUTCString(),
+    needPicture: true,
+    needValidLocation: true,
   });
-  // const defaultActivities: Activity[] = [];
 
   // Default Restaurant
-  const TaipeiCoordinate: Coordinate = {
-    latitude: 25.02,
-    longitude: 121.32,
-  };
-
-  const TaichugCoordinate: Coordinate = {
-    latitude: 24.1038,
-    longitude: 120.3848,
-  };
-
-  const KaoshungCoordinate: Coordinate = {
-    latitude: 22.5991,
-    longitude: 120.32,
-  };
-
-  const defaultRestaurants = await getRestaurant({
-    $top: 10,
-    city: "",
-    needImage: true,
-    needCity: true,
-    keywords: "好吃 美味 用餐",
-    position: TaipeiCoordinate,
+  const defaultRestaurants = await getIntegratedData({
+    types: ["restaurant"],
+    number: 10,
+    needPicture: true,
+    searchTerm: "好吃 美味 用餐",
+    searchProperty: "description",
+    orderBy: "shuffle",
   });
-  // const defaultRestaurants: Restaurant[] = [];
 
   return {
     props: {
       defaultActivities,
       defaultRestaurants,
-      defaultDataUpdateTime: new Date().toUTCString(),
     },
     revalidate: 60, // 60 sec
   };
@@ -110,8 +89,8 @@ export const getStaticProps: GetStaticProps<
 export interface AttractionContext {
   category: CategoryAttractions;
   setCategory: Dispatch<SetStateAction<CategoryAttractions>>;
-  city: City;
-  setCity: Dispatch<SetStateAction<City>>;
+  city: CityValue;
+  setCity: Dispatch<SetStateAction<CityValue>>;
   searchText: string;
   setSearchText: Dispatch<SetStateAction<string>>;
 }
@@ -199,19 +178,17 @@ const TabletFiler = () => {
  *  Welcome Section
  */
 interface WelcomeSectionProps {
-  defaultActivities: Activity[];
-  defaultRestaurants: Restaurant[];
-  onSelectCity: (city: City) => void;
-  onClickActivity: (activity: Activity) => void;
-  onClickRestaurant: (restaurant: Restaurant) => void;
+  defaultActivities: IntegratedData[];
+  defaultRestaurants: IntegratedData[];
+  onSelectCity: (city: CityValue) => void;
+  onClickCard: (data: IntegratedData) => void;
 }
 
 const WelcomeSection: FC<WelcomeSectionProps> = ({
   defaultActivities,
   defaultRestaurants,
   onSelectCity,
-  onClickActivity,
-  onClickRestaurant,
+  onClickCard,
 }) => (
   <>
     <MainTitle type="triangle">熱門城市</MainTitle>
@@ -230,15 +207,15 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
         onClick={() => setDetailCardData(cardDetailTestData)}
       />
     ))} */}
-      {defaultActivities.map((activity) => (
+      {defaultActivities.map((data) => (
         <CardHorizontal
-          key={activity.ActivityID}
-          img={activity.Picture?.PictureUrl1}
-          title={activity.ActivityName}
-          description={activity.Description}
-          location={activity.Location}
+          key={data.id}
+          img={data.picture[0]?.url}
+          title={data.name}
+          description={data.description}
+          location={data.location}
           imageButtonText="活動詳情"
-          onClick={() => onClickActivity(activity)}
+          onClick={() => onClickCard(data)}
         />
       ))}
     </MainCardHorizontalArea>
@@ -253,14 +230,14 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
         onClick={() => setDetailCardData(cardDetailTestData)}
       />
     ))} */}
-      {defaultRestaurants.map((restaurant) => (
+      {defaultRestaurants.map((data) => (
         <CardVertical
-          key={restaurant.RestaurantID}
-          img={restaurant.Picture?.PictureUrl1}
-          title={restaurant.RestaurantName}
-          location={restaurant.City}
+          key={data.id}
+          img={data.picture[0]?.url}
+          title={data.name}
+          location={data.location}
           imageButtonText="餐飲詳情"
-          onClick={() => onClickRestaurant(restaurant)}
+          onClick={() => onClickCard(data)}
         />
       ))}
     </MainCardVerticalArea>
@@ -271,19 +248,15 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
  * Result Section
  */
 interface ResultSectionProps {
-  data: any[];
-  dataType: "restaurant" | "activity" | "scenicSpot";
+  data: IntegratedData[];
   titleText: string;
-  onClickActivity: (activity: Activity) => void;
-  onClickRestaurant: (restaurant: Restaurant) => void;
-  onClickScenicSpot: (scenicSpot: ScenicSpot) => void;
+  onClickCard: (data: IntegratedData) => void;
 }
 
 const ResultSection: FC<ResultSectionProps> = ({
   data,
-  dataType,
   titleText,
-  onClickScenicSpot,
+  onClickCard,
 }) => {
   const PER_PAGE_DATA_NUM = 20;
   const titleId = "result-title";
@@ -309,20 +282,29 @@ const ResultSection: FC<ResultSectionProps> = ({
     }
   };
 
-  let cardContent: JSX.Element[] | null = null;
-  if (dataType === "scenicSpot") {
-    const scenicSpots = displayData as ScenicSpot[];
-    cardContent = scenicSpots.map((scenicSpot) => (
-      <CardVertical
-        key={scenicSpot.ScenicSpotID}
-        img={scenicSpot.Picture?.PictureUrl1}
-        title={scenicSpot.ScenicSpotName}
-        location={scenicSpot.City || scenicSpot.Address}
-        imageButtonText="景點詳情"
-        onClick={() => onClickScenicSpot(scenicSpot)}
-      />
-    ));
-  }
+  const typeToImageBtnText = (type: TdxApiType) => {
+    switch (type) {
+      case "activity":
+        return "活動詳情";
+      case "hotel":
+        return "住宿詳情";
+      case "restaurant":
+        return "美食詳情";
+      case "scenicSpot":
+        return "景點詳情";
+    }
+  };
+
+  const cardContent = displayData.map((data) => (
+    <CardVertical
+      key={data.id}
+      img={data.picture[0]?.url}
+      title={data.name}
+      location={data.location}
+      imageButtonText={typeToImageBtnText(data.type)}
+      onClick={() => onClickCard(data)}
+    />
+  ));
 
   return (
     <>
@@ -350,16 +332,15 @@ type DataState = "idle" | "success" | "loading" | "error";
 const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,
   defaultRestaurants,
-  defaultDataUpdateTime,
 }) => {
-  const [dataState, setDataState] = useState<DataState>("idle");
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryAttractions>("");
-  const [city, setCity] = useState<City>("");
+  const [city, setCity] = useState<CityValue>("");
   const [detailCardData, setDetailCardData] = useState<CardDetailProps | null>(
     null
   );
-  const [data, setData] = useState<any[]>([]);
+  const [dataState, setDataState] = useState<DataState>("idle");
+  const [data, setData] = useState<IntegratedData[]>([]);
   const [dataTitle, setDataTitle] = useState("");
 
   const context: AttractionContext = {
@@ -373,106 +354,25 @@ const Attractions: NextPage<AttractionsPageProps> = ({
 
   useLogOnce(defaultActivities);
   useLogOnce(defaultRestaurants);
-  useLogOnce(
-    defaultDataUpdateTime,
-    undefined,
-    useCallback(
-      (dateString: string) =>
-        console.log(
-          `Default data update time: ${new Date(dateString).toLocaleString()}`
-        ),
-      []
-    )
-  );
 
-  const handleClickActivityCard = (activity: Activity) => {
+  const handleClickCard = (data: IntegratedData) => {
     setDetailCardData({
-      title: activity.ActivityName,
-      images: [
-        {
-          url: activity.Picture.PictureUrl1 || "",
-          description: activity.Picture.PictureDescription1 || "",
-        },
-        {
-          url: activity.Picture.PictureUrl2 || "",
-          description: activity.Picture.PictureDescription1 || "",
-        },
-        {
-          url: activity.Picture.PictureUrl3 || "",
-          description: activity.Picture.PictureDescription1 || "",
-        },
-      ].filter((img) => img.url.length > 0),
-      description: activity.Description,
-      time:
-        activity.StartTime && activity.EndTime
-          ? `${new Date(activity.StartTime).toLocaleDateString()} - ${new Date(
-              activity.EndTime
-            ).toLocaleDateString()}`
-          : undefined,
-      phone: activity.Phone,
-      price: activity.Charge || "免費",
-      address: activity.Address,
-      websiteUrl: activity.WebsiteUrl,
+      title: data.name,
+      images: data.picture,
+      description: data.description,
+      time: data.time,
+      phone: data.phone,
+      address: data.address,
+      websiteUrl: data.websiteUrl,
+      price: data.charge,
     });
   };
 
-  const handleClickRestauratnCard = (restaurant: Restaurant) => {
-    setDetailCardData({
-      title: restaurant.RestaurantName,
-      images: [
-        {
-          url: restaurant.Picture.PictureUrl1 || "",
-          description: restaurant.Picture.PictureDescription1 || "",
-        },
-        {
-          url: restaurant.Picture.PictureUrl2 || "",
-          description: restaurant.Picture.PictureDescription2 || "",
-        },
-        {
-          url: restaurant.Picture.PictureUrl3 || "",
-          description: restaurant.Picture.PictureDescription3 || "",
-        },
-      ].filter((img) => img.url.length > 0),
-      description: restaurant.Description,
-      time: restaurant.OpenTime,
-      phone: restaurant.Phone,
-      address: restaurant.Address,
-      websiteUrl: restaurant.WebsiteUrl,
-    });
-  };
-
-  const handleClickScenicSpotCard = (scenicSpot: ScenicSpot) => {
-    setDetailCardData({
-      title: scenicSpot.ScenicSpotName,
-      images: [
-        {
-          url: scenicSpot.Picture.PictureUrl1 || "",
-          description: scenicSpot.Picture.PictureDescription1 || "",
-        },
-        {
-          url: scenicSpot.Picture.PictureUrl2 || "",
-          description: scenicSpot.Picture.PictureDescription2 || "",
-        },
-        {
-          url: scenicSpot.Picture.PictureUrl3 || "",
-          description: scenicSpot.Picture.PictureDescription3 || "",
-        },
-      ].filter((img) => img.url.length > 0),
-      description: scenicSpot.DescriptionDetail,
-      time: scenicSpot.OpenTime,
-      phone: scenicSpot.Phone,
-      address: scenicSpot.Address,
-      websiteUrl: scenicSpot.WebsiteUrl,
-    });
-  };
-
-  const handleClickCity = async (city: City) => {
+  const handleClickCity = async (city: CityValue) => {
     setDataState("loading");
     try {
-      const scenicSpots = await getScenicSpot({
-        city,
-        // $skip: 300,
-        // $top: 100,
+      const scenicSpots = await getIntegratedData({
+        types: ["scenicSpot"],
       });
 
       setDataState("success");
@@ -495,8 +395,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
           defaultActivities={defaultActivities}
           defaultRestaurants={defaultRestaurants}
           onSelectCity={handleClickCity}
-          onClickActivity={handleClickActivityCard}
-          onClickRestaurant={handleClickRestauratnCard}
+          onClickCard={handleClickCard}
         />
       );
       break;
@@ -509,11 +408,8 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       mainContent = (
         <ResultSection
           data={data}
-          dataType="scenicSpot"
           titleText={dataTitle}
-          onClickActivity={handleClickActivityCard}
-          onClickRestaurant={handleClickRestauratnCard}
-          onClickScenicSpot={handleClickScenicSpotCard}
+          onClickCard={handleClickCard}
         />
       );
       // console.log(data);
