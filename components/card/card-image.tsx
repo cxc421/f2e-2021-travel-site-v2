@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { ImageProps } from "next/image";
 import { FC, useEffect, useRef, useState } from "react";
+import cn from "classnames";
 import style from "./card-image.module.scss";
 import noImgSrc from "./images/no-img.png";
 
@@ -13,11 +14,13 @@ export const CardImage: FC<ImageProps> = ({
   const [hasError, setHasError] = useState(
     typeof src !== "string" || src.length === 0
   );
+  const [loadSuccess, setLoadSuccess] = useState(false);
   const imageSrcRef = useRef(src);
 
   useEffect(() => {
     if (imageSrcRef.current !== src) {
       setHasError(false);
+      setLoadSuccess(false);
       imageSrcRef.current = src;
     }
   }, [src]);
@@ -37,16 +40,19 @@ export const CardImage: FC<ImageProps> = ({
   }
 
   return (
-    <Image
-      src={src}
-      alt={alt}
-      {...otherProps}
-      onError={(e) => {
-        if (onError) {
-          onError(e);
-        }
-        setHasError(true);
-      }}
-    />
+    <div className={cn({ [style.successImgWrapper]: loadSuccess })}>
+      <Image
+        src={src}
+        alt={alt}
+        {...otherProps}
+        onError={(e) => {
+          if (onError) {
+            onError(e);
+          }
+          setHasError(true);
+        }}
+        onLoadingComplete={() => setLoadSuccess(true)}
+      />
+    </div>
   );
 };
