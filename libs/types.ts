@@ -37,6 +37,7 @@ export type IntegratedDataFilter = {
   smallestEndDate?: string;
   number?: number;
   orderBy?: "distance" | "shuffle";
+  maxDisKm?: number;
   _?: any;
 };
 

@@ -47,6 +47,7 @@ import { MainPageButtonsArea } from "../components/main-section/main-page-button
 import { useScrollToId } from "../utils/useScrollToId";
 import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 import { NoData } from "../components/no-data/no-data";
+import { getGpsLocation } from "../utils/getGpsLocation";
 
 /**
  *  Server Side Code
@@ -142,9 +143,10 @@ const MobileFilter = () => {
  */
 interface TabletFilerProps {
   onClickSearch: () => void;
+  onClickGps: () => void;
 }
 
-const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch }) => {
+const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch, onClickGps }) => {
   const { searchText, setSearchText, category, setCategory, city, setCity } =
     useAttractionContext();
 
@@ -158,8 +160,9 @@ const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch }) => {
         />
         <GpsButton
           size={40}
-          title="Get current location"
+          title="定位"
           className={sharedStyle.tabletButton}
+          onClick={onClickGps}
         />
       </div>
       <div>
@@ -175,7 +178,7 @@ const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch }) => {
         />
         <SearchButton
           size={40}
-          title="Search"
+          title="搜尋"
           className={sharedStyle.tabletButton}
           onClick={onClickSearch}
         />
@@ -319,6 +322,7 @@ const ResultSection: FC<ResultSectionProps> = ({
           : data.location
       }
       imageButtonText={typeToImageBtnText(data.type)}
+      disKm={data.disKm}
       onClick={() => onClickCard(data)}
     />
   ));
@@ -373,6 +377,26 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   useLogOnce(defaultActivities);
   useLogOnce(defaultRestaurants);
 
+  const handleClickGps = async () => {
+    setDataState("loading");
+    try {
+      const position = await getGpsLocation();
+      const data = await getIntegratedData({
+        types: ["activity", "restaurant"],
+        position,
+        maxDisKm: 15,
+        orderBy: "distance",
+      });
+      const title = `附近的景點與活動`;
+      setData(data);
+      setDataTitle(title);
+      setDataState("success");
+    } catch (err) {
+      console.error(err);
+      setDataState("error");
+    }
+  };
+
   const handleClickSearch = async () => {
     const searchTerm = searchText.trim();
 
@@ -383,7 +407,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         types: ["activity", "scenicSpot"],
         searchTerm,
       };
-      title = `含有 "${searchTerm}" 的景點或活動`;
+      title = `含有 "${searchTerm}" 的景點與活動`;
     } else if (category !== "") {
       filter = {
         types: [category],
@@ -485,7 +509,12 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       <Header mobileFilterContent={<MobileFilter />} />
       <Banner
         bgSrc={bannerImgSrc}
-        filterContent={<TabletFiler onClickSearch={handleClickSearch} />}
+        filterContent={
+          <TabletFiler
+            onClickSearch={handleClickSearch}
+            onClickGps={handleClickGps}
+          />
+        }
       />
       <MainSection>{mainContent}</MainSection>
       <Footer />
