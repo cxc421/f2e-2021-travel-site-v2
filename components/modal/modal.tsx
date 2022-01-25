@@ -3,6 +3,7 @@ import {
   TransitionEventHandler,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
@@ -41,10 +42,34 @@ export interface ModalProps {
 }
 
 export const Modal: FC<ModalProps> = ({ children, show, onHide }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const modalRoot = useModalRoot();
   const [trasnClassName, setTransClassName] = useState<"show" | "hide">("hide");
-  // const [trasnClassName, setTransClassName] = useState<"show" | "hide">("show");
-  const toHide = useCallback(() => setTransClassName("hide"), []);
+
+  const toHide = useCallback(() => {
+    if (containerRef.current) {
+      containerRef.current.removeAttribute("data-bg");
+    }
+    setTransClassName("hide");
+  }, [containerRef]);
+
+  const handleContainerTransitionEnd: TransitionEventHandler<HTMLDivElement> = (
+    e
+  ) => {
+    if (trasnClassName === "hide" && e.propertyName === "opacity") {
+      onHide();
+    }
+  };
+
+  const handleContentTransitionEnd: TransitionEventHandler<HTMLDivElement> = (
+    e
+  ) => {
+    if (trasnClassName === "show" && e.propertyName === "transform") {
+      if (containerRef.current) {
+        containerRef.current.setAttribute("data-bg", "blur");
+      }
+    }
+  };
 
   useClickOutside(show, toHide);
 
@@ -55,12 +80,6 @@ export const Modal: FC<ModalProps> = ({ children, show, onHide }) => {
     }
   }, [modalRoot, show]);
 
-  const handleTransitionEnd: TransitionEventHandler<HTMLDivElement> = (e) => {
-    if (trasnClassName === "hide" && e.propertyName === "opacity") {
-      onHide();
-    }
-  };
-
   if (!modalRoot || !show) {
     return null;
   }
@@ -68,12 +87,17 @@ export const Modal: FC<ModalProps> = ({ children, show, onHide }) => {
 
   return createPortal(
     <div
+      ref={containerRef}
       className={cn(style.container, style[trasnClassName])}
-      onTransitionEnd={handleTransitionEnd}
+      onTransitionEnd={handleContainerTransitionEnd}
       onClick={toHide}
     >
       <div className={style.contentWrapper}>
-        <div className={style.content} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={style.content}
+          onClick={(e) => e.stopPropagation()}
+          onTransitionEnd={handleContentTransitionEnd}
+        >
           {children}
           <div className={style.closeBtnWrapper}>
             <CloseButton

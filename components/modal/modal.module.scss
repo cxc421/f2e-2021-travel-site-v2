@@ -13,7 +13,11 @@
   transition: opacity 0.15s linear;
 
   background: rgba(210, 210, 210, 0.75);
-  backdrop-filter: blur(7px);
+
+  &[data-bg="blur"] {
+    transition: opacity 0.15s linear, backdrop-filter 1s ease-out;
+    backdrop-filter: blur(7px);
+  }
 
   &.show {
     opacity: 1;
