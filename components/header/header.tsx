@@ -37,10 +37,18 @@ const NavLinkList = () => (
   </ul>
 );
 
-const MobileButtonArea = () => (
+interface MobileButtonAreaProps {
+  onClickGoToSearchBtn?: () => void;
+  onClickGpsBtn?: () => void;
+}
+
+const MobileButtonArea: FC<MobileButtonAreaProps> = ({
+  onClickGpsBtn,
+  onClickGoToSearchBtn,
+}) => (
   <div className={style.mobileButtonArea}>
-    <SearchButton size={30} title="Go to search page" />
-    <GpsButton size={30} title="Get current location" />
+    <SearchButton size={30} title="搜尋" onClick={onClickGoToSearchBtn} />
+    <GpsButton size={30} title="定位" onClick={onClickGpsBtn} />
   </div>
 );
 
@@ -84,15 +92,24 @@ const MobileFilterArea: FC<MobileFilterAreaProps> = ({ content }) => (
 
 export interface HeaderProps {
   mobileFilterContent?: JSX.Element;
+  onClickGpsBtn?: () => void;
+  onClickGoToSerachBtn?: () => void;
 }
 
-export const Header: FC<HeaderProps> = ({ mobileFilterContent }) => {
+export const Header: FC<HeaderProps> = ({
+  mobileFilterContent,
+  onClickGoToSerachBtn,
+  onClickGpsBtn,
+}) => {
   return (
     <div className={style.wraper}>
       <header className={style.container}>
         <Logo />
         <NavLinkList />
-        <MobileButtonArea />
+        <MobileButtonArea
+          onClickGoToSearchBtn={onClickGoToSerachBtn}
+          onClickGpsBtn={onClickGpsBtn}
+        />
         <MobileNavList />
         <MobileFilterArea content={mobileFilterContent} />
       </header>

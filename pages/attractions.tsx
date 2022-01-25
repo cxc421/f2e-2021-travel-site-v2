@@ -567,6 +567,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     <AttractionCtx.Provider value={context}>
       <Header
         mobileFilterContent={<MobileFilter onClickSearch={handleClickSearch} />}
+        onClickGpsBtn={handleClickGps}
       />
       <Banner
         bgSrc={bannerImgSrc}
