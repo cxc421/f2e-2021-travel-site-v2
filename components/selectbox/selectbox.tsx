@@ -42,17 +42,19 @@ function useSelectContent() {
  */
 export interface SelectOptionProps {
   value: string;
+  disabled?: boolean;
 }
 
 export const SelectOption: FC<SelectOptionProps> = ({
   value: optionValue,
   children,
+  disabled = false,
 }) => {
   const { value, handleOptionMouseDown } = useSelectContent();
 
   return (
     <div
-      className={cn(style.option)}
+      className={cn(style.option, { [style.disabled]: disabled })}
       data-selected={value === optionValue}
       onMouseDown={() => handleOptionMouseDown(optionValue)}
     >
@@ -113,6 +115,8 @@ export interface SelectBoxProps {
   value: string;
   onChange: (newValue: string) => void;
   className?: string;
+  showTooltip?: boolean;
+  tooltipText?: string;
 }
 
 export const SelectBox: FC<SelectBoxProps> = ({
@@ -120,6 +124,8 @@ export const SelectBox: FC<SelectBoxProps> = ({
   onChange,
   className,
   children,
+  showTooltip,
+  tooltipText = "請先選擇選項",
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [showList, setShowList] = useShowList(ref);
@@ -162,6 +168,13 @@ export const SelectBox: FC<SelectBoxProps> = ({
           </div>
         )}
       </SelectCtx.Provider>
+      <div
+        className={cn(style.tooltip, {
+          [style.show]: !showList && showTooltip,
+        })}
+      >
+        {tooltipText}
+      </div>
     </div>
   );
 };

@@ -14,6 +14,8 @@ import {
   SetStateAction,
   useContext,
   useState,
+  useRef,
+  useEffect,
 } from "react";
 import {
   CategoryAttractions,
@@ -116,8 +118,35 @@ function useAttractionContext() {
 /**
  * Attraction Mobile Filter
  */
-const MobileFilter = () => {
+interface MobileFilterProps {
+  onClickSearch: () => void;
+}
+
+const MobileFilter: FC<MobileFilterProps> = ({ onClickSearch }) => {
   const { category, setCategory, city, setCity } = useAttractionContext();
+
+  const [showCategoryTooltip, setShowCategoryTooltip] = useState(false);
+  const prevCategoryRef = useRef(category);
+
+  useEffect(() => {
+    // hide category tooltup if category change
+    if (prevCategoryRef.current !== category) {
+      prevCategoryRef.current = category;
+      setShowCategoryTooltip(false);
+      // hide category tooltup after one second
+    } else if (showCategoryTooltip) {
+      const key = setTimeout(() => setShowCategoryTooltip(false), 1000);
+      return () => clearTimeout(key);
+    }
+  }, [showCategoryTooltip, prevCategoryRef, category]);
+
+  const handleClickSearchBtn = () => {
+    if (category === "") {
+      setShowCategoryTooltip(true);
+    } else {
+      onClickSearch();
+    }
+  };
 
   return (
     <div className={sharedStyle.mobileFilterContainer}>
@@ -125,13 +154,19 @@ const MobileFilter = () => {
         value={category}
         onChange={setCategory}
         className={sharedStyle.mobileSelectbox}
+        showTooltip={showCategoryTooltip}
       />
       <CitySelectbox
         value={city}
         onChange={setCity}
         className={sharedStyle.mobileSelectbox}
       />
-      <Button bgColor="red" size={40} className={sharedStyle.sendButton}>
+      <Button
+        bgColor="red"
+        size={40}
+        className={sharedStyle.sendButton}
+        onClick={handleClickSearchBtn}
+      >
         送出
       </Button>
     </div>
@@ -149,6 +184,29 @@ interface TabletFilerProps {
 const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch, onClickGps }) => {
   const { searchText, setSearchText, category, setCategory, city, setCity } =
     useAttractionContext();
+
+  const [showCategoryTooltip, setShowCategoryTooltip] = useState(false);
+  const prevCategoryRef = useRef(category);
+
+  useEffect(() => {
+    // hide category tooltup if category change
+    if (prevCategoryRef.current !== category) {
+      prevCategoryRef.current = category;
+      setShowCategoryTooltip(false);
+      // hide category tooltup after one second
+    } else if (showCategoryTooltip) {
+      const key = setTimeout(() => setShowCategoryTooltip(false), 1000);
+      return () => clearTimeout(key);
+    }
+  }, [showCategoryTooltip, prevCategoryRef, category]);
+
+  const handleClickSearchBtn = () => {
+    if (category === "") {
+      setShowCategoryTooltip(true);
+    } else {
+      onClickSearch();
+    }
+  };
 
   return (
     <div className={sharedStyle.tabletFilterContainer}>
@@ -170,6 +228,7 @@ const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch, onClickGps }) => {
           value={category}
           onChange={setCategory}
           className={sharedStyle.tabletInput}
+          showTooltip={showCategoryTooltip}
         />
         <CitySelectbox
           value={city}
@@ -180,7 +239,7 @@ const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch, onClickGps }) => {
           size={40}
           title="搜尋"
           className={sharedStyle.tabletButton}
-          onClick={onClickSearch}
+          onClick={handleClickSearchBtn}
         />
       </div>
     </div>
@@ -506,7 +565,9 @@ const Attractions: NextPage<AttractionsPageProps> = ({
 
   return (
     <AttractionCtx.Provider value={context}>
-      <Header mobileFilterContent={<MobileFilter />} />
+      <Header
+        mobileFilterContent={<MobileFilter onClickSearch={handleClickSearch} />}
+      />
       <Banner
         bgSrc={bannerImgSrc}
         filterContent={

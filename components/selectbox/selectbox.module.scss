@@ -59,10 +59,17 @@
   overflow: auto;
   background: $color-white;
   z-index: $z-index-selecbox-list;
+  // outline: 1px solid $color-black;
 
-  .option[data-selected="true"] {
+  .option:not(.disabled)[data-selected="true"] {
     background: $color-red;
-    color: $color-white;
+  }
+
+  .option.disabled {
+    pointer-events: none;
+    .optionText {
+      color: $color-gray;
+    }
   }
 
   .option:not([data-selected="true"]):hover {
@@ -78,4 +85,47 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: $z-index-selecbox-list;
+  top: 140%;
+  max-width: 100%;
+  width: 156px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background-color: $color-red;
+  color: $color-white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px 10px;
+  font-size: 16px;
+
+  white-space: nowrap;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent $color-red transparent;
+  }
+
+  @media (max-width: $screen-mobile) {
+    font-size: 14px;
+    white-space: unset;
+  }
+
+  transition: all 0.3s;
+  visibility: hidden;
+  opacity: 0;
+  &.show {
+    opacity: 1;
+    visibility: visible;
+  }
 }
