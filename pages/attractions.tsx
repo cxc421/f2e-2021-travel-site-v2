@@ -179,9 +179,14 @@ const MobileFilter: FC<MobileFilterProps> = ({ onClickSearch }) => {
 interface TabletFilerProps {
   onClickSearch: () => void;
   onClickGps: () => void;
+  onTypeEnter: () => void;
 }
 
-const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch, onClickGps }) => {
+const TabletFiler: FC<TabletFilerProps> = ({
+  onClickSearch,
+  onClickGps,
+  onTypeEnter,
+}) => {
   const { searchText, setSearchText, category, setCategory, city, setCity } =
     useAttractionContext();
 
@@ -215,6 +220,7 @@ const TabletFiler: FC<TabletFilerProps> = ({ onClickSearch, onClickGps }) => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           className={sharedStyle.tabletInput}
+          onTypeEnter={onTypeEnter}
         />
         <GpsButton
           size={40}
@@ -456,29 +462,43 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     }
   };
 
-  const handleClickSearch = async () => {
+  const handleTypeEnter = async () => {
     const searchTerm = searchText.trim();
+    if (searchTerm.length === 0) return;
 
-    let filter: IntegratedDataFilter;
-    let title = "";
-    if (searchTerm.length > 0) {
-      filter = {
-        types: ["activity", "scenicSpot"],
-        searchTerm,
-      };
-      title = `含有 "${searchTerm}" 的景點與活動`;
-    } else if (category !== "") {
-      filter = {
-        types: [category],
-        city: city !== "" ? city : undefined,
-      };
-      const locationText = filter.city ? `${filter.city}的` : "台灣的";
-      const categoryText = category === "activity" ? "活動" : "景點";
-      title = locationText + categoryText;
-    } else {
-      alert("Please specify category or type some search terms.");
-      return;
+    const filter: IntegratedDataFilter = {
+      types: ["activity", "scenicSpot"],
+      searchTerm,
+    };
+    const title = `含有 "${searchTerm}" 的景點與活動`;
+
+    setDataState("loading");
+    try {
+      const data = await getIntegratedData(filter);
+
+      setDataState("success");
+      setData(data);
+      setDataTitle(title);
+
+      // clear searchText
+      // ToDo: Save To Localstorage
+      setSearchText("");
+    } catch (err) {
+      console.error(err);
+      setDataState("error");
     }
+  };
+
+  const handleClickSearch = async () => {
+    if (category === "") return;
+
+    const filter: IntegratedDataFilter = {
+      types: [category],
+      city: city !== "" ? city : undefined,
+    };
+    const locationText = filter.city ? `${filter.city}的` : "台灣的";
+    const categoryText = category === "activity" ? "活動" : "景點";
+    const title = locationText + categoryText;
 
     setDataState("loading");
     try {
@@ -575,6 +595,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
           <TabletFiler
             onClickSearch={handleClickSearch}
             onClickGps={handleClickGps}
+            onTypeEnter={handleTypeEnter}
           />
         }
       />
