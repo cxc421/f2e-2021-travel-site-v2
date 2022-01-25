@@ -475,7 +475,8 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       break;
     }
     default: {
-      mainContent = <h3>Something Wrong...</h3>;
+      console.error("Fetch data failed...");
+      mainContent = <NoData />;
     }
   }
 
