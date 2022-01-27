@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { forwardRef } from "react";
 import { useRouter } from "next/router";
 import type { FC } from "react";
 import cn from "classnames";
@@ -96,24 +97,25 @@ export interface HeaderProps {
   onClickGoToSerachBtn?: () => void;
 }
 
-export const Header: FC<HeaderProps> = ({
-  mobileFilterContent,
-  onClickGoToSerachBtn,
-  onClickGpsBtn,
-}) => {
-  return (
-    <div className={style.wraper}>
-      <header className={style.container}>
-        <Logo />
-        <NavLinkList />
-        <MobileButtonArea
-          onClickGoToSearchBtn={onClickGoToSerachBtn}
-          onClickGpsBtn={onClickGpsBtn}
-        />
-        <MobileNavList />
-        <MobileFilterArea content={mobileFilterContent} />
-      </header>
-      <div className={style.shadow} />
-    </div>
-  );
-};
+export type HeaderType = HTMLHeadElement;
+
+export const Header = forwardRef<HeaderType, HeaderProps>(
+  ({ mobileFilterContent, onClickGoToSerachBtn, onClickGpsBtn }, headerRef) => {
+    return (
+      <div className={style.wraper}>
+        <header className={style.container} ref={headerRef}>
+          <Logo />
+          <NavLinkList />
+          <MobileButtonArea
+            onClickGoToSearchBtn={onClickGoToSerachBtn}
+            onClickGpsBtn={onClickGpsBtn}
+          />
+          <MobileNavList />
+          <MobileFilterArea content={mobileFilterContent} />
+        </header>
+        <div className={style.shadow} />
+      </div>
+    );
+  }
+);
+Header.displayName = "Header";

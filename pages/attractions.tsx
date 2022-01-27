@@ -1,6 +1,6 @@
 import type { NextPage, GetStaticProps } from "next";
 import sharedStyle from "../styles/shared.module.scss";
-import { Header } from "../components/header/header";
+import { Header, HeaderType } from "../components/header/header";
 import { Button } from "../components/button/button";
 import bannerImgSrc from "../images/banner-good-weather.png";
 import { Banner } from "../components/banner/banner";
@@ -16,6 +16,7 @@ import {
   useState,
   useRef,
   useEffect,
+  RefObject,
 } from "react";
 import {
   CategoryAttractions,
@@ -26,7 +27,10 @@ import {
   cityOptions,
   CitySelectbox,
 } from "../components/selectbox/city-selectbox";
-import { MainSection } from "../components/main-section/main-section";
+import {
+  MainSection,
+  MainSectionType,
+} from "../components/main-section/main-section";
 import { MainTitle } from "../components/main-section/main-title";
 import { Footer } from "../components/footer/footer";
 import { HorizontalScroll } from "../components/horizontal-scroll/horizontal-scroll";
@@ -36,7 +40,6 @@ import { MainCardHorizontalArea } from "../components/main-section/main-card-hor
 import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
 import { CardVertical } from "../components/card/card-vertical";
 import {
-  Coordinate,
   IntegratedData,
   IntegratedDataFilter,
   TdxApiType,
@@ -329,17 +332,19 @@ interface ResultSectionProps {
   data: IntegratedData[];
   titleText: string;
   onClickCard: (data: IntegratedData) => void;
+  headerRef: RefObject<HeaderType>;
+  mainSectionRef: RefObject<MainSectionType>;
 }
 
 const ResultSection: FC<ResultSectionProps> = ({
   data,
   titleText,
   onClickCard,
+  headerRef,
+  mainSectionRef,
 }) => {
   const PER_PAGE_DATA_NUM = 20;
-  const titleId = "result-title";
   const [page, setPage] = useState<number>(1);
-  useScrollToId(page, "__next");
 
   const startIdx = PER_PAGE_DATA_NUM * (page - 1);
   const endIdx = startIdx + PER_PAGE_DATA_NUM;
@@ -374,6 +379,21 @@ const ResultSection: FC<ResultSectionProps> = ({
     }
   };
 
+  useEffect(() => {
+    const headerElement = headerRef.current;
+    const mainSectionElement = mainSectionRef.current;
+    if (headerElement && mainSectionElement) {
+      const root = document.getElementById("__next");
+      const headerHeight = headerElement.getBoundingClientRect().height;
+      const mainSectionTop = mainSectionElement.getBoundingClientRect().top;
+
+      root?.scrollTo({
+        top: root.scrollTop - (headerHeight - mainSectionTop),
+        behavior: "smooth",
+      });
+    }
+  }, [page, headerRef, mainSectionRef]);
+
   const cardContent = displayData.map((data) => (
     <CardVertical
       key={data.id}
@@ -394,9 +414,7 @@ const ResultSection: FC<ResultSectionProps> = ({
 
   return (
     <>
-      <MainTitle type="triangle" id={titleId}>
-        {titleText}
-      </MainTitle>
+      <MainTitle type="triangle">{titleText}</MainTitle>
       <MainCardVerticalArea>{cardContent}</MainCardVerticalArea>
       {showPageButton && (
         <MainPageButtonsArea
@@ -420,6 +438,9 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,
   defaultRestaurants,
 }) => {
+  const headerRef = useRef<HeaderType>(null);
+  const mainSectionRef = useRef<MainSectionType>(null);
+
   const [searchText, setSearchText] = useState("");
   const [category, setCategory] = useState<CategoryAttractions>("");
   const [city, setCity] = useState<CityValue>("");
@@ -570,6 +591,8 @@ const Attractions: NextPage<AttractionsPageProps> = ({
             data={data}
             titleText={dataTitle}
             onClickCard={handleClickCard}
+            headerRef={headerRef}
+            mainSectionRef={mainSectionRef}
           />
         ) : (
           <NoData />
@@ -588,6 +611,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       <Header
         mobileFilterContent={<MobileFilter onClickSearch={handleClickSearch} />}
         onClickGpsBtn={handleClickGps}
+        ref={headerRef}
       />
       <Banner
         bgSrc={bannerImgSrc}
@@ -599,7 +623,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
           />
         }
       />
-      <MainSection>{mainContent}</MainSection>
+      <MainSection ref={mainSectionRef}>{mainContent}</MainSection>
       <Footer />
       <Modal
         show={detailCardData !== null}
