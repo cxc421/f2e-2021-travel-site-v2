@@ -8,7 +8,7 @@ export const categoryAttractionOptions: {
   text: string;
   disabled?: boolean;
 }[] = [
-  { value: "", text: "類別", disabled: true },
+  { value: "", text: "類別" },
   { value: "scenicSpot", text: "景點" },
   { value: "activity", text: "活動" },
 ];

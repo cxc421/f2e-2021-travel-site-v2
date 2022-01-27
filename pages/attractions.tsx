@@ -49,7 +49,6 @@ import { CardDetail, CardDetailProps } from "../components/card/card-detail";
 import useLogOnce from "../utils/useLogOnce";
 import { Loading } from "../components/loading/loading";
 import { MainPageButtonsArea } from "../components/main-section/main-page-button-area";
-import { useScrollToId } from "../utils/useScrollToId";
 import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 import { NoData } from "../components/no-data/no-data";
 import { getGpsLocation } from "../utils/getGpsLocation";
@@ -464,16 +463,27 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   useLogOnce(defaultRestaurants);
 
   const handleClickGps = async () => {
+    const searchTerm = searchText.trim();
+    const haveSearchTerm = searchTerm.length > 0;
+
     setDataState("loading");
     try {
       const position = await getGpsLocation();
       const data = await getIntegratedData({
-        types: ["activity", "restaurant"],
+        types: category === "" ? ["activity", "scenicSpot"] : [category],
+        searchTerm: haveSearchTerm ? searchTerm : undefined,
         position,
         maxDisKm: 15,
         orderBy: "distance",
       });
-      const title = `附近的景點與活動`;
+      const displaySearchText = haveSearchTerm ? `含有 "${searchTerm}"` : "";
+      const displayCategoryText =
+        category === ""
+          ? "景點與活動"
+          : category === "activity"
+          ? "活動"
+          : "景點";
+      const title = `附近${displaySearchText}的${displayCategoryText}`;
       setData(data);
       setDataTitle(title);
       setDataState("success");
@@ -483,44 +493,27 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     }
   };
 
-  const handleTypeEnter = async () => {
+  const handleSearch = async () => {
     const searchTerm = searchText.trim();
-    if (searchTerm.length === 0) return;
+    const haveSearchTerm = searchTerm.length > 0;
+    if (!haveSearchTerm && category === "") return;
 
     const filter: IntegratedDataFilter = {
-      types: ["activity", "scenicSpot"],
-      searchTerm,
-    };
-    const title = `含有 "${searchTerm}" 的景點與活動`;
-
-    setDataState("loading");
-    try {
-      const data = await getIntegratedData(filter);
-
-      setDataState("success");
-      setData(data);
-      setDataTitle(title);
-
-      // clear searchText
-      // ToDo: Save To Localstorage
-      setSearchText("");
-    } catch (err) {
-      console.error(err);
-      setDataState("error");
-    }
-  };
-
-  const handleClickSearch = async () => {
-    if (category === "") return;
-
-    const filter: IntegratedDataFilter = {
-      types: [category],
+      types: category === "" ? ["activity", "scenicSpot"] : [category],
       city: city !== "" ? city : undefined,
+      searchTerm: haveSearchTerm ? searchTerm : undefined,
     };
-    const locationText = filter.city ? `${filter.city}的` : "台灣的";
-    const categoryText = category === "activity" ? "活動" : "景點";
-    const title = locationText + categoryText;
+    const displayLocationText = filter.city ? `${filter.city}` : "台灣";
+    const displaySearchText = haveSearchTerm ? `含有 "${searchTerm}"` : "";
+    const displayCategoryText =
+      category === ""
+        ? "景點與活動"
+        : category === "activity"
+        ? "活動"
+        : "景點";
+    const title = `${displayLocationText}${displaySearchText}的${displayCategoryText}`;
 
+    // ToDo: add searchTerm to localStorage
     setDataState("loading");
     try {
       const data = await getIntegratedData(filter);
@@ -528,6 +521,10 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       setDataState("success");
       setData(data);
       setDataTitle(title);
+
+      // if (haveSearchTerm) {
+      //   setSearchText("");
+      // }
     } catch (err) {
       console.error(err);
       setDataState("error");
@@ -609,7 +606,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   return (
     <AttractionCtx.Provider value={context}>
       <Header
-        mobileFilterContent={<MobileFilter onClickSearch={handleClickSearch} />}
+        mobileFilterContent={<MobileFilter onClickSearch={handleSearch} />}
         onClickGpsBtn={handleClickGps}
         ref={headerRef}
       />
@@ -617,9 +614,9 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         bgSrc={bannerImgSrc}
         filterContent={
           <TabletFiler
-            onClickSearch={handleClickSearch}
+            onClickSearch={handleSearch}
             onClickGps={handleClickGps}
-            onTypeEnter={handleTypeEnter}
+            onTypeEnter={handleSearch}
           />
         }
       />

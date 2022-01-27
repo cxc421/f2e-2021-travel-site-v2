@@ -33,6 +33,7 @@ module.exports = {
       "www.ali-nsa.net",
       "tour.yunlin.gov.tw",
       "penghutravel.com",
+      "www.northguan-nsa.gov.tw",
     ],
   },
 };
