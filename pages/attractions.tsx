@@ -52,7 +52,9 @@ import { MainPageButtonsArea } from "../components/main-section/main-page-button
 import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 import { NoData } from "../components/no-data/no-data";
 import { getGpsLocation } from "../utils/getGpsLocation";
-import { MobileSearch } from "../components/mobile-search/mobile-search";
+import { SearchPanel } from "../components/search-panel/search-panel";
+import { useSearchHistory } from "../utils/useSearchHistory";
+import { useShowSearchPanel } from "../utils/useShowSearchPanel";
 
 /**
  *  Server Side Code
@@ -450,6 +452,9 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   const [dataState, setDataState] = useState<DataState>("idle");
   const [data, setData] = useState<IntegratedData[]>([]);
   const [dataTitle, setDataTitle] = useState("");
+  const { searchHistory, saveSearchHistory, clearAllSearchHistory } =
+    useSearchHistory();
+  const { showSearchPanel, setShowSearchPanel } = useShowSearchPanel();
 
   const context: AttractionContext = {
     city,
@@ -460,8 +465,8 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     setSearchText,
   };
 
-  useLogOnce(defaultActivities);
-  useLogOnce(defaultRestaurants);
+  // useLogOnce(defaultActivities);
+  // useLogOnce(defaultRestaurants);
 
   const handleClickGps = async () => {
     const searchTerm = searchText.trim();
@@ -514,7 +519,9 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         : "景點";
     const title = `${displayLocationText}${displaySearchText}的${displayCategoryText}`;
 
-    // ToDo: add searchTerm to localStorage
+    if (haveSearchTerm) {
+      saveSearchHistory(searchTerm);
+    }
     setDataState("loading");
     try {
       const data = await getIntegratedData(filter);
@@ -522,10 +529,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       setDataState("success");
       setData(data);
       setDataTitle(title);
-
-      // if (haveSearchTerm) {
-      //   setSearchText("");
-      // }
+      setSearchText("");
     } catch (err) {
       console.error(err);
       setDataState("error");
@@ -561,6 +565,13 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     } catch (err) {
       console.error(err);
       setDataState("error");
+    }
+  };
+
+  const handleHideSearchPanel = () => {
+    setShowSearchPanel(false);
+    if (searchText.trim().length > 0) {
+      handleSearch();
     }
   };
 
@@ -609,6 +620,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       <Header
         mobileFilterContent={<MobileFilter onClickSearch={handleSearch} />}
         onClickGpsBtn={handleClickGps}
+        onClickGoToSerachBtn={() => setShowSearchPanel(true)}
         ref={headerRef}
       />
       <Banner
@@ -629,7 +641,14 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       >
         {detailCardData && <CardDetail {...detailCardData} />}
       </Modal>
-      {/* <MobileSearch /> */}
+      <SearchPanel
+        searchText={searchText}
+        setSearchText={setSearchText}
+        show={showSearchPanel}
+        onHide={handleHideSearchPanel}
+        searchHistory={searchHistory}
+        clearAllSearchHistory={clearAllSearchHistory}
+      />
     </AttractionCtx.Provider>
   );
 };
