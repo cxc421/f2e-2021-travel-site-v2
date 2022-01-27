@@ -24,9 +24,11 @@ export const SearchPanel: FC<SearchPanelProps> = ({
   const searchboxRef = useRef<SearchboxType>(null);
 
   useEffect(() => {
+    const searchboxElement = searchboxRef.current;
     if (show) {
-      const searchboxElement = searchboxRef.current;
       searchboxElement?.focus();
+    } else {
+      searchboxElement?.blur();
     }
   }, [show]);
 
