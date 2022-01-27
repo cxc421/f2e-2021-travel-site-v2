@@ -1,0 +1,76 @@
+@use "../../styles/variable" as *;
+
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: $z-index-loading-shade;
+
+  background: $color-lightgray;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  height: 95px;
+  border-bottom: 1px solid #d2d2d2;
+
+  padding: 0 16px;
+}
+
+.bottom {
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  color: $color-gray;
+  font-size: 12px;
+  background-color: $color-white;
+}
+
+.center {
+  height: calc(100% - 32px - 95px);
+
+  padding: 0 16px;
+
+  .clearSearchArea {
+    padding-top: 17px;
+    text-align: right;
+    button {
+      margin: 0;
+      padding: 0;
+      outline: 0;
+      border: none;
+      background-color: transparent;
+      color: $color-red;
+      cursor: pointer;
+      font-size: 14px;
+      height: 21px;
+      line-height: 21px;
+    }
+  }
+
+  .searhHistoryList {
+    background-color: $color-white;
+    margin-top: 6px;
+    max-height: calc(100% - 17px - 21px - 6px - 12px);
+    border-radius: 6px;
+    padding: 5px 0 15px 0;
+    flex-direction: column;
+    overflow: auto;
+
+    li {
+      padding: 6px 10px;
+      color: $color-gray;
+      font-size: 14px;
+      cursor: pointer;
+
+      &:hover {
+        color: $color-black;
+      }
+    }
+  }
+}

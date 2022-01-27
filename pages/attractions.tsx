@@ -52,6 +52,7 @@ import { MainPageButtonsArea } from "../components/main-section/main-page-button
 import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 import { NoData } from "../components/no-data/no-data";
 import { getGpsLocation } from "../utils/getGpsLocation";
+import { MobileSearch } from "../components/mobile-search/mobile-search";
 
 /**
  *  Server Side Code
@@ -628,6 +629,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       >
         {detailCardData && <CardDetail {...detailCardData} />}
       </Modal>
+      {/* <MobileSearch /> */}
     </AttractionCtx.Provider>
   );
 };
