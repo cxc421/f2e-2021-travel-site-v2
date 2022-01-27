@@ -53,11 +53,13 @@ export const CardVertical: FC<CardVerticalProps> = ({
           </CardButton>
         </div>
         <div className={style.title}>{title}</div>
-        <div className={style.location}>
-          <Image width={11} height={14} src={gpsSmImgSrc} alt="gps" />
-          <span>{location}</span>
+        <div className={style.bottom}>
+          <div className={style.location}>
+            <Image width={11} height={14} src={gpsSmImgSrc} alt="gps" />
+            <span>{location}</span>
+          </div>
+          <DistanceTag disKm={disKm} />
         </div>
-        <DistanceTag disKm={disKm} />
       </div>
       <div className={style.shadow} />
     </div>
