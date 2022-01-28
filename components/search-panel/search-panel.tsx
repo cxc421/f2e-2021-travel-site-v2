@@ -1,4 +1,11 @@
-import { FC, Dispatch, SetStateAction, useEffect, useRef } from "react";
+import {
+  FC,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useRef,
+  MouseEvent,
+} from "react";
 import cn from "classnames";
 import { SearchButton } from "../button/search-button";
 import { Searchbox, SearchboxType } from "../searchbox/searchbox";
@@ -10,7 +17,7 @@ export interface SearchPanelProps {
   setSearchText: Dispatch<SetStateAction<string>>;
   onHide: () => void;
   searchHistory: string[];
-  clearAllSearchHistory: () => void;
+  clearSearchHistory: (idx?: number) => void;
 }
 
 export const SearchPanel: FC<SearchPanelProps> = ({
@@ -19,7 +26,7 @@ export const SearchPanel: FC<SearchPanelProps> = ({
   searchText,
   setSearchText,
   searchHistory,
-  clearAllSearchHistory,
+  clearSearchHistory,
 }) => {
   const searchboxRef = useRef<SearchboxType>(null);
 
@@ -34,6 +41,16 @@ export const SearchPanel: FC<SearchPanelProps> = ({
 
   const handleClickHistorySearchTerm = (searchTerm: string) => {
     setSearchText(searchTerm);
+  };
+
+  const handleClearAllHistory = () => clearSearchHistory();
+
+  const handleClickClickSingleHistory = (
+    e: MouseEvent<HTMLSpanElement, globalThis.MouseEvent>,
+    idx: number
+  ) => {
+    e.stopPropagation();
+    clearSearchHistory(idx);
   };
 
   return (
@@ -51,7 +68,7 @@ export const SearchPanel: FC<SearchPanelProps> = ({
         {searchHistory.length > 0 && (
           <>
             <div className={style.clearSearchArea}>
-              <button onClick={clearAllSearchHistory}>清除搜尋記錄</button>
+              <button onClick={handleClearAllHistory}>清除搜尋記錄</button>
             </div>
             <ul className={style.searhHistoryList}>
               {searchHistory.map((searchTerm, idx) => (
@@ -59,7 +76,13 @@ export const SearchPanel: FC<SearchPanelProps> = ({
                   key={idx}
                   onClick={() => handleClickHistorySearchTerm(searchTerm)}
                 >
-                  {searchTerm}
+                  <span className={style.historyText}>{searchTerm}</span>
+                  <span
+                    className={style.closeIcon}
+                    onClick={(e) => handleClickClickSingleHistory(e, idx)}
+                  >
+                    ❌
+                  </span>
                 </li>
               ))}
             </ul>

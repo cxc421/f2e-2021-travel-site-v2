@@ -29,14 +29,21 @@ export const useSearchHistory = () => {
     setSearchHistory(newSearchHistory);
   };
 
-  const clearAllSearchHistory = () => {
-    localStorage.setItem(SearchHistoryKey, JSON.stringify([]));
-    setSearchHistory([]);
+  const clearSearchHistory = (idx?: number) => {
+    let newSearchHistory: string[] = [];
+    if (typeof idx === "number") {
+      newSearchHistory = searchHistory.filter(
+        (_data, curIdx) => curIdx !== idx
+      );
+    }
+
+    localStorage.setItem(SearchHistoryKey, JSON.stringify(newSearchHistory));
+    setSearchHistory(newSearchHistory);
   };
 
   return {
     searchHistory,
     saveSearchHistory,
-    clearAllSearchHistory,
+    clearSearchHistory,
   };
 };

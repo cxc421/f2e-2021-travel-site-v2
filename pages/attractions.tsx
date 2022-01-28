@@ -452,7 +452,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   const [dataState, setDataState] = useState<DataState>("idle");
   const [data, setData] = useState<IntegratedData[]>([]);
   const [dataTitle, setDataTitle] = useState("");
-  const { searchHistory, saveSearchHistory, clearAllSearchHistory } =
+  const { searchHistory, saveSearchHistory, clearSearchHistory } =
     useSearchHistory();
   const { showSearchPanel, setShowSearchPanel } = useShowSearchPanel();
 
@@ -647,7 +647,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         show={showSearchPanel}
         onHide={handleHideSearchPanel}
         searchHistory={searchHistory}
-        clearAllSearchHistory={clearAllSearchHistory}
+        clearSearchHistory={clearSearchHistory}
       />
     </AttractionCtx.Provider>
   );

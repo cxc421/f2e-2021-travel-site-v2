@@ -74,18 +74,37 @@
     overflow: auto;
 
     li {
-      margin: 0 5px;
-      padding: 6px 5px;
+      margin: 4px 5px;
+      padding: 0px 5px;
       color: $color-gray;
-      font-size: 14px;
+      // background-color: lightblue;
+
       cursor: pointer;
 
-      &:hover {
-        color: $color-black;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      font-size: 16px;
+
+      .closeIcon {
+        color: lighten($color-red, 10%);
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        text-align: center;
+        // background-color: brown;
+        font-size: 14px;
       }
 
       &:active {
         background-color: $color-lightgray;
+        .historyText {
+          color: $color-black;
+        }
+        .closeIcon {
+          color: $color-red;
+        }
       }
     }
   }
