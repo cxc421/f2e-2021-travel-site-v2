@@ -18,21 +18,23 @@
     padding: 12px;
   }
 
-  &:hover {
-    .imgArea {
-      &::after {
-        opacity: 0.4;
+  @media (hover: hover) {
+    &:hover {
+      .imgArea {
+        &::after {
+          opacity: 0.4;
+        }
+        .detailButton {
+          transform: translate(-50%, -50%);
+          opacity: 1;
+        }
       }
-      .detailButton {
-        transform: translate(-50%, -50%);
-        opacity: 1;
-      }
-    }
 
-    .bottom {
-      .detailButton {
-        color: $color-white;
-        background-color: $color-red;
+      .bottom {
+        .detailButton {
+          color: $color-white;
+          background-color: $color-red;
+        }
       }
     }
   }

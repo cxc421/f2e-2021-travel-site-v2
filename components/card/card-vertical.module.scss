@@ -12,14 +12,16 @@
   background-color: $color-white;
   cursor: pointer;
 
-  &:hover {
-    .imgArea {
-      &::after {
-        opacity: 0.4;
-      }
-      .detailButton {
-        transform: translate(-50%, -50%);
-        opacity: 1;
+  @media (hover: hover) {
+    &:hover {
+      .imgArea {
+        &::after {
+          opacity: 0.4;
+        }
+        .detailButton {
+          transform: translate(-50%, -50%);
+          opacity: 1;
+        }
       }
     }
   }
