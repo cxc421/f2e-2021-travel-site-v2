@@ -5,9 +5,9 @@ const SHOW_SEARCH_PANEL_KEY = "showSearchPanel";
 export const useShowSearchPanel = () => {
   const [show, setShow] = useState(false);
 
-  if (typeof window !== "undefined") {
-    console.log(`history length: ${window.history.length}`);
-  }
+  // if (typeof window !== "undefined") {
+  //   console.log(`history length: ${window.history.length}`);
+  // }
 
   useEffect(() => {
     if (window.location.hash === `#${SHOW_SEARCH_PANEL_KEY}`) {
@@ -16,7 +16,7 @@ export const useShowSearchPanel = () => {
     }
 
     const handleHashChange = () => {
-      console.log("window.location.hash=" + window.location.hash);
+      // console.log("window.location.hash=" + window.location.hash);
       setShow(window.location.hash === `#${SHOW_SEARCH_PANEL_KEY}`);
     };
     window.addEventListener("hashchange", handleHashChange);
