@@ -1,9 +1,11 @@
 import Image from "next/image";
 import { FC } from "react";
+import cn from "classnames";
 import style from "./card-horizontal.module.scss";
 import gpsImgSrc from "./images/gps.png";
 import { CardButton } from "./card-button";
 import { CardImage } from "./card-image";
+import { useIsTouchDevice } from "../../utils/useIsTouchDevice";
 
 export interface CardHorizontalProps {
   img?: string;
@@ -22,9 +24,14 @@ export const CardHorizontal: FC<CardHorizontalProps> = ({
   onClick,
   imageButtonText,
 }) => {
+  const isTouch = useIsTouchDevice();
+
   return (
     <div className={style.wrapper}>
-      <div className={style.container} onClick={onClick}>
+      <div
+        className={cn(style.container, { [style.canHover]: !isTouch })}
+        onClick={onClick}
+      >
         <div className={style.imgArea}>
           <CardImage
             className={style.img}

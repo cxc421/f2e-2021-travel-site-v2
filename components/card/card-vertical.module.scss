@@ -12,7 +12,7 @@
   background-color: $color-white;
   cursor: pointer;
 
-  @media (hover: hover) {
+  &.canHover {
     &:hover {
       .imgArea {
         &::after {

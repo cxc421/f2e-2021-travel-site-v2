@@ -1,9 +1,11 @@
 import { FC } from "react";
 import Image from "next/image";
+import cn from "classnames";
 import style from "./card-vertical.module.scss";
 import gpsSmImgSrc from "./images/gps-sm.png";
 import { CardButton } from "./card-button";
 import { CardImage } from "./card-image";
+import { useIsTouchDevice } from "../../utils/useIsTouchDevice";
 
 interface DistanceTagProps {
   disKm?: number;
@@ -38,9 +40,14 @@ export const CardVertical: FC<CardVerticalProps> = ({
   imageButtonText,
   onClick,
 }) => {
+  const isTouch = useIsTouchDevice();
+
   return (
     <div className={style.wrapper}>
-      <div className={style.container} onClick={onClick}>
+      <div
+        className={cn(style.container, { [style.canHover]: !isTouch })}
+        onClick={onClick}
+      >
         <div className={style.imgArea}>
           <CardImage
             src={img || ""}
