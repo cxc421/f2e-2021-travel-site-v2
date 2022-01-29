@@ -128,7 +128,8 @@ interface MobileFilterProps {
 }
 
 const MobileFilter: FC<MobileFilterProps> = ({ onClickSearch }) => {
-  const { category, setCategory, city, setCity } = useAttractionContext();
+  const { searchText, category, setCategory, city, setCity } =
+    useAttractionContext();
 
   const [showCategoryTooltip, setShowCategoryTooltip] = useState(false);
   const prevCategoryRef = useRef(category);
@@ -146,7 +147,7 @@ const MobileFilter: FC<MobileFilterProps> = ({ onClickSearch }) => {
   }, [showCategoryTooltip, prevCategoryRef, category]);
 
   const handleClickSearchBtn = () => {
-    if (category === "") {
+    if (category === "" && searchText.trim().length === 0) {
       setShowCategoryTooltip(true);
     } else {
       onClickSearch();
@@ -211,7 +212,7 @@ const TabletFiler: FC<TabletFilerProps> = ({
   }, [showCategoryTooltip, prevCategoryRef, category]);
 
   const handleClickSearchBtn = () => {
-    if (category === "") {
+    if (category === "" && searchText.trim().length === 0) {
       setShowCategoryTooltip(true);
     } else {
       onClickSearch();
@@ -576,7 +577,6 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   };
 
   let mainContent: JSX.Element | null = null;
-
   switch (dataState) {
     case "idle": {
       mainContent = (
