@@ -55,6 +55,8 @@ import { getGpsLocation } from "../utils/getGpsLocation";
 import { SearchPanel } from "../components/search-panel/search-panel";
 import { useSearchHistory } from "../utils/useSearchHistory";
 import { useShowSearchPanel } from "../utils/useShowSearchPanel";
+import { ResultPagination } from "../components/result/result-pagination";
+import { ResultInfiniteScroll } from "../components/result/result-infinite-scroll";
 
 /**
  *  Server Side Code
@@ -331,6 +333,7 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
 /**
  * Result Section
  */
+
 interface ResultSectionProps {
   data: IntegratedData[];
   titleText: string;
@@ -339,95 +342,19 @@ interface ResultSectionProps {
   mainSectionRef: RefObject<MainSectionType>;
 }
 
-const ResultSection: FC<ResultSectionProps> = ({
-  data,
-  titleText,
-  onClickCard,
-  headerRef,
-  mainSectionRef,
-}) => {
-  const PER_PAGE_DATA_NUM = 20;
-  const [page, setPage] = useState<number>(1);
+const ResultSection: FC<ResultSectionProps> = (props) => {
+  const [type] = useState<"pagination" | "infinite-scroll">("pagination");
 
-  const startIdx = PER_PAGE_DATA_NUM * (page - 1);
-  const endIdx = startIdx + PER_PAGE_DATA_NUM;
-  const displayData = data.slice(startIdx, endIdx);
-  const showPageButton = data.length > PER_PAGE_DATA_NUM;
-  const totalPage = Math.ceil(data.length / PER_PAGE_DATA_NUM);
-
-  const handleClickNextBtn = () => {
-    const hasNextPage = endIdx < data.length;
-    if (hasNextPage) {
-      setPage((page) => page + 1);
-    }
-  };
-
-  const handleClickPrevBtn = () => {
-    const hasPrevPage = page > 1;
-    if (hasPrevPage) {
-      setPage((page) => page - 1);
-    }
-  };
-
-  const typeToImageBtnText = (type: TdxApiType) => {
-    switch (type) {
-      case "activity":
-        return "活動詳情";
-      case "hotel":
-        return "住宿詳情";
-      case "restaurant":
-        return "美食詳情";
-      case "scenicSpot":
-        return "景點詳情";
-    }
-  };
-
-  useEffect(() => {
-    const headerElement = headerRef.current;
-    const mainSectionElement = mainSectionRef.current;
-    if (headerElement && mainSectionElement) {
-      const root = document.getElementById("__next");
-      const headerHeight = headerElement.getBoundingClientRect().height;
-      const mainSectionTop = mainSectionElement.getBoundingClientRect().top;
-
-      root?.scrollTo({
-        top: root.scrollTop - (headerHeight - mainSectionTop),
-        behavior: "smooth",
-      });
-    }
-  }, [page, headerRef, mainSectionRef]);
-
-  const cardContent = displayData.map((data) => (
-    <CardVertical
-      key={data.id}
-      img={data.picture[0]?.url}
-      title={data.name}
-      location={
-        data.location === "to see the official site" ||
-        data.location === "詳見官網" ||
-        data.location === undefined
-          ? data.city || data.address
-          : data.location
-      }
-      imageButtonText={typeToImageBtnText(data.type)}
-      disKm={data.disKm}
-      onClick={() => onClickCard(data)}
-    />
-  ));
+  if (type === "pagination") {
+    return <ResultPagination {...props} />;
+  }
 
   return (
-    <>
-      <MainTitle type="triangle">{titleText}</MainTitle>
-      <MainCardVerticalArea>{cardContent}</MainCardVerticalArea>
-      {showPageButton && (
-        <MainPageButtonsArea
-          onClickNextBtn={handleClickNextBtn}
-          onClickPrevBtn={handleClickPrevBtn}
-          page={page}
-          totalPage={totalPage}
-        />
-      )}
-    </>
+    <ResultInfiniteScroll
+      data={props.data}
+      onClickCard={props.onClickCard}
+      titleText={props.titleText}
+    />
   );
 };
 
