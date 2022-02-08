@@ -34,6 +34,7 @@ module.exports = {
       "tour.yunlin.gov.tw",
       "penghutravel.com",
       "www.northguan-nsa.gov.tw",
+      "drive.google.com",
     ],
   },
 };
