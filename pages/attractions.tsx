@@ -16,7 +16,6 @@ import {
   useState,
   useRef,
   useEffect,
-  RefObject,
 } from "react";
 import {
   CategoryAttractions,
@@ -39,14 +38,9 @@ import { CardHorizontal } from "../components/card/card-horizontal";
 import { MainCardHorizontalArea } from "../components/main-section/main-card-horizontal-area";
 import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
 import { CardVertical } from "../components/card/card-vertical";
-import {
-  IntegratedData,
-  IntegratedDataFilter,
-  TdxApiType,
-} from "../libs/types";
+import { IntegratedData, IntegratedDataFilter } from "../libs/types";
 import { Modal } from "../components/modal/modal";
 import { CardDetail, CardDetailProps } from "../components/card/card-detail";
-import useLogOnce from "../utils/useLogOnce";
 import { Loading } from "../components/loading/loading";
 import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 import { NoData } from "../components/no-data/no-data";
@@ -54,8 +48,7 @@ import { getGpsLocation } from "../utils/getGpsLocation";
 import { SearchPanel } from "../components/search-panel/search-panel";
 import { useSearchHistory } from "../utils/useSearchHistory";
 import { useShowSearchPanel } from "../utils/useShowSearchPanel";
-import { ResultPagination } from "../components/result/result-pagination";
-import { ResultInfiniteScroll } from "../components/result/result-infinite-scroll";
+import { ResultSection } from "../components/result/result";
 
 /**
  *  Server Side Code
@@ -328,34 +321,6 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
     </MainCardVerticalArea>
   </>
 );
-
-/**
- * Result Section
- */
-
-interface ResultSectionProps {
-  data: IntegratedData[];
-  titleText: string;
-  onClickCard: (data: IntegratedData) => void;
-  headerRef: RefObject<HeaderType>;
-  mainSectionRef: RefObject<MainSectionType>;
-}
-
-const ResultSection: FC<ResultSectionProps> = (props) => {
-  const [type] = useState<"pagination" | "infinite-scroll">("infinite-scroll");
-
-  if (type === "pagination") {
-    return <ResultPagination {...props} />;
-  }
-
-  return (
-    <ResultInfiniteScroll
-      data={props.data}
-      onClickCard={props.onClickCard}
-      titleText={props.titleText}
-    />
-  );
-};
 
 /**
  *  Attractions Page

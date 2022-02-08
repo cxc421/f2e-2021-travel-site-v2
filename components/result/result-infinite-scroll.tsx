@@ -5,18 +5,7 @@ import { MainTitle } from "../main-section/main-title";
 import { CardVertical } from "../card/card-vertical";
 import { typeToImageBtnText } from "./libs/type-to-image-button-text";
 import vcardAreaStyle from "../main-section/main-card-vertical-area.module.scss";
-
-const pxToNumber = (() => {
-  let cache: { [px: string]: number } = {};
-
-  return (px: string): number => {
-    if (typeof cache[px] === "number") {
-      return cache[px];
-    }
-    cache[px] = Number(px.split("px")[0]);
-    return cache[px];
-  };
-})();
+import { pxToNumber } from "./libs/px-to-number";
 
 function getColumnsCount(container: any) {
   const width = container.getWidth();
