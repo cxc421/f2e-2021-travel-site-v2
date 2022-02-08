@@ -1,26 +1,38 @@
 @use "../../styles/variable" as *;
 
+// Coulmns
+$vcard-column-desktop: 5;
+$vcard-column-desktop-small: 4;
+$vcard-column-tablet: 3;
+$vcard-column-mobile: 2;
+
 .container {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat($vcard-column-desktop, minmax(0, 1fr));
   gap: 35px 9px;
 
   @media (max-width: $screen-desktop-small) {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat($vcard-column-desktop-small, minmax(0, 1fr));
     gap: 26px 12px;
   }
 
-  // @media (max-width: $screen-tablet) {
-  //   gap: 26px 12px;
-  // }
-
-  @media (max-width: $screen-tablet-small) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    // gap: 26px 12px;
+  @media (max-width: $screen-tablet) {
+    grid-template-columns: repeat($vcard-column-tablet, minmax(0, 1fr));
   }
 
   @media (max-width: $screen-mobile) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat($vcard-column-mobile, minmax(0, 1fr));
     gap: 19px 4px;
   }
+}
+
+:export {
+  screenDesktop: $screen-desktop;
+  screenDesktopSmall: $screen-desktop-small;
+  screenTablet: $screen-tablet;
+  screenMobile: $screen-mobile;
+  vcardColumnDesktop: $vcard-column-desktop;
+  vcardColumnDesktopSmall: $vcard-column-desktop-small;
+  vcardColumnTablet: $vcard-column-tablet;
+  vcardColumnMobile: $vcard-column-mobile;
 }

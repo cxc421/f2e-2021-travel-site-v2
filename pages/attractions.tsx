@@ -48,7 +48,6 @@ import { Modal } from "../components/modal/modal";
 import { CardDetail, CardDetailProps } from "../components/card/card-detail";
 import useLogOnce from "../utils/useLogOnce";
 import { Loading } from "../components/loading/loading";
-import { MainPageButtonsArea } from "../components/main-section/main-page-button-area";
 import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 import { NoData } from "../components/no-data/no-data";
 import { getGpsLocation } from "../utils/getGpsLocation";
@@ -343,7 +342,7 @@ interface ResultSectionProps {
 }
 
 const ResultSection: FC<ResultSectionProps> = (props) => {
-  const [type] = useState<"pagination" | "infinite-scroll">("pagination");
+  const [type] = useState<"pagination" | "infinite-scroll">("infinite-scroll");
 
   if (type === "pagination") {
     return <ResultPagination {...props} />;
