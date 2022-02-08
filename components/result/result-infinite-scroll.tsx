@@ -6,6 +6,7 @@ import { CardVertical } from "../card/card-vertical";
 import { typeToImageBtnText } from "./libs/type-to-image-button-text";
 import vcardAreaStyle from "../main-section/main-card-vertical-area.module.scss";
 import { pxToNumber } from "./libs/px-to-number";
+import { ScrollToTopButton } from "./result-scroll-top-button";
 
 function getColumnsCount(container: any) {
   const width = container.getWidth();
@@ -67,6 +68,11 @@ export const ResultInfiniteScroll: FC<ResultInfiniteScrollProps> = ({
     document.getElementById("__next")
   );
 
+  const scrollToTop = () => {
+    console.log(`Scroll To Top`);
+    scrollableContainer?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <>
       <MainTitle type="triangle">{titleText}</MainTitle>
@@ -80,6 +86,7 @@ export const ResultInfiniteScroll: FC<ResultInfiniteScrollProps> = ({
         getColumnsCount={getColumnsCount}
         scrollableContainer={scrollableContainer}
       />
+      <ScrollToTopButton onClick={scrollToTop} />
     </>
   );
 };

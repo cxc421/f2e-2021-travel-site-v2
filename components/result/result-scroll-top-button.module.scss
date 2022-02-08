@@ -1,0 +1,39 @@
+@use "../../styles/variable" as *;
+
+.container {
+  position: fixed;
+  right: 46px;
+  bottom: 46px;
+  z-index: $z-index-modal;
+
+  @media (max-width: $screen-mobile) {
+    right: 24px;
+    bottom: 24px;
+  }
+
+  .bg {
+    fill: $color-red;
+  }
+
+  .arrow {
+    fill: white;
+    transform: scale(0.66);
+    transform-origin: center;
+  }
+
+  // &:hover {
+  //   .bg {
+  //     fill: lighten($color-red, 10%);
+  //   }
+  // }
+
+  svg {
+    display: block;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+  }
+  path {
+    transition: all 0.1s;
+  }
+}
