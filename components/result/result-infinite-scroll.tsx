@@ -1,4 +1,4 @@
-import { FC, memo, useState } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import VirtualScroller from "virtual-scroller/react";
 import { IntegratedData } from "../../libs/types";
 import { MainTitle } from "../main-section/main-title";
@@ -53,6 +53,23 @@ const VirtualScrollerCardVertical = memo(
 );
 VirtualScrollerCardVertical.displayName = "VirtualScrollerCardVertical";
 
+function useShowScrollToTopButton(scrollableContainer: HTMLElement | null) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    if (scrollableContainer) {
+      const updateShow = () => {
+        setShow(scrollableContainer.scrollTop > 0.5 * window.innerHeight);
+      };
+      scrollableContainer.addEventListener("scroll", updateShow);
+      return () =>
+        scrollableContainer.removeEventListener("scroll", updateShow);
+    }
+  }, [scrollableContainer]);
+
+  return show;
+}
+
 export interface ResultInfiniteScrollProps {
   data: IntegratedData[];
   titleText: string;
@@ -67,9 +84,9 @@ export const ResultInfiniteScroll: FC<ResultInfiniteScrollProps> = ({
   const [scrollableContainer] = useState(() =>
     document.getElementById("__next")
   );
+  const showScrollTopButton = useShowScrollToTopButton(scrollableContainer);
 
   const scrollToTop = () => {
-    console.log(`Scroll To Top`);
     scrollableContainer?.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -86,7 +103,7 @@ export const ResultInfiniteScroll: FC<ResultInfiniteScrollProps> = ({
         getColumnsCount={getColumnsCount}
         scrollableContainer={scrollableContainer}
       />
-      <ScrollToTopButton onClick={scrollToTop} />
+      <ScrollToTopButton onClick={scrollToTop} show={showScrollTopButton} />
     </>
   );
 };

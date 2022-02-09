@@ -5,6 +5,19 @@
   right: 46px;
   bottom: 46px;
   z-index: $z-index-modal;
+  transition: all 300ms;
+
+  &.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.hide {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(20%);
+  }
 
   @media (max-width: $screen-mobile) {
     right: 24px;
@@ -20,12 +33,6 @@
     transform: scale(0.66);
     transform-origin: center;
   }
-
-  // &:hover {
-  //   .bg {
-  //     fill: lighten($color-red, 10%);
-  //   }
-  // }
 
   svg {
     display: block;

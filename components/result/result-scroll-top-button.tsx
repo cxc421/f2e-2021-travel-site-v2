@@ -1,13 +1,18 @@
 import { FC } from "react";
+import cn from "classnames";
 import style from "./result-scroll-top-button.module.scss";
 
 export interface ScrollToTopButtonProps {
   onClick: () => void;
+  show: boolean;
 }
 
-export const ScrollToTopButton: FC<ScrollToTopButtonProps> = ({ onClick }) => (
+export const ScrollToTopButton: FC<ScrollToTopButtonProps> = ({
+  onClick,
+  show,
+}) => (
   <a
-    className={style.container}
+    className={cn(style.container, show ? style.show : style.hide)}
     href="#"
     role="button"
     aria-label="Scroll to top"
