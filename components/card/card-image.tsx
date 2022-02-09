@@ -17,6 +17,17 @@ function useIsMounted(): boolean {
   return isMounted;
 }
 
+function useIsDelay(hasError: boolean) {
+  const [isDelay, setIsDelay] = useState(true);
+  useEffect(() => {
+    if (!hasError) {
+      const key = setTimeout(() => setIsDelay(false), 100);
+      return () => clearTimeout(key);
+    }
+  }, [hasError]);
+  return isDelay;
+}
+
 export const CardImage: FC<ImageProps> = ({
   src,
   alt,
@@ -27,8 +38,8 @@ export const CardImage: FC<ImageProps> = ({
   const [hasError, setHasError] = useState(
     typeof src !== "string" || src.length === 0
   );
+  const isDelay = useIsDelay(hasError);
   const [loadSuccess, setLoadSuccess] = useState(false);
-
   const imageSrcRef = useRef(src);
 
   useEffect(() => {
@@ -59,23 +70,25 @@ export const CardImage: FC<ImageProps> = ({
         [style.isSuccess]: loadSuccess,
       })}
     >
-      <Image
-        src={src}
-        alt={alt}
-        {...otherProps}
-        onError={(e) => {
-          if (!isMounted) return;
+      {!isDelay && (
+        <Image
+          src={src}
+          alt={alt}
+          {...otherProps}
+          onError={(e) => {
+            if (!isMounted) return;
 
-          if (onError) {
-            onError(e);
-          }
-          setHasError(true);
-        }}
-        onLoadingComplete={() => {
-          if (!isMounted) return;
-          setLoadSuccess(true);
-        }}
-      />
+            if (onError) {
+              onError(e);
+            }
+            setHasError(true);
+          }}
+          onLoadingComplete={() => {
+            if (!isMounted) return;
+            setLoadSuccess(true);
+          }}
+        />
+      )}
     </div>
   );
 };

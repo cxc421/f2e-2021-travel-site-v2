@@ -87,8 +87,9 @@ $z-index-card-button: 1;
       transparent 60%
     ),
     $bgColor;
+  background-position: 130%;
   background-size: 200% 100%;
-  animation: loading 1.5s ease-in-out infinite;
+  animation: loading 2s ease-in-out 1s infinite;
 }
 
 // Text Mixins
