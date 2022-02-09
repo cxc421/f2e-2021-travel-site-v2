@@ -21,7 +21,7 @@ function useIsDelay(hasError: boolean) {
   const [isDelay, setIsDelay] = useState(true);
   useEffect(() => {
     if (!hasError) {
-      const key = setTimeout(() => setIsDelay(false), 100);
+      const key = setTimeout(() => setIsDelay(false), 50);
       return () => clearTimeout(key);
     }
   }, [hasError]);
