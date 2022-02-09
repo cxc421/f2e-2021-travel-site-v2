@@ -3,7 +3,7 @@ import type { ImageProps } from "next/image";
 import { FC, useEffect, useRef, useState } from "react";
 import cn from "classnames";
 import style from "./card-image.module.scss";
-import noImgSrc from "./images/no-img.png";
+import noImgSrc from "./images/no-img-144.png";
 
 function useIsMounted(): boolean {
   const [isMounted, setIsMounted] = useState(false);
@@ -53,13 +53,9 @@ export const CardImage: FC<ImageProps> = ({
   if (hasError) {
     return (
       <div className={style.errorImgWrapper}>
-        <Image
-          className={style.errorImg}
-          width={67}
-          height={44}
-          src={noImgSrc}
-          alt="No Image"
-        />
+        <div className={style.errorImg}>
+          <Image width={144} height={89} src={noImgSrc} alt="No Image" />
+        </div>
       </div>
     );
   }
