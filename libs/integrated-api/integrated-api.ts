@@ -3,8 +3,13 @@ import { axiosInstance } from "./axios-config";
 
 export const getIntegratedData = async (
   filter: IntegratedDataFilter
-): Promise<IntegratedData[]> => {
-  const response = await axiosInstance.get("/api/tourism", {
+): Promise<{
+  startIdx: number;
+  endIdx: number;
+  total: number;
+  data: IntegratedData[];
+}> => {
+  const response = await axiosInstance.get("/api/tourism_v2", {
     params: {
       ...filter,
       _: Date.now(),

@@ -38,6 +38,8 @@ export type IntegratedDataFilter = {
   number?: number;
   orderBy?: "distance" | "shuffle";
   maxDisKm?: number;
+  startIdx?: number;
+  endIdx?: number;
   _?: any;
 };
 

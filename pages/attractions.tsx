@@ -62,24 +62,28 @@ export const getStaticProps: GetStaticProps<
   AttractionsPageProps
 > = async () => {
   // Default Activities
-  const defaultActivities = await getIntegratedData({
-    types: ["activity"],
-    number: 4,
-    smallestEndDate: new Date().toUTCString(),
-    needPicture: true,
-    needValidLocation: true,
-    orderBy: "shuffle",
-  });
+  const defaultActivities = (
+    await getIntegratedData({
+      types: ["activity"],
+      number: 4,
+      smallestEndDate: new Date().toUTCString(),
+      needPicture: true,
+      needValidLocation: true,
+      orderBy: "shuffle",
+    })
+  ).data;
 
   // Default Restaurant
-  const defaultRestaurants = await getIntegratedData({
-    types: ["restaurant"],
-    number: 10,
-    needPicture: true,
-    searchTerm: "好吃 美味 用餐",
-    searchProperty: "description",
-    orderBy: "shuffle",
-  });
+  const defaultRestaurants = (
+    await getIntegratedData({
+      types: ["restaurant"],
+      number: 10,
+      needPicture: true,
+      searchTerm: "好吃 美味 用餐",
+      searchProperty: "description",
+      orderBy: "shuffle",
+    })
+  ).data;
 
   return {
     props: {
@@ -367,7 +371,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     setDataState("loading");
     try {
       const position = await getGpsLocation();
-      const data = await getIntegratedData({
+      const response = await getIntegratedData({
         types: category === "" ? ["activity", "scenicSpot"] : [category],
         searchTerm: haveSearchTerm ? searchTerm : undefined,
         position,
@@ -382,7 +386,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
           ? "活動"
           : "景點";
       const title = `附近${displaySearchText}的${displayCategoryText}`;
-      setData(data);
+      setData(response.data);
       setDataTitle(title);
       setDataState("success");
     } catch (err) {
@@ -416,10 +420,10 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     }
     setDataState("loading");
     try {
-      const data = await getIntegratedData(filter);
+      const response = await getIntegratedData(filter);
 
       setDataState("success");
-      setData(data);
+      setData(response.data);
       setDataTitle(title);
       setSearchText("");
     } catch (err) {
@@ -444,13 +448,13 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   const handleClickCity = async (city: CityValue) => {
     setDataState("loading");
     try {
-      const scenicSpots = await getIntegratedData({
+      const response = await getIntegratedData({
         types: ["scenicSpot"],
         city,
       });
 
       setDataState("success");
-      setData(scenicSpots);
+      setData(response.data);
       const cityText =
         cityOptions.find((option) => option.value === city)?.text || "台灣";
       setDataTitle(`${cityText}的景點`);
