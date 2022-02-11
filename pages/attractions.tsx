@@ -16,6 +16,7 @@ import {
   useState,
   useRef,
   useEffect,
+  useCallback,
 } from "react";
 import {
   CategoryAttractions,
@@ -38,7 +39,11 @@ import { CardHorizontal } from "../components/card/card-horizontal";
 import { MainCardHorizontalArea } from "../components/main-section/main-card-horizontal-area";
 import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
 import { CardVertical } from "../components/card/card-vertical";
-import { IntegratedData, IntegratedDataFilter } from "../libs/types";
+import {
+  Coordinate,
+  IntegratedData,
+  IntegratedDataFilter,
+} from "../libs/types";
 import { Modal } from "../components/modal/modal";
 import { CardDetail, CardDetailProps } from "../components/card/card-detail";
 import { Loading } from "../components/loading/loading";
@@ -332,6 +337,120 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
 
 type DataState = "idle" | "success" | "loading" | "error";
 
+type QueryDataParams = {
+  types: IntegratedDataFilter["types"];
+  positionBy: "city" | "gps";
+  city?: CityValue;
+  searchText?: string;
+};
+
+function useIntegratedData() {
+  const [dataState, setDataState] = useState<DataState>("idle");
+  const [dataTitle, setDataTitle] = useState("");
+  const [data, setData] = useState<IntegratedData[]>([]);
+  const [dataTotal, setDataTotal] = useState(0);
+  const [prevDataFilter, setPrevDataFilter] =
+    useState<IntegratedDataFilter | null>(null);
+  const isBusyRef = useRef(false);
+
+  const filterToTitle = (filter: IntegratedDataFilter) => {
+    const displayLocationText = filter.position
+      ? "附近"
+      : filter.city
+      ? `${filter.city}`
+      : "台灣";
+    const displaySearchText = filter.searchTerm
+      ? `含有 "${filter.searchTerm}"`
+      : "";
+    const displayCategoryText = filter.types
+      .map((type) => {
+        switch (type) {
+          case "activity":
+            return "活動";
+          case "scenicSpot":
+            return "景點";
+          case "hotel":
+            return "住宿";
+          case "restaurant":
+            return "美食";
+        }
+      })
+      .join("與");
+    const title = `${displayLocationText}${displaySearchText}的${displayCategoryText}`;
+    return title;
+  };
+
+  const queryData = async (queryParams: QueryDataParams, amount = 200) => {
+    setDataState("loading");
+    try {
+      const filter: IntegratedDataFilter = {
+        types: queryParams.types,
+        startIdx: 0,
+        endIdx: amount - 1,
+      };
+      const searchTerm = queryParams.searchText?.trim();
+      if (searchTerm && searchTerm.length > 0) {
+        filter.searchTerm = searchTerm;
+      }
+      if (queryParams.positionBy === "city") {
+        filter.city = queryParams.city;
+      } else {
+        filter.position = await getGpsLocation();
+        filter.maxDisKm = 15;
+        filter.orderBy = "distance";
+      }
+
+      const response = await getIntegratedData(filter);
+      setData(response.data);
+      setDataTotal(response.total);
+      setDataTitle(filterToTitle(filter));
+      setPrevDataFilter(filter);
+      setDataState("success");
+    } catch {
+      setDataState("error");
+    }
+  };
+
+  const loadMore = async (amount = 100) => {
+    if (!prevDataFilter) {
+      console.error(`[loadMore]: Not prev query filter exist`);
+      return;
+    }
+    if (isBusyRef.current) {
+      console.log(`[loadMore]: isBusy, neglect`);
+      return;
+    }
+    if (data.length === dataTotal) {
+      console.log(`[loadMore]: already complete, neglect`);
+      return;
+    }
+
+    isBusyRef.current = true;
+    try {
+      const response = await getIntegratedData({
+        ...prevDataFilter,
+        startIdx: data.length,
+        endIdx: data.length + amount - 1,
+      });
+      setData(data.concat(response.data));
+      setDataTotal(response.total);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      isBusyRef.current = false;
+    }
+  };
+
+  return {
+    dataState,
+    dataTitle,
+    data,
+    dataTotal,
+    queryData,
+    loadMore,
+  };
+}
+
 const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,
   defaultRestaurants,
@@ -345,9 +464,8 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   const [detailCardData, setDetailCardData] = useState<CardDetailProps | null>(
     null
   );
-  const [dataState, setDataState] = useState<DataState>("idle");
-  const [data, setData] = useState<IntegratedData[]>([]);
-  const [dataTitle, setDataTitle] = useState("");
+  const { data, dataState, dataTitle, dataTotal, queryData, loadMore } =
+    useIntegratedData();
   const { searchHistory, saveSearchHistory, clearSearchHistory } =
     useSearchHistory();
   const { showSearchPanel, setShowSearchPanel } = useShowSearchPanel();
@@ -361,38 +479,12 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     setSearchText,
   };
 
-  // useLogOnce(defaultActivities);
-  // useLogOnce(defaultRestaurants);
-
   const handleClickGps = async () => {
-    const searchTerm = searchText.trim();
-    const haveSearchTerm = searchTerm.length > 0;
-
-    setDataState("loading");
-    try {
-      const position = await getGpsLocation();
-      const response = await getIntegratedData({
-        types: category === "" ? ["activity", "scenicSpot"] : [category],
-        searchTerm: haveSearchTerm ? searchTerm : undefined,
-        position,
-        maxDisKm: 15,
-        orderBy: "distance",
-      });
-      const displaySearchText = haveSearchTerm ? `含有 "${searchTerm}"` : "";
-      const displayCategoryText =
-        category === ""
-          ? "景點與活動"
-          : category === "activity"
-          ? "活動"
-          : "景點";
-      const title = `附近${displaySearchText}的${displayCategoryText}`;
-      setData(response.data);
-      setDataTitle(title);
-      setDataState("success");
-    } catch (err) {
-      console.error(err);
-      setDataState("error");
-    }
+    queryData({
+      types: category === "" ? ["activity", "scenicSpot"] : [category],
+      positionBy: "gps",
+      searchText,
+    });
   };
 
   const handleSearch = async () => {
@@ -400,36 +492,16 @@ const Attractions: NextPage<AttractionsPageProps> = ({
     const haveSearchTerm = searchTerm.length > 0;
     if (!haveSearchTerm && category === "") return;
 
-    const filter: IntegratedDataFilter = {
-      types: category === "" ? ["activity", "scenicSpot"] : [category],
-      city: city !== "" ? city : undefined,
-      searchTerm: haveSearchTerm ? searchTerm : undefined,
-    };
-    const displayLocationText = filter.city ? `${filter.city}` : "台灣";
-    const displaySearchText = haveSearchTerm ? `含有 "${searchTerm}"` : "";
-    const displayCategoryText =
-      category === ""
-        ? "景點與活動"
-        : category === "activity"
-        ? "活動"
-        : "景點";
-    const title = `${displayLocationText}${displaySearchText}的${displayCategoryText}`;
-
     if (haveSearchTerm) {
       saveSearchHistory(searchTerm);
     }
-    setDataState("loading");
-    try {
-      const response = await getIntegratedData(filter);
 
-      setDataState("success");
-      setData(response.data);
-      setDataTitle(title);
-      setSearchText("");
-    } catch (err) {
-      console.error(err);
-      setDataState("error");
-    }
+    queryData({
+      types: category === "" ? ["activity", "scenicSpot"] : [category],
+      positionBy: "city",
+      city: city !== "" ? city : undefined,
+      searchText,
+    });
   };
 
   const handleClickCard = (data: IntegratedData) => {
@@ -446,22 +518,11 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   };
 
   const handleClickCity = async (city: CityValue) => {
-    setDataState("loading");
-    try {
-      const response = await getIntegratedData({
-        types: ["scenicSpot"],
-        city,
-      });
-
-      setDataState("success");
-      setData(response.data);
-      const cityText =
-        cityOptions.find((option) => option.value === city)?.text || "台灣";
-      setDataTitle(`${cityText}的景點`);
-    } catch (err) {
-      console.error(err);
-      setDataState("error");
-    }
+    queryData({
+      types: ["scenicSpot"],
+      positionBy: "city",
+      city,
+    });
   };
 
   const handleHideSearchPanel = () => {
@@ -493,6 +554,8 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         data.length > 0 ? (
           <ResultSection
             data={data}
+            dataTotal={dataTotal}
+            loadMore={loadMore}
             titleText={dataTitle}
             onClickCard={handleClickCard}
             headerRef={headerRef}
@@ -501,7 +564,6 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         ) : (
           <NoData />
         );
-      // console.log(data);
       break;
     }
     default: {

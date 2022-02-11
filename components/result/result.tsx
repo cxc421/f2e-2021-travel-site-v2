@@ -31,6 +31,8 @@ function useResultDisplay(): ResultDisplay {
 
 export interface ResultSectionProps {
   data: IntegratedData[];
+  dataTotal: number;
+  loadMore: (amount?: number) => void;
   titleText: string;
   onClickCard: (data: IntegratedData) => void;
   headerRef: RefObject<HeaderType>;

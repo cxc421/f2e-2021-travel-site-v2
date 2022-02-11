@@ -7,9 +7,12 @@ import { MainTitle } from "../main-section/main-title";
 import { MainCardVerticalArea } from "../main-section/main-card-vertical-area";
 import { MainPageButtonsArea } from "../main-section/main-page-button-area";
 import { typeToImageBtnText } from "./libs/type-to-image-button-text";
+import { Loading } from "../loading/loading";
 
 export interface ResultPaginationProps {
   data: IntegratedData[];
+  dataTotal: number;
+  loadMore: (amount?: number) => void;
   titleText: string;
   onClickCard: (data: IntegratedData) => void;
   headerRef: RefObject<HeaderType>;
@@ -18,6 +21,8 @@ export interface ResultPaginationProps {
 
 export const ResultPagination: FC<ResultPaginationProps> = ({
   data,
+  dataTotal,
+  loadMore,
   titleText,
   onClickCard,
   headerRef,
@@ -29,11 +34,12 @@ export const ResultPagination: FC<ResultPaginationProps> = ({
   const startIdx = PER_PAGE_DATA_NUM * (page - 1);
   const endIdx = startIdx + PER_PAGE_DATA_NUM;
   const displayData = data.slice(startIdx, endIdx);
-  const showPageButton = data.length > PER_PAGE_DATA_NUM;
-  const totalPage = Math.ceil(data.length / PER_PAGE_DATA_NUM);
+  const showPageButton = dataTotal > PER_PAGE_DATA_NUM;
+  const dataPage = Math.ceil(data.length / PER_PAGE_DATA_NUM);
+  const totalPage = Math.ceil(dataTotal / PER_PAGE_DATA_NUM);
 
   const handleClickNextBtn = () => {
-    const hasNextPage = endIdx < data.length;
+    const hasNextPage = endIdx < dataTotal;
     if (hasNextPage) {
       setPage((page) => page + 1);
     }
@@ -45,6 +51,14 @@ export const ResultPagination: FC<ResultPaginationProps> = ({
       setPage((page) => page - 1);
     }
   };
+
+  useEffect(() => {
+    // console.log({ dataPage, totalPage, page });
+    if (dataPage !== totalPage && dataPage - page < 5) {
+      // console.log(`Trigger load more!`);
+      loadMore();
+    }
+  }, [dataPage, totalPage, page, loadMore]);
 
   useEffect(() => {
     const headerElement = headerRef.current;
@@ -78,6 +92,10 @@ export const ResultPagination: FC<ResultPaginationProps> = ({
       onClick={() => onClickCard(data)}
     />
   ));
+
+  if (cardContent.length === 0 && totalPage > 1) {
+    return <Loading />;
+  }
 
   return (
     <>
