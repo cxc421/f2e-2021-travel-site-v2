@@ -28,7 +28,6 @@ module.exports = {
       "swcoast-nsa.travel",
       "khh.travel",
       "www.siraya-nsa.gov.tw",
-      "210.69.151.212",
       "www.erv-nsa.gov.tw",
       "www.ali-nsa.net",
       "tour.yunlin.gov.tw",

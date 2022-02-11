@@ -5,6 +5,8 @@ import cn from "classnames";
 import style from "./card-image.module.scss";
 import noImgSrc from "./images/no-img-144.png";
 
+const blackListUrls = ["http://210.69.151.212"];
+
 function useIsMounted(): boolean {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -36,7 +38,9 @@ export const CardImage: FC<ImageProps> = ({
 }) => {
   const isMounted = useIsMounted();
   const [hasError, setHasError] = useState(
-    typeof src !== "string" || src.length === 0
+    typeof src !== "string" ||
+      src.length === 0 ||
+      blackListUrls.some((url) => src.startsWith(url))
   );
   const isDelay = useIsDelay(hasError);
   const [loadSuccess, setLoadSuccess] = useState(false);
