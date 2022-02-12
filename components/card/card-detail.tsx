@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { FC, useState } from "react";
+import cn from "classnames";
 import { NextButton } from "../button/next-button";
 import { PreviousButton } from "../button/previous-button";
 import style from "./card-detail.module.scss";
@@ -14,12 +15,14 @@ interface CardDetailItemProps {
   iconSrc: StaticImageData;
   iconWidth?: number;
   iconHeight?: number;
+  textClassName?: string;
 }
 
 const CardDetailItem: FC<CardDetailItemProps> = ({
   iconSrc,
   iconHeight = 24,
   iconWidth = 24,
+  textClassName,
   children,
 }) => (
   <div className={style.item}>
@@ -32,7 +35,7 @@ const CardDetailItem: FC<CardDetailItemProps> = ({
         alt="icon"
       />
     </div>
-    <span className={style.itemText}>{children}</span>
+    <span className={cn(style.itemText, textClassName)}>{children}</span>
   </div>
 );
 
@@ -104,28 +107,35 @@ export const CardDetail: FC<CardDetailProps> = ({
           </div>
         )}
         {websiteUrl ? (
-          <a
-            className={style.title}
-            href={websiteUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {title}
-          </a>
+          <div>
+            <a
+              className={style.title}
+              href={websiteUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {title}
+            </a>
+          </div>
         ) : (
           <div className={style.title}>{title}</div>
         )}
         <div className={style.description}>{description}</div>
         <div className={style.infoArea}>
           {time && <CardDetailItem iconSrc={timeImgSrc}>{time}</CardDetailItem>}
-          {price && (
-            <CardDetailItem iconSrc={ticketImgSrc}>{price}</CardDetailItem>
-          )}
           {address && (
             <CardDetailItem iconSrc={gpsImgSrc}>{address}</CardDetailItem>
           )}
           {phone && (
             <CardDetailItem iconSrc={telImgSrc}>{phone}</CardDetailItem>
+          )}
+          {price && (
+            <CardDetailItem
+              iconSrc={ticketImgSrc}
+              textClassName={style.changeLine}
+            >
+              {adjustPriceText(price)}
+            </CardDetailItem>
           )}
         </div>
       </div>
@@ -133,3 +143,10 @@ export const CardDetail: FC<CardDetailProps> = ({
     </div>
   );
 };
+
+function adjustPriceText(priceText: string) {
+  return priceText
+    .split(";")
+    .filter((text) => text.length > 0)
+    .join("\n");
+}

@@ -136,5 +136,9 @@
     margin-left: 10px;
     font-size: 14px;
     line-height: 21px;
+
+    &.changeLine {
+      white-space: pre-line;
+    }
   }
 }
