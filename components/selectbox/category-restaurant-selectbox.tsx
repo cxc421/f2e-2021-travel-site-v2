@@ -1,15 +1,15 @@
 import { FC } from "react";
 import { SelectBox, SelectOption } from "./selectbox";
 
-export type CategoryRestaurant = "" | "Restaurant" | "Hotel";
+export type CategoryRestaurant = "" | "restaurant" | "hotel";
 
 export const categoryRestaurantOptions: {
   value: CategoryRestaurant;
   text: string;
 }[] = [
   { value: "", text: "類別" },
-  { value: "Restaurant", text: "美食" },
-  { value: "Hotel", text: "住宿" },
+  { value: "restaurant", text: "美食" },
+  { value: "hotel", text: "住宿" },
 ];
 
 export interface CategoryRestaurantSelectboxProps {

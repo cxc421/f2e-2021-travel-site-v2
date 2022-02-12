@@ -16,7 +16,6 @@ import {
   useState,
   useRef,
   useEffect,
-  useCallback,
 } from "react";
 import {
   CategoryAttractions,
@@ -24,7 +23,6 @@ import {
 } from "../components/selectbox/category-attractions-selectbox";
 import {
   CityValue,
-  cityOptions,
   CitySelectbox,
 } from "../components/selectbox/city-selectbox";
 import {
@@ -39,21 +37,17 @@ import { CardHorizontal } from "../components/card/card-horizontal";
 import { MainCardHorizontalArea } from "../components/main-section/main-card-horizontal-area";
 import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
 import { CardVertical } from "../components/card/card-vertical";
-import {
-  Coordinate,
-  IntegratedData,
-  IntegratedDataFilter,
-} from "../libs/types";
+import { IntegratedData } from "../libs/types";
 import { Modal } from "../components/modal/modal";
 import { CardDetail, CardDetailProps } from "../components/card/card-detail";
 import { Loading } from "../components/loading/loading";
 import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 import { NoData } from "../components/no-data/no-data";
-import { getGpsLocation } from "../utils/getGpsLocation";
 import { SearchPanel } from "../components/search-panel/search-panel";
 import { useSearchHistory } from "../utils/useSearchHistory";
 import { useShowSearchPanel } from "../utils/useShowSearchPanel";
 import { ResultSection } from "../components/result/result";
+import { useIntegratedData } from "../utils/useIntegratedData";
 
 /**
  *  Server Side Code
@@ -284,16 +278,6 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
     </HorizontalScroll>
     <MainTitle type="triangle">熱門活動</MainTitle>
     <MainCardHorizontalArea>
-      {/* {Array.from({ length: 4 }).map((_, idx) => (
-      <CardHorizontal
-        key={idx}
-        img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-        title="合歡山國際暗空公園-星空清境跨年活動"
-        description="竹子湖海拔670公尺，位居大屯山、七星山與小觀音山間的谷地。曾是火山堰塞湖，湖水退去後留下肥沃的土壤，形成典型的農村聚落，近年結合在地花卉等產業與自然、人文資源發展休閒農業，成為臺北市第三個休閒農業區。"
-        location="臺北市 北投區"
-        onClick={() => setDetailCardData(cardDetailTestData)}
-      />
-    ))} */}
       {defaultActivities.map((data) => (
         <CardHorizontal
           key={data.id}
@@ -308,15 +292,6 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
     </MainCardHorizontalArea>
     <MainTitle type="rectangle">熱門餐飲</MainTitle>
     <MainCardVerticalArea>
-      {/* {Array.from({ length: 10 }).map((_, index) => (
-      <CardVertical
-        key={index}
-        img="https://www.taiwan.net.tw/att/event/38a0d7b6-432c-458a-9b29-f278fe7728ef.jpg"
-        title="合歡山國際暗空公園-星空清境跨年活動"
-        location="臺北市 北投區"
-        onClick={() => setDetailCardData(cardDetailTestData)}
-      />
-    ))} */}
       {defaultRestaurants.map((data) => (
         <CardVertical
           key={data.id}
@@ -334,122 +309,6 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
 /**
  *  Attractions Page
  */
-
-type DataState = "idle" | "success" | "loading" | "error";
-
-type QueryDataParams = {
-  types: IntegratedDataFilter["types"];
-  positionBy: "city" | "gps";
-  city?: CityValue;
-  searchText?: string;
-};
-
-function useIntegratedData() {
-  const [dataState, setDataState] = useState<DataState>("idle");
-  const [dataTitle, setDataTitle] = useState("");
-  const [data, setData] = useState<IntegratedData[]>([]);
-  const [dataTotal, setDataTotal] = useState(0);
-  const [prevDataFilter, setPrevDataFilter] =
-    useState<IntegratedDataFilter | null>(null);
-  const isBusyRef = useRef(false);
-
-  const filterToTitle = (filter: IntegratedDataFilter) => {
-    const displayLocationText = filter.position
-      ? "附近"
-      : filter.city
-      ? `${filter.city}`
-      : "台灣";
-    const displaySearchText = filter.searchTerm
-      ? `含有 "${filter.searchTerm}"`
-      : "";
-    const displayCategoryText = filter.types
-      .map((type) => {
-        switch (type) {
-          case "activity":
-            return "活動";
-          case "scenicSpot":
-            return "景點";
-          case "hotel":
-            return "住宿";
-          case "restaurant":
-            return "美食";
-        }
-      })
-      .join("與");
-    const title = `${displayLocationText}${displaySearchText}的${displayCategoryText}`;
-    return title;
-  };
-
-  const queryData = async (queryParams: QueryDataParams, amount = 200) => {
-    setDataState("loading");
-    try {
-      const filter: IntegratedDataFilter = {
-        types: queryParams.types,
-        startIdx: 0,
-        endIdx: amount - 1,
-      };
-      const searchTerm = queryParams.searchText?.trim();
-      if (searchTerm && searchTerm.length > 0) {
-        filter.searchTerm = searchTerm;
-      }
-      if (queryParams.positionBy === "city") {
-        filter.city = queryParams.city;
-      } else {
-        filter.position = await getGpsLocation();
-        filter.maxDisKm = 15;
-        filter.orderBy = "distance";
-      }
-
-      const response = await getIntegratedData(filter);
-      setData(response.data);
-      setDataTotal(response.total);
-      setDataTitle(filterToTitle(filter));
-      setPrevDataFilter(filter);
-      setDataState("success");
-    } catch {
-      setDataState("error");
-    }
-  };
-
-  const loadMore = async (amount = 100) => {
-    if (!prevDataFilter) {
-      console.error(`[loadMore]: Not prev query filter exist`);
-      return;
-    }
-    if (isBusyRef.current) {
-      console.log(`[loadMore]: isBusy, neglect`);
-      return;
-    }
-    if (data.length === dataTotal) {
-      console.log(`[loadMore]: already complete, neglect`);
-      return;
-    }
-
-    isBusyRef.current = true;
-    try {
-      const response = await getIntegratedData({
-        ...prevDataFilter,
-        startIdx: data.length,
-        endIdx: data.length + amount - 1,
-      });
-      setData(data.concat(response.data));
-      setDataTotal(response.total);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      isBusyRef.current = false;
-    }
-  };
-
-  return {
-    dataState,
-    dataTitle,
-    data,
-    dataTotal,
-    queryData,
-    loadMore,
-  };
-}
 
 const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,

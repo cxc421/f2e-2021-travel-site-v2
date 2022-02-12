@@ -34,6 +34,7 @@ module.exports = {
       "penghutravel.com",
       "www.northguan-nsa.gov.tw",
       "drive.google.com",
+      "taiwan.taiwanstay.net.tw",
     ],
   },
 };
