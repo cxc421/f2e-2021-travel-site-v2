@@ -49,6 +49,8 @@ export const ResultSection: FC<ResultSectionProps> = (props) => {
   return (
     <ResultInfiniteScroll
       data={props.data}
+      dataTotal={props.dataTotal}
+      loadMore={props.loadMore}
       onClickCard={props.onClickCard}
       titleText={props.titleText}
     />

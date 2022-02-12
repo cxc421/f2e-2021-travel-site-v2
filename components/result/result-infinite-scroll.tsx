@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useState } from "react";
+import { FC, memo, useEffect, useState, useRef } from "react";
 import VirtualScroller from "virtual-scroller/react";
 import { IntegratedData } from "../../libs/types";
 import { MainTitle } from "../main-section/main-title";
@@ -72,12 +72,16 @@ function useShowScrollToTopButton(scrollableContainer: HTMLElement | null) {
 
 export interface ResultInfiniteScrollProps {
   data: IntegratedData[];
+  dataTotal: number;
+  loadMore: (amount?: number) => void;
   titleText: string;
   onClickCard: (data: IntegratedData) => void;
 }
 
 export const ResultInfiniteScroll: FC<ResultInfiniteScrollProps> = ({
   data,
+  dataTotal,
+  loadMore,
   titleText,
   onClickCard,
 }) => {
@@ -85,9 +89,24 @@ export const ResultInfiniteScroll: FC<ResultInfiniteScrollProps> = ({
     document.getElementById("__next")
   );
   const showScrollTopButton = useShowScrollToTopButton(scrollableContainer);
-
   const scrollToTop = () => {
     scrollableContainer?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Fix VirtualScroller not update onStateChange change issue
+  const dataTotalRef = useRef(0);
+  const loadMoreRef = useRef(loadMore);
+  dataTotalRef.current = dataTotal;
+  loadMoreRef.current = loadMore;
+  const onVirtualScrollerStateChange = ({ items, lastShownItemIndex }: any) => {
+    const curDataNum = items.length;
+    const dataTotal = dataTotalRef.current;
+    const loadMore = loadMoreRef.current;
+    // console.log({ lastShownItemIndex, curDataNum, dataTotal });
+    if (curDataNum !== dataTotal && curDataNum - lastShownItemIndex < 100) {
+      // console.log(`Trigger loadMore`);
+      loadMore();
+    }
   };
 
   return (
@@ -102,6 +121,7 @@ export const ResultInfiniteScroll: FC<ResultInfiniteScrollProps> = ({
         // @ts-ignore
         getColumnsCount={getColumnsCount}
         scrollableContainer={scrollableContainer}
+        onStateChange={onVirtualScrollerStateChange}
       />
       <ScrollToTopButton onClick={scrollToTop} show={showScrollTopButton} />
     </>
