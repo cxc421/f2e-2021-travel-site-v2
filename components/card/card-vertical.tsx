@@ -14,12 +14,17 @@ interface DistanceTagProps {
 const DistanceTag: FC<DistanceTagProps> = ({ disKm }) => {
   if (!disKm) return null;
 
-  let valueText = disKm.toPrecision(3);
-  let valueUnit = "km";
-  if (Number(valueText) < 0.01) {
-    valueText = (1000 * disKm).toPrecision(3);
+  let valueText: number;
+  let valueUnit: string;
+
+  if (disKm < 1) {
+    valueText = Number((disKm * 1000).toPrecision(2));
     valueUnit = "m";
+  } else {
+    valueText = Number(disKm.toPrecision(2));
+    valueUnit = "km";
   }
+
   return <div className={style.distanceTag}>{`${valueText} ${valueUnit}`}</div>;
 };
 
