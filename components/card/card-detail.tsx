@@ -145,8 +145,11 @@ export const CardDetail: FC<CardDetailProps> = ({
 };
 
 function adjustPriceText(priceText: string) {
+  const transTextToNumber = (text: string) => Number(text.replace(/\D/g, ""));
+
   return priceText
     .split(";")
     .filter((text) => text.length > 0)
+    .sort((a, b) => transTextToNumber(b) - transTextToNumber(a))
     .join("\n");
 }
