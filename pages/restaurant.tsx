@@ -44,6 +44,8 @@ import { NoData } from "../components/no-data/no-data";
 import { Footer } from "../components/footer/footer";
 import { Modal } from "../components/modal/modal";
 import { SearchPanel } from "../components/search-panel/search-panel";
+import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
+import { useGetElementById } from "../utils/useGetElementById";
 
 /**
  *  Server Side Code
@@ -299,6 +301,7 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
   defaultHotels,
   defaultRestaurants,
 }) => {
+  const scrollableContainer = useGetElementById("__next");
   const headerRef = useRef<HeaderType>(null);
   const mainSectionRef = useRef<MainSectionType>(null);
 
@@ -396,6 +399,7 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
             onClickCard={handleClickCard}
             headerRef={headerRef}
             mainSectionRef={mainSectionRef}
+            scrollableContainer={scrollableContainer}
           />
         ) : (
           <NoData />
@@ -428,6 +432,7 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
       />
       <MainSection ref={mainSectionRef}>{mainContent}</MainSection>
       <Footer />
+      <ScrollTopButton scrollableContainer={scrollableContainer} />
       <Modal
         show={detailCardData !== null}
         onHide={() => setDetailCardData(null)}

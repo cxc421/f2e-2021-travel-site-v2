@@ -39,6 +39,7 @@ export interface ResultSectionProps {
   onClickCard: (data: IntegratedData) => void;
   headerRef: RefObject<HeaderType>;
   mainSectionRef: RefObject<MainSectionType>;
+  scrollableContainer: HTMLElement | null;
 }
 
 export const ResultSection: FC<ResultSectionProps> = (props) => {
@@ -56,6 +57,7 @@ export const ResultSection: FC<ResultSectionProps> = (props) => {
       onClickCard={props.onClickCard}
       titleText={props.titleText}
       titleType={props.titleType}
+      scrollableContainer={props.scrollableContainer}
     />
   );
 };
