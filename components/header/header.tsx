@@ -31,7 +31,7 @@ const NavLinkList = () => (
       </NavLink>
     </li>
     <li>
-      <NavLink icon="circle" color="green" href="/traffic">
+      <NavLink icon="circle" color="green" href="/traffic" disable>
         景點交通
       </NavLink>
     </li>
@@ -74,7 +74,11 @@ const MobileNavList = () => {
       </li>
       <li>
         <Link href="/traffic">
-          <a className={cn({ [style.selected]: pathname === "/traffic" })}>
+          <a
+            className={cn({ [style.selected]: pathname === "/traffic" })}
+            // disable click
+            onClick={(e) => e.preventDefault()}
+          >
             景點交通
           </a>
         </Link>
