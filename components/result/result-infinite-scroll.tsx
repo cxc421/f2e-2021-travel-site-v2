@@ -1,7 +1,7 @@
 import { FC, memo, useEffect, useState, useRef } from "react";
 import VirtualScroller from "virtual-scroller/react";
 import { IntegratedData } from "../../libs/types";
-import { MainTitle } from "../main-section/main-title";
+import { MainTitle, MainTitleProps } from "../main-section/main-title";
 import { CardVertical } from "../card/card-vertical";
 import { typeToImageBtnText } from "./libs/type-to-image-button-text";
 import vcardAreaStyle from "../main-section/main-card-vertical-area.module.scss";
@@ -75,6 +75,7 @@ export interface ResultInfiniteScrollProps {
   dataTotal: number;
   loadMore: (amount?: number) => void;
   titleText: string;
+  titleType: MainTitleProps["type"];
   onClickCard: (data: IntegratedData) => void;
 }
 
@@ -83,6 +84,7 @@ export const ResultInfiniteScroll: FC<ResultInfiniteScrollProps> = ({
   dataTotal,
   loadMore,
   titleText,
+  titleType,
   onClickCard,
 }) => {
   const [scrollableContainer] = useState(() =>
@@ -111,7 +113,7 @@ export const ResultInfiniteScroll: FC<ResultInfiniteScrollProps> = ({
 
   return (
     <>
-      <MainTitle type="triangle">{titleText}</MainTitle>
+      <MainTitle type={titleType}>{titleText}</MainTitle>
       <VirtualScroller
         className={vcardAreaStyle.container}
         items={data}

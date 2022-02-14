@@ -16,6 +16,7 @@ import {
   useState,
   useRef,
   FC,
+  useEffect,
 } from "react";
 import {
   CityValue,
@@ -112,8 +113,36 @@ function useRestaurantContext() {
  *  Restaurant Mobile Filter
  */
 
-const MobileFilter = () => {
-  const { category, setCategory, city, setCity } = useRestaurantContext();
+interface MobileFilterProps {
+  onClickSearch: () => void;
+}
+
+const MobileFilter: FC<MobileFilterProps> = ({ onClickSearch }) => {
+  const { searchText, category, setCategory, city, setCity } =
+    useRestaurantContext();
+
+  const [showCategoryTooltip, setShowCategoryTooltip] = useState(false);
+  const prevCategoryRef = useRef(category);
+
+  useEffect(() => {
+    // hide category tooltup if category change
+    if (prevCategoryRef.current !== category) {
+      prevCategoryRef.current = category;
+      setShowCategoryTooltip(false);
+      // hide category tooltup after one second
+    } else if (showCategoryTooltip) {
+      const key = setTimeout(() => setShowCategoryTooltip(false), 1000);
+      return () => clearTimeout(key);
+    }
+  }, [showCategoryTooltip, prevCategoryRef, category]);
+
+  const handleClickSearchBtn = () => {
+    if (category === "" && searchText.trim().length === 0) {
+      setShowCategoryTooltip(true);
+    } else {
+      onClickSearch();
+    }
+  };
 
   return (
     <div className={sharedStyle.mobileFilterContainer}>
@@ -121,13 +150,19 @@ const MobileFilter = () => {
         value={category}
         onChange={setCategory}
         className={sharedStyle.mobileSelectbox}
+        showTooltip={showCategoryTooltip}
       />
       <CitySelectbox
         value={city}
         onChange={setCity}
         className={sharedStyle.mobileSelectbox}
       />
-      <Button bgColor="red" size={40} className={sharedStyle.sendButton}>
+      <Button
+        bgColor="red"
+        size={40}
+        className={sharedStyle.sendButton}
+        onClick={handleClickSearchBtn}
+      >
         送出
       </Button>
     </div>
@@ -135,11 +170,44 @@ const MobileFilter = () => {
 };
 
 /**
- * Attraction Tablet & Desktop Filter
+ * Restaurant Tablet & Desktop Filter
  */
-const TabletFiler = () => {
+interface TabletFilerProps {
+  onClickSearch: () => void;
+  onClickGps: () => void;
+  onTypeEnter: () => void;
+}
+
+const TabletFiler: FC<TabletFilerProps> = ({
+  onClickSearch,
+  onClickGps,
+  onTypeEnter,
+}) => {
   const { searchText, setSearchText, category, setCategory, city, setCity } =
     useRestaurantContext();
+
+  const [showCategoryTooltip, setShowCategoryTooltip] = useState(false);
+  const prevCategoryRef = useRef(category);
+
+  useEffect(() => {
+    // hide category tooltup if category change
+    if (prevCategoryRef.current !== category) {
+      prevCategoryRef.current = category;
+      setShowCategoryTooltip(false);
+      // hide category tooltup after one second
+    } else if (showCategoryTooltip) {
+      const key = setTimeout(() => setShowCategoryTooltip(false), 1000);
+      return () => clearTimeout(key);
+    }
+  }, [showCategoryTooltip, prevCategoryRef, category]);
+
+  const handleClickSearchBtn = () => {
+    if (category === "" && searchText.trim().length === 0) {
+      setShowCategoryTooltip(true);
+    } else {
+      onClickSearch();
+    }
+  };
 
   return (
     <div className={sharedStyle.tabletFilterContainer}>
@@ -148,11 +216,13 @@ const TabletFiler = () => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           className={sharedStyle.tabletInput}
+          onTypeEnter={onTypeEnter}
         />
         <GpsButton
           size={40}
-          title="Get current location"
+          title="定位"
           className={sharedStyle.tabletButton}
+          onClick={onClickGps}
         />
       </div>
       <div>
@@ -160,6 +230,7 @@ const TabletFiler = () => {
           value={category}
           onChange={setCategory}
           className={sharedStyle.tabletInput}
+          showTooltip={showCategoryTooltip}
         />
         <CitySelectbox
           value={city}
@@ -168,8 +239,9 @@ const TabletFiler = () => {
         />
         <SearchButton
           size={40}
-          title="Search"
+          title="搜尋"
           className={sharedStyle.tabletButton}
+          onClick={handleClickSearchBtn}
         />
       </div>
     </div>
@@ -251,6 +323,14 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
     setSearchText,
   };
 
+  const handleClickGps = async () => {
+    queryData({
+      types: category === "" ? ["restaurant", "hotel"] : [category],
+      positionBy: "gps",
+      searchText,
+    });
+  };
+
   const handleSearch = async () => {
     const searchTerm = searchText.trim();
     const haveSearchTerm = searchTerm.length > 0;
@@ -312,6 +392,7 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
             dataTotal={dataTotal}
             loadMore={loadMore}
             titleText={dataTitle}
+            titleType="rectangle"
             onClickCard={handleClickCard}
             headerRef={headerRef}
             mainSectionRef={mainSectionRef}
@@ -329,8 +410,22 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
 
   return (
     <RestaurantCtx.Provider value={context}>
-      <Header mobileFilterContent={<MobileFilter />} />
-      <Banner bgSrc={bannerImgSrc} filterContent={<TabletFiler />} />
+      <Header
+        mobileFilterContent={<MobileFilter onClickSearch={handleSearch} />}
+        onClickGpsBtn={handleClickGps}
+        onClickGoToSerachBtn={() => setShowSearchPanel(true)}
+        ref={headerRef}
+      />
+      <Banner
+        bgSrc={bannerImgSrc}
+        filterContent={
+          <TabletFiler
+            onClickSearch={handleSearch}
+            onClickGps={handleClickGps}
+            onTypeEnter={handleSearch}
+          />
+        }
+      />
       <MainSection ref={mainSectionRef}>{mainContent}</MainSection>
       <Footer />
       <Modal

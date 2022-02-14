@@ -416,6 +416,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
             dataTotal={dataTotal}
             loadMore={loadMore}
             titleText={dataTitle}
+            titleType="triangle"
             onClickCard={handleClickCard}
             headerRef={headerRef}
             mainSectionRef={mainSectionRef}

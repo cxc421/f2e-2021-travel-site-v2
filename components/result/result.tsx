@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ResultPagination } from "./result-pagination";
 import { ResultInfiniteScroll } from "./result-infinite-scroll";
 import { getViewWidth } from "./libs/get-view-width";
+import { MainTitleProps } from "../main-section/main-title";
 
 type ResultDisplay = "pagination" | "infinite-scroll";
 function useResultDisplay(): ResultDisplay {
@@ -34,6 +35,7 @@ export interface ResultSectionProps {
   dataTotal: number;
   loadMore: (amount?: number) => void;
   titleText: string;
+  titleType: MainTitleProps["type"];
   onClickCard: (data: IntegratedData) => void;
   headerRef: RefObject<HeaderType>;
   mainSectionRef: RefObject<MainSectionType>;
@@ -53,6 +55,7 @@ export const ResultSection: FC<ResultSectionProps> = (props) => {
       loadMore={props.loadMore}
       onClickCard={props.onClickCard}
       titleText={props.titleText}
+      titleType={props.titleType}
     />
   );
 };

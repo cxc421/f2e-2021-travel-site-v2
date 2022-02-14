@@ -3,7 +3,7 @@ import { RefObject, FC, useState, useEffect } from "react";
 import { HeaderType } from "../header/header";
 import { MainSectionType } from "../main-section/main-section";
 import { CardVertical } from "../card/card-vertical";
-import { MainTitle } from "../main-section/main-title";
+import { MainTitle, MainTitleProps } from "../main-section/main-title";
 import { MainCardVerticalArea } from "../main-section/main-card-vertical-area";
 import { MainPageButtonsArea } from "../main-section/main-page-button-area";
 import { typeToImageBtnText } from "./libs/type-to-image-button-text";
@@ -14,6 +14,7 @@ export interface ResultPaginationProps {
   dataTotal: number;
   loadMore: (amount?: number) => void;
   titleText: string;
+  titleType: MainTitleProps["type"];
   onClickCard: (data: IntegratedData) => void;
   headerRef: RefObject<HeaderType>;
   mainSectionRef: RefObject<MainSectionType>;
@@ -24,6 +25,7 @@ export const ResultPagination: FC<ResultPaginationProps> = ({
   dataTotal,
   loadMore,
   titleText,
+  titleType,
   onClickCard,
   headerRef,
   mainSectionRef,
@@ -99,7 +101,7 @@ export const ResultPagination: FC<ResultPaginationProps> = ({
 
   return (
     <>
-      <MainTitle type="triangle">{titleText}</MainTitle>
+      <MainTitle type={titleType}>{titleText}</MainTitle>
       <MainCardVerticalArea>{cardContent}</MainCardVerticalArea>
       {showPageButton && (
         <MainPageButtonsArea

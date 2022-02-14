@@ -16,16 +16,19 @@ export interface CategoryRestaurantSelectboxProps {
   value: CategoryRestaurant;
   onChange: (value: CategoryRestaurant) => void;
   className?: string;
+  showTooltip?: boolean;
 }
 
 export const CategoryRestaurantSelectbox: FC<
   CategoryRestaurantSelectboxProps
-> = ({ value, onChange, className }) => {
+> = ({ value, onChange, className, showTooltip }) => {
   return (
     <SelectBox
       value={value}
       onChange={(newValue) => onChange(newValue as CategoryRestaurant)}
       className={className}
+      showTooltip={showTooltip}
+      tooltipText="請先選擇類別"
     >
       {categoryRestaurantOptions.map(({ value, text }) => (
         <SelectOption key={value} value={value}>
