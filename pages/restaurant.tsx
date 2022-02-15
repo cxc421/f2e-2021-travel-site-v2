@@ -45,7 +45,6 @@ import { Footer } from "../components/footer/footer";
 import { Modal } from "../components/modal/modal";
 import { SearchPanel } from "../components/search-panel/search-panel";
 import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
-import { useGetElementById } from "../utils/useGetElementById";
 
 /**
  *  Server Side Code
@@ -301,7 +300,7 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
   defaultHotels,
   defaultRestaurants,
 }) => {
-  const scrollableContainer = useGetElementById("__next");
+  const pageRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HeaderType>(null);
   const mainSectionRef = useRef<MainSectionType>(null);
 
@@ -399,7 +398,7 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
             onClickCard={handleClickCard}
             headerRef={headerRef}
             mainSectionRef={mainSectionRef}
-            scrollableContainer={scrollableContainer}
+            scrollableContainer={pageRef.current}
           />
         ) : (
           <NoData />
@@ -414,39 +413,41 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
 
   return (
     <RestaurantCtx.Provider value={context}>
-      <Header
-        mobileFilterContent={<MobileFilter onClickSearch={handleSearch} />}
-        onClickGpsBtn={handleClickGps}
-        onClickGoToSerachBtn={() => setShowSearchPanel(true)}
-        ref={headerRef}
-      />
-      <Banner
-        bgSrc={bannerImgSrc}
-        filterContent={
-          <TabletFiler
-            onClickSearch={handleSearch}
-            onClickGps={handleClickGps}
-            onTypeEnter={handleSearch}
-          />
-        }
-      />
-      <MainSection ref={mainSectionRef}>{mainContent}</MainSection>
-      <Footer />
-      <ScrollTopButton scrollableContainer={scrollableContainer} />
-      <Modal
-        show={detailCardData !== null}
-        onHide={() => setDetailCardData(null)}
-      >
-        {detailCardData && <CardDetail {...detailCardData} />}
-      </Modal>
-      <SearchPanel
-        searchText={searchText}
-        setSearchText={setSearchText}
-        show={showSearchPanel}
-        onHide={handleHideSearchPanel}
-        searchHistory={searchHistory}
-        clearSearchHistory={clearSearchHistory}
-      />
+      <div className="page" ref={pageRef}>
+        <Header
+          mobileFilterContent={<MobileFilter onClickSearch={handleSearch} />}
+          onClickGpsBtn={handleClickGps}
+          onClickGoToSerachBtn={() => setShowSearchPanel(true)}
+          ref={headerRef}
+        />
+        <Banner
+          bgSrc={bannerImgSrc}
+          filterContent={
+            <TabletFiler
+              onClickSearch={handleSearch}
+              onClickGps={handleClickGps}
+              onTypeEnter={handleSearch}
+            />
+          }
+        />
+        <MainSection ref={mainSectionRef}>{mainContent}</MainSection>
+        <Footer />
+        <ScrollTopButton scrollableContainer={pageRef.current} />
+        <Modal
+          show={detailCardData !== null}
+          onHide={() => setDetailCardData(null)}
+        >
+          {detailCardData && <CardDetail {...detailCardData} />}
+        </Modal>
+        <SearchPanel
+          searchText={searchText}
+          setSearchText={setSearchText}
+          show={showSearchPanel}
+          onHide={handleHideSearchPanel}
+          searchHistory={searchHistory}
+          clearSearchHistory={clearSearchHistory}
+        />
+      </div>
     </RestaurantCtx.Provider>
   );
 };

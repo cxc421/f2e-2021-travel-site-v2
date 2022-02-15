@@ -18,6 +18,7 @@ export interface ResultPaginationProps {
   onClickCard: (data: IntegratedData) => void;
   headerRef: RefObject<HeaderType>;
   mainSectionRef: RefObject<MainSectionType>;
+  scrollableContainer: HTMLElement | null;
 }
 
 export const ResultPagination: FC<ResultPaginationProps> = ({
@@ -29,6 +30,7 @@ export const ResultPagination: FC<ResultPaginationProps> = ({
   onClickCard,
   headerRef,
   mainSectionRef,
+  scrollableContainer: root,
 }) => {
   const PER_PAGE_DATA_NUM = 20;
   const [page, setPage] = useState<number>(1);
@@ -66,7 +68,6 @@ export const ResultPagination: FC<ResultPaginationProps> = ({
     const headerElement = headerRef.current;
     const mainSectionElement = mainSectionRef.current;
     if (headerElement && mainSectionElement) {
-      const root = document.getElementById("__next");
       const headerHeight = headerElement.getBoundingClientRect().height;
       const mainSectionTop = mainSectionElement.getBoundingClientRect().top;
 
@@ -75,7 +76,7 @@ export const ResultPagination: FC<ResultPaginationProps> = ({
         behavior: "smooth",
       });
     }
-  }, [page, headerRef, mainSectionRef]);
+  }, [page, headerRef, mainSectionRef, root]);
 
   const cardContent = displayData.map((data) => (
     <CardVertical
