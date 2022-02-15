@@ -82,7 +82,7 @@ export const getStaticProps: GetStaticProps<RestaurantPageProps> = async () => {
       defaultHotels,
       defaultRestaurants,
     },
-    revalidate: 60, // 60 sec
+    revalidate: 72, // 72 sec
   };
 };
 

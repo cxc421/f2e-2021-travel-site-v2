@@ -102,7 +102,7 @@ export const getStaticProps: GetStaticProps<
       defaultActivities,
       defaultRestaurants,
     },
-    revalidate: 60, // 60 sec
+    revalidate: 72, // 72 sec
   };
 };
 
