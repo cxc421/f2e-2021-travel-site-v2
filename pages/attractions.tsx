@@ -49,6 +49,9 @@ import { useShowSearchPanel } from "../utils/useShowSearchPanel";
 import { ResultSection } from "../components/result/result";
 import { useIntegratedData } from "../utils/useIntegratedData";
 import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
+import { getTaiwanTime } from "../utils/getTaiwanTime";
+import { getCurrentWeather } from "../libs/openweather-api/openweather-api";
+import { getImageByWheatherAndTime } from "../libs/unsplash-api/unsplash-api";
 
 /**
  *  Server Side Code
@@ -61,6 +64,15 @@ interface AttractionsPageProps {
 export const getStaticProps: GetStaticProps<
   AttractionsPageProps
 > = async () => {
+  // const time = getTaiwanTime();
+  // const weather = await getCurrentWeather();
+  // try {
+  //   const bannerImage = await getImageByWheatherAndTime(weather, time.hour);
+  //   console.log(bannerImage);
+  // } catch (err) {
+  //   console.error(err);
+  // }
+
   // Default Activities
   const defaultActivities = (
     await getIntegratedData({

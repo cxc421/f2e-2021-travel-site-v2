@@ -57,3 +57,5 @@ export function isIntegratedDataFilter(
     )
   );
 }
+
+export type Weather = "clear" | "rain";
