@@ -51,7 +51,10 @@ import { useIntegratedData } from "../utils/useIntegratedData";
 import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
 import { getTaiwanTime } from "../utils/getTaiwanTime";
 import { getCurrentWeather } from "../libs/openweather-api/openweather-api";
-import { getImageByWheatherAndTime } from "../libs/unsplash-api/unsplash-api";
+import {
+  getImageByWheatherAndTime,
+  UnsplashPhotoUrls,
+} from "../libs/unsplash-api/unsplash-api";
 
 /**
  *  Server Side Code
@@ -59,18 +62,20 @@ import { getImageByWheatherAndTime } from "../libs/unsplash-api/unsplash-api";
 interface AttractionsPageProps {
   defaultActivities: IntegratedData[];
   defaultRestaurants: IntegratedData[];
+  bannerUrls: null | UnsplashPhotoUrls;
 }
 
 export const getStaticProps: GetStaticProps<
   AttractionsPageProps
 > = async () => {
-  // const time = getTaiwanTime();
-  // const weather = await getCurrentWeather();
+  let bannerUrls: null | UnsplashPhotoUrls = null;
   // try {
-  //   const bannerImage = await getImageByWheatherAndTime(weather, time.hour);
-  //   console.log(bannerImage);
+  //   const time = getTaiwanTime();
+  //   const weather = await getCurrentWeather();
+  //   bannerUrls = await getImageByWheatherAndTime(weather, time.hour);
   // } catch (err) {
   //   console.error(err);
+  //   bannerUrls = null;
   // }
 
   // Default Activities
@@ -101,6 +106,7 @@ export const getStaticProps: GetStaticProps<
     props: {
       defaultActivities,
       defaultRestaurants,
+      bannerUrls,
     },
     revalidate: 72, // 72 sec
   };
@@ -326,6 +332,7 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
 const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,
   defaultRestaurants,
+  bannerUrls,
 }) => {
   const pageRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HeaderType>(null);
@@ -458,6 +465,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         />
         <Banner
           bgSrc={bannerImgSrc}
+          bgUrls={bannerUrls}
           filterContent={
             <TabletFiler
               onClickSearch={handleSearch}

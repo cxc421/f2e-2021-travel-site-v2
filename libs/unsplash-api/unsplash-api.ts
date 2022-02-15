@@ -24,13 +24,24 @@ const getTimeText = (hour: number) => {
   return "twilight";
 };
 
-export const getImageByWheatherAndTime = (weather: Weather, hour: number) =>
+export type UnsplashPhotoUrls = {
+  raw: string;
+  full: string;
+  regular: string;
+  small: string;
+  thumb: string;
+};
+
+export const getImageByWheatherAndTime = (
+  weather: Weather,
+  hour: number
+): Promise<UnsplashPhotoUrls> =>
   new Promise((resolve, reject) => {
     const collectionKey: keyof typeof unsplashCollectionIdMap = `taiwan-${getTimeText(
       hour
     )}-${weather}`;
     const collectionId = unsplashCollectionIdMap[collectionKey];
-    console.log({ collectionId });
+    // console.log({ collectionKey, collectionId });
 
     if (!collectionId) {
       reject(`Cannot find collectionId by collectionKey=${collectionKey}`);
@@ -46,11 +57,9 @@ export const getImageByWheatherAndTime = (weather: Weather, hour: number) =>
         if (result.type === "success") {
           const { response } = result as any;
           const data = response[0];
+          const urls: UnsplashPhotoUrls = data.urls;
 
-          resolve({
-            url_small: data.urls.small,
-            url_regular: data.urls.regular,
-          });
+          resolve(urls);
         } else {
           reject(result.errors[0]);
         }

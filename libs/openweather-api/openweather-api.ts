@@ -9,7 +9,7 @@ export const getCurrentWeather = async (): Promise<Weather> => {
       `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${appid}`
     );
     const MainWeather = response.data.weather[0].main;
-    console.log({ MainWeather });
+    // console.log({ MainWeather });
     if (
       MainWeather === "Thunderstorm" ||
       MainWeather === "Drizzle" ||
