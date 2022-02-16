@@ -3,7 +3,8 @@ import type { ImageProps } from "next/image";
 import { FC, useEffect, useRef, useState, RefObject } from "react";
 import cn from "classnames";
 import style from "./card-image.module.scss";
-import noImgSrc from "./images/no-img-144.png";
+import noImgBigSrc from "./images/no-img-144x89.png";
+import noImgSmallSrc from "./images/no-img-68x45.png";
 
 const blackListUrls = ["http://210.69.151.212"];
 
@@ -30,7 +31,12 @@ function useIsDelay(hasError: boolean) {
   return isDelay;
 }
 
-export const CardImage: FC<ImageProps> = ({
+export interface CardImageProps extends ImageProps {
+  errorImageType?: "small" | "big";
+}
+
+export const CardImage: FC<CardImageProps> = ({
+  errorImageType = "small",
   src,
   alt,
   onError,
@@ -57,9 +63,23 @@ export const CardImage: FC<ImageProps> = ({
   if (hasError) {
     return (
       <div className={style.errorImgWrapper}>
-        <div className={style.errorImg}>
-          <Image width={144} height={89} src={noImgSrc} alt="No Image" />
-        </div>
+        {errorImageType === "small" ? (
+          <Image width={68} height={45} src={noImgSmallSrc} alt="No Image" />
+        ) : (
+          <>
+            <div className={style.responsizeErrorImgBig}>
+              <Image width={144} height={89} src={noImgBigSrc} alt="No Image" />
+            </div>
+            <div className={style.responsizeErrorImgSmall}>
+              <Image
+                width={68}
+                height={45}
+                src={noImgSmallSrc}
+                alt="No Image"
+              />
+            </div>
+          </>
+        )}
       </div>
     );
   }

@@ -7,11 +7,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $color-white;
+  background-color: $color-lightgray;
 
-  .errorImg {
-    width: 40%;
-    text-align: center;
+  .responsizeErrorImgBig {
+    display: block;
+    @media (max-width: $screen-mobile) {
+      display: none;
+    }
+  }
+  .responsizeErrorImgSmall {
+    display: none;
+    @media (max-width: $screen-mobile) {
+      display: block;
+    }
   }
 }
 

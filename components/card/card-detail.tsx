@@ -84,6 +84,7 @@ export const CardDetail: FC<CardDetailProps> = ({
                   alt={img.description}
                   title={img.description}
                   objectFit="cover"
+                  errorImageType="big"
                 />
               ))
             ) : (
@@ -93,6 +94,7 @@ export const CardDetail: FC<CardDetailProps> = ({
                 alt="no-image"
                 title="no-image"
                 objectFit="cover"
+                errorImageType="big"
               />
             )}
           </HorizontalWindow>
