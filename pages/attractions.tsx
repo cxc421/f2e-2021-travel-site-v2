@@ -49,12 +49,8 @@ import { useShowSearchPanel } from "../utils/useShowSearchPanel";
 import { ResultSection } from "../components/result/result";
 import { useIntegratedData } from "../utils/useIntegratedData";
 import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
-import { getTaiwanTime } from "../utils/getTaiwanTime";
-import { getCurrentWeather } from "../libs/openweather-api/openweather-api";
-import {
-  getImageByWheatherAndTime,
-  UnsplashPhotoUrls,
-} from "../libs/unsplash-api/unsplash-api";
+import { UnsplashPicture } from "../libs/picture-api/picture-types";
+import { getCurrentPicture } from "../libs/picture-api/picture-api";
 
 /**
  *  Server Side Code
@@ -62,55 +58,8 @@ import {
 interface AttractionsPageProps {
   defaultActivities: IntegratedData[];
   defaultRestaurants: IntegratedData[];
-  bannerUrls: null | UnsplashPhotoUrls;
+  bannerUrl: null | UnsplashPicture;
 }
-
-export const getStaticProps: GetStaticProps<
-  AttractionsPageProps
-> = async () => {
-  let bannerUrls: null | UnsplashPhotoUrls = null;
-  // try {
-  //   const time = getTaiwanTime();
-  //   const weather = await getCurrentWeather();
-  //   bannerUrls = await getImageByWheatherAndTime(weather, time.hour);
-  // } catch (err) {
-  //   console.error(err);
-  //   bannerUrls = null;
-  // }
-
-  // Default Activities
-  const defaultActivities = (
-    await getIntegratedData({
-      types: ["activity"],
-      number: 4,
-      smallestEndDate: new Date().toUTCString(),
-      needPicture: true,
-      needValidLocation: true,
-      orderBy: "shuffle",
-    })
-  ).data;
-
-  // Default Restaurant
-  const defaultRestaurants = (
-    await getIntegratedData({
-      types: ["restaurant"],
-      number: 10,
-      needPicture: true,
-      searchTerm: "好吃 美味 用餐",
-      searchProperty: "description",
-      orderBy: "shuffle",
-    })
-  ).data;
-
-  return {
-    props: {
-      defaultActivities,
-      defaultRestaurants,
-      bannerUrls,
-    },
-    revalidate: 72, // 72 sec
-  };
-};
 
 /**
  * Attraction Context
@@ -332,7 +281,7 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
 const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,
   defaultRestaurants,
-  bannerUrls,
+  bannerUrl,
 }) => {
   const pageRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HeaderType>(null);
@@ -465,7 +414,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
         />
         <Banner
           bgSrc={bannerImgSrc}
-          bgUrls={bannerUrls}
+          bgUrl={bannerUrl}
           filterContent={
             <TabletFiler
               onClickSearch={handleSearch}
@@ -494,6 +443,50 @@ const Attractions: NextPage<AttractionsPageProps> = ({
       </div>
     </AttractionCtx.Provider>
   );
+};
+
+Attractions.getInitialProps = async ({ req, pathname }) => {
+  let bannerUrl: null | UnsplashPicture = null;
+  let defaultActivities: IntegratedData[] = [];
+  let defaultRestaurants: IntegratedData[] = [];
+
+  console.log(`Run Attraction getInitialProps, pathname=${pathname}`);
+
+  try {
+    bannerUrl = (await getCurrentPicture()).picture;
+  } catch {
+    bannerUrl = null;
+  }
+
+  // Default Activities
+  defaultActivities = (
+    await getIntegratedData({
+      types: ["activity"],
+      number: 4,
+      smallestEndDate: new Date().toUTCString(),
+      needPicture: true,
+      needValidLocation: true,
+      orderBy: "shuffle",
+    })
+  ).data;
+
+  // Default Restaurant
+  defaultRestaurants = (
+    await getIntegratedData({
+      types: ["restaurant"],
+      number: 10,
+      needPicture: true,
+      searchTerm: "好吃 美味 用餐",
+      searchProperty: "description",
+      orderBy: "shuffle",
+    })
+  ).data;
+
+  return {
+    defaultActivities,
+    defaultRestaurants,
+    bannerUrl,
+  };
 };
 
 export default Attractions;

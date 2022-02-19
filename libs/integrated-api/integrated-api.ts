@@ -1,5 +1,5 @@
 import { IntegratedDataFilter, IntegratedData } from "../types";
-import { axiosInstance } from "./axios-config";
+import { axiosInstance } from "../axios-config";
 
 export const getIntegratedData = async (
   filter: IntegratedDataFilter

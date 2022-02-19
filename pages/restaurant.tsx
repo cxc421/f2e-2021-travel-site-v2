@@ -422,7 +422,7 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
         />
         <Banner
           bgSrc={bannerImgSrc}
-          bgUrls={null}
+          bgUrl={null}
           filterContent={
             <TabletFiler
               onClickSearch={handleSearch}

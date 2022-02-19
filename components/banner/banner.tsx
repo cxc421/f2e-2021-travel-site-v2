@@ -1,25 +1,36 @@
 import type { FC } from "react";
-import Image from "next/image";
+import Image, { ImageLoader } from "next/image";
 import style from "./banner.module.scss";
 import sloganImgSrc from "./images/slogan.png";
-import { UnsplashPhotoUrls } from "../../libs/unsplash-api/unsplash-api";
+import { UnsplashPicture } from "../../libs/picture-api/picture-types";
+
+const imageLoader: ImageLoader = ({ src, width, quality }) => {
+  return `${src}&auto=format&fit=max&crop=entropy&q=${
+    quality || 100
+  }&w=${width}`;
+};
 export interface Banner {
   bgSrc: StaticImageData;
-  bgUrls: null | UnsplashPhotoUrls;
+  bgUrl: null | UnsplashPicture;
   filterContent?: JSX.Element;
 }
 
-export const Banner: FC<Banner> = ({ bgSrc, bgUrls, filterContent }) => {
+export const Banner: FC<Banner> = ({ bgSrc, bgUrl, filterContent }) => {
   return (
     <div className={style.wrapper}>
       <div className={style.container}>
         <div className={style.bgImgWrapper}>
-          {bgUrls ? (
+          {bgUrl ? (
             <Image
               className={style.bgImg}
-              src={bgUrls.regular}
-              blurDataURL={bgUrls.small}
-              alt="banner"
+              src={bgUrl.url}
+              blurDataURL={imageLoader({
+                src: bgUrl.url,
+                width: 400,
+                quality: 80,
+              })}
+              alt={bgUrl.alt}
+              loader={imageLoader}
               layout="fill"
               objectFit="cover"
               placeholder="blur"

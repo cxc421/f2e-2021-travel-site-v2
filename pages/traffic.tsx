@@ -1,9 +1,15 @@
-import type { NextPage } from "next";
+import type { NextPage, GetStaticProps } from "next";
 import sharedStyle from "../styles/shared.module.scss";
 import { Button } from "../components/button/button";
 import { Header } from "../components/header/header";
 import { CustomSelectbox } from "../components/selectbox/custom-selectbox";
 import cities from "../constants/cities";
+
+export const getStaticProps: GetStaticProps = async () => {
+  return {
+    props: {},
+  };
+};
 
 const MobileFilter = () => {
   const cityOptions = [{ value: "", text: "選擇縣市" }].concat(cities);
