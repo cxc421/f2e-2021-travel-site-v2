@@ -45,6 +45,7 @@ import { Footer } from "../components/footer/footer";
 import { Modal } from "../components/modal/modal";
 import { SearchPanel } from "../components/search-panel/search-panel";
 import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
+import { fetchRestaurantData } from "../utils/getPageData";
 
 /**
  *  Server Side Code
@@ -55,32 +56,11 @@ interface RestaurantPageProps {
 }
 
 export const getStaticProps: GetStaticProps<RestaurantPageProps> = async () => {
-  // Default Restaurant
-  const defaultRestaurants = (
-    await getIntegratedData({
-      types: ["restaurant"],
-      number: 10,
-      needPicture: true,
-      needValidLocation: true,
-      orderBy: "shuffle",
-    })
-  ).data;
-
-  // Default Activities
-  const defaultHotels = (
-    await getIntegratedData({
-      types: ["hotel"],
-      number: 10,
-      needPicture: true,
-      needValidLocation: true,
-      orderBy: "shuffle",
-    })
-  ).data;
+  const data = await fetchRestaurantData();
 
   return {
     props: {
-      defaultHotels,
-      defaultRestaurants,
+      ...data,
     },
     revalidate: 72, // 72 sec
   };

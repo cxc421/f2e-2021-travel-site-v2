@@ -5,12 +5,6 @@ import { Header } from "../components/header/header";
 import { CustomSelectbox } from "../components/selectbox/custom-selectbox";
 import cities from "../constants/cities";
 
-export const getStaticProps: GetStaticProps = async () => {
-  return {
-    props: {},
-  };
-};
-
 const MobileFilter = () => {
   const cityOptions = [{ value: "", text: "選擇縣市" }].concat(cities);
   const pathOptions = [

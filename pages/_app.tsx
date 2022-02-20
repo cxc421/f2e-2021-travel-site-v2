@@ -1,42 +1,57 @@
 import "normalize.css";
 import "../styles/globals.scss";
-import { AppProps, AppContext } from "next/app";
+import { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { fetchAttractionsData, sleep } from "../utils/getPageData";
 
-const LO_UPDATE_ATTRACTION_DATA_KEY = "__needUpdateAttractionPage";
+function useModifiedPageProps(registerPathname: string, pageProps: any) {
+  const { pathname } = useRouter();
+  const isRegisteredPage = pathname === registerPathname;
+  const [registeredPageProps, setRegisteredPageProps] = useState<any>(null);
+  const updatingRef = useRef(false);
 
-function useFirstProps(registerPathname: string, pageProps: any) {
-  const router = useRouter();
-  const cachePagePropsRef = useRef<any>(null);
+  // console.log({ registeredPageProps });
 
   useEffect(() => {
-    const firstLoadPage = router.pathname;
-    if (firstLoadPage !== "/attractions") {
-      sessionStorage.setItem(LO_UPDATE_ATTRACTION_DATA_KEY, "true");
-    } else {
-      sessionStorage.removeItem(LO_UPDATE_ATTRACTION_DATA_KEY);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const needUpdate = !registeredPageProps || !registeredPageProps.isReady;
 
-  if (router.pathname === registerPathname) {
-    if (cachePagePropsRef.current === null) {
-      cachePagePropsRef.current = pageProps;
-    } else {
-      // return cachePagePropsRef.current;
-      return {
-        ...pageProps,
-        ...cachePagePropsRef.current,
-      };
+    if (needUpdate && !updatingRef.current) {
+      console.log(`Fetch from hooks`);
+      updatingRef.current = true;
+      fetchAttractionsData()
+        // sleep(5000)
+        //   .then(() => fetchAttractionsData())
+        .then((data) => {
+          setRegisteredPageProps({
+            ...data,
+            isReady: true,
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+        .finally(() => {
+          updatingRef.current = false;
+        });
     }
+  }, [registeredPageProps, updatingRef]);
+
+  if (isRegisteredPage) {
+    if (registeredPageProps === null) {
+      setRegisteredPageProps(pageProps);
+      return pageProps;
+    } else {
+      return registeredPageProps;
+    }
+  } else {
+    return pageProps;
   }
-  return pageProps;
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const modifiedPageProps = useFirstProps("/attractions", pageProps);
+  const modifiedPageProps = useModifiedPageProps("/attractions", pageProps);
   // console.log(modifiedPageProps);
 
   return (
@@ -48,29 +63,5 @@ function MyApp({ Component, pageProps }: AppProps) {
     </>
   );
 }
-
-MyApp.getInitialProps = async ({ Component, ctx, router }: AppContext) => {
-  let pageProps = {};
-
-  // console.log(`Run MyApp.getInitialProps`);
-  // console.log(`ctx.req: ${ctx.req}`);
-  // console.log(`router.pathname: ${router.pathname}`);
-  // console.log(`router.route: ${router.route}`);
-  // console.log(`_inFlightRoute: ${router._inFlightRoute}`);
-
-  if (Component.getInitialProps) {
-    if (router._inFlightRoute === "/attractions" && !ctx.req) {
-      const needUpdate =
-        sessionStorage.getItem(LO_UPDATE_ATTRACTION_DATA_KEY) !== null;
-      if (needUpdate) {
-        pageProps = await Component.getInitialProps(ctx);
-        sessionStorage.removeItem(LO_UPDATE_ATTRACTION_DATA_KEY);
-      }
-    } else {
-      pageProps = await Component.getInitialProps(ctx);
-    }
-  }
-  return { pageProps };
-};
 
 export default MyApp;

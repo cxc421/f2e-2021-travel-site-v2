@@ -51,6 +51,7 @@ import { useIntegratedData } from "../utils/useIntegratedData";
 import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
 import { UnsplashPicture } from "../libs/picture-api/picture-types";
 import { getCurrentPicture } from "../libs/picture-api/picture-api";
+import { fetchAttractionsData } from "../utils/getPageData";
 
 /**
  *  Server Side Code
@@ -59,6 +60,7 @@ interface AttractionsPageProps {
   defaultActivities: IntegratedData[];
   defaultRestaurants: IntegratedData[];
   bannerUrl: null | UnsplashPicture;
+  isReady?: boolean;
 }
 
 /**
@@ -446,46 +448,29 @@ const Attractions: NextPage<AttractionsPageProps> = ({
 };
 
 Attractions.getInitialProps = async ({ req, pathname }) => {
-  let bannerUrl: null | UnsplashPicture = null;
-  let defaultActivities: IntegratedData[] = [];
-  let defaultRestaurants: IntegratedData[] = [];
-
-  console.log(`Run Attraction getInitialProps, pathname=${pathname}`);
-
-  try {
-    bannerUrl = (await getCurrentPicture()).picture;
-  } catch {
-    bannerUrl = null;
+  if (req) {
+    // console.log(`Run Attraction getInitialProps, pathname=${pathname}`);
+    try {
+      const result = await fetchAttractionsData();
+      return {
+        ...result,
+        isReady: true,
+      };
+    } catch (err) {
+      return {
+        defaultActivities: [],
+        defaultRestaurants: [],
+        bannerUrl: null,
+        isReady: true,
+      };
+    }
   }
 
-  // Default Activities
-  defaultActivities = (
-    await getIntegratedData({
-      types: ["activity"],
-      number: 4,
-      smallestEndDate: new Date().toUTCString(),
-      needPicture: true,
-      needValidLocation: true,
-      orderBy: "shuffle",
-    })
-  ).data;
-
-  // Default Restaurant
-  defaultRestaurants = (
-    await getIntegratedData({
-      types: ["restaurant"],
-      number: 10,
-      needPicture: true,
-      searchTerm: "好吃 美味 用餐",
-      searchProperty: "description",
-      orderBy: "shuffle",
-    })
-  ).data;
-
   return {
-    defaultActivities,
-    defaultRestaurants,
-    bannerUrl,
+    defaultActivities: [],
+    defaultRestaurants: [],
+    bannerUrl: null,
+    isReady: false,
   };
 };
 
