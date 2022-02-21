@@ -11,7 +11,7 @@ const imageLoader: ImageLoader = ({ src, width, quality }) => {
   return toUnsplashUrl(src, width, quality);
 };
 export interface Banner {
-  bgSrc: StaticImageData;
+  bgSrc?: StaticImageData;
   bgUrl: null | UnsplashPicture;
   filterContent?: JSX.Element;
 }
@@ -21,11 +21,11 @@ export const Banner: FC<Banner> = ({ bgSrc, bgUrl, filterContent }) => {
     <div className={style.wrapper}>
       <div className={style.container}>
         <div className={style.bgImgWrapper}>
-          {bgUrl ? (
+          {bgUrl && (
             <Image
               className={style.bgImg}
               src={bgUrl.url}
-              blurDataURL={toUnsplashUrl(bgUrl.url, 400, 80)}
+              blurDataURL={toUnsplashUrl(bgUrl.url, 640, 10)}
               alt={bgUrl.alt}
               loader={imageLoader}
               layout="fill"
@@ -33,7 +33,8 @@ export const Banner: FC<Banner> = ({ bgSrc, bgUrl, filterContent }) => {
               placeholder="blur"
               priority
             />
-          ) : (
+          )}
+          {bgSrc && (
             <Image
               className={style.bgImg}
               src={bgSrc}

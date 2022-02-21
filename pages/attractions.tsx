@@ -40,7 +40,7 @@ import { useIntegratedData } from "../utils/useIntegratedData";
 import { fetchAttractionsData } from "../utils/getPageData";
 
 import sharedStyle from "../styles/shared.module.scss";
-import bannerImgSrc from "../images/banner-good-weather.png";
+// import bannerImgSrc from "../images/banner-good-weather.png";
 
 /**
  * Attraction Context
@@ -225,33 +225,41 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
     <HorizontalScroll>
       <CityGallery onSelectCity={onSelectCity} />
     </HorizontalScroll>
-    <MainTitle type="triangle">熱門活動</MainTitle>
-    <MainCardHorizontalArea>
-      {defaultActivities.map((data) => (
-        <CardHorizontal
-          key={data.id}
-          img={data.picture[0]?.url}
-          title={data.name}
-          description={data.description}
-          location={data.location}
-          imageButtonText="活動詳情"
-          onClick={() => onClickCard(data)}
-        />
-      ))}
-    </MainCardHorizontalArea>
-    <MainTitle type="rectangle">熱門餐飲</MainTitle>
-    <MainCardVerticalArea>
-      {defaultRestaurants.map((data) => (
-        <CardVertical
-          key={data.id}
-          img={data.picture[0]?.url}
-          title={data.name}
-          location={data.location}
-          imageButtonText="餐飲詳情"
-          onClick={() => onClickCard(data)}
-        />
-      ))}
-    </MainCardVerticalArea>
+    {defaultActivities.length > 0 && (
+      <>
+        <MainTitle type="triangle">熱門活動</MainTitle>
+        <MainCardHorizontalArea>
+          {defaultActivities.map((data) => (
+            <CardHorizontal
+              key={data.id}
+              img={data.picture[0]?.url}
+              title={data.name}
+              description={data.description}
+              location={data.location}
+              imageButtonText="活動詳情"
+              onClick={() => onClickCard(data)}
+            />
+          ))}
+        </MainCardHorizontalArea>
+      </>
+    )}
+    {defaultRestaurants.length > 0 && (
+      <>
+        <MainTitle type="rectangle">熱門餐飲</MainTitle>
+        <MainCardVerticalArea>
+          {defaultRestaurants.map((data) => (
+            <CardVertical
+              key={data.id}
+              img={data.picture[0]?.url}
+              title={data.name}
+              location={data.location}
+              imageButtonText="餐飲詳情"
+              onClick={() => onClickCard(data)}
+            />
+          ))}
+        </MainCardVerticalArea>
+      </>
+    )}
   </>
 );
 
@@ -400,7 +408,7 @@ const Attractions: NextPage<AttractionsPageProps> = ({
           ref={headerRef}
         />
         <Banner
-          bgSrc={bannerImgSrc}
+          // bgSrc={bannerImgSrc}
           bgUrl={bannerUrl}
           filterContent={
             <TabletFiler
