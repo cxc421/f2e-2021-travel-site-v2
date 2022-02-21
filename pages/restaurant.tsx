@@ -1,52 +1,41 @@
 import type { NextPage, GetStaticProps } from "next";
-import sharedStyle from "../styles/shared.module.scss";
-import { Button } from "../components/button/button";
-import { Header, HeaderType } from "../components/header/header";
-import bannerImgSrc from "../images/banner-room.png";
+import type { Dispatch, SetStateAction, FC } from "react";
+import type { HeaderType } from "../components/header/header";
+import type { CategoryRestaurant } from "../components/selectbox/category-restaurant-selectbox";
+import type { CityValue } from "../components/selectbox/city-selectbox";
+import type { IntegratedData } from "../libs/types";
+import type { MainSectionType } from "../components/main-section/main-section";
+import type { CardDetailProps } from "../components/card/card-detail";
+
+import { createContext, useContext, useState, useRef, useEffect } from "react";
+import { Header } from "../components/header/header";
 import { Banner } from "../components/banner/banner";
-import {
-  CategoryRestaurant,
-  CategoryRestaurantSelectbox,
-} from "../components/selectbox/category-restaurant-selectbox";
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useState,
-  useRef,
-  FC,
-  useEffect,
-} from "react";
-import {
-  CityValue,
-  CitySelectbox,
-} from "../components/selectbox/city-selectbox";
+import { Button } from "../components/button/button";
+import { CategoryRestaurantSelectbox } from "../components/selectbox/category-restaurant-selectbox";
+import { CitySelectbox } from "../components/selectbox/city-selectbox";
 import { Searchbox } from "../components/searchbox/searchbox";
 import { GpsButton } from "../components/button/gps-button";
 import { SearchButton } from "../components/button/search-button";
-import { IntegratedData } from "../libs/types";
-import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 import { MainTitle } from "../components/main-section/main-title";
 import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
-import { CardVertical } from "../components/card/card-vertical";
-import {
-  MainSection,
-  MainSectionType,
-} from "../components/main-section/main-section";
-import { CardDetail, CardDetailProps } from "../components/card/card-detail";
-import { useIntegratedData } from "../utils/useIntegratedData";
-import { useSearchHistory } from "../utils/useSearchHistory";
-import { useShowSearchPanel } from "../utils/useShowSearchPanel";
-import { Loading } from "../components/loading/loading";
+import { MainSection } from "../components/main-section/main-section";
 import { ResultSection } from "../components/result/result";
+import { CardVertical } from "../components/card/card-vertical";
+import { CardDetail } from "../components/card/card-detail";
+import { Loading } from "../components/loading/loading";
 import { NoData } from "../components/no-data/no-data";
 import { Footer } from "../components/footer/footer";
 import { Modal } from "../components/modal/modal";
 import { SearchPanel } from "../components/search-panel/search-panel";
 import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
+
+import { useIntegratedData } from "../utils/useIntegratedData";
+import { useSearchHistory } from "../utils/useSearchHistory";
+import { useShowSearchPanel } from "../utils/useShowSearchPanel";
 import { fetchRestaurantData } from "../utils/getPageData";
 
+import sharedStyle from "../styles/shared.module.scss";
+import bannerImgSrc from "../images/banner-room.png";
 /**
  *  Server Side Code
  */
@@ -62,7 +51,7 @@ export const getStaticProps: GetStaticProps<RestaurantPageProps> = async () => {
     props: {
       ...data,
     },
-    revalidate: 72, // 72 sec
+    revalidate: 30, // 30s
   };
 };
 

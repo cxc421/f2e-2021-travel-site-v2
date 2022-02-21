@@ -1,67 +1,46 @@
-import type { NextPage, GetStaticProps } from "next";
-import sharedStyle from "../styles/shared.module.scss";
-import { Header, HeaderType } from "../components/header/header";
-import { Button } from "../components/button/button";
-import bannerImgSrc from "../images/banner-good-weather.png";
+import type { NextPage } from "next";
+import type { FC, Dispatch, SetStateAction } from "react";
+import type { HeaderType } from "../components/header/header";
+import type { CategoryAttractions } from "../components/selectbox/category-attractions-selectbox";
+import type { CityValue } from "../components/selectbox/city-selectbox";
+import type { MainSectionType } from "../components/main-section/main-section";
+import type { IntegratedData } from "../libs/types";
+import type { CardDetailProps } from "../components/card/card-detail";
+import type { UnsplashPicture } from "../libs/picture-api/picture-types";
+
+import { createContext, useContext, useState, useRef, useEffect } from "react";
+import { Header } from "../components/header/header";
 import { Banner } from "../components/banner/banner";
+import { Button } from "../components/button/button";
 import { GpsButton } from "../components/button/gps-button";
 import { SearchButton } from "../components/button/search-button";
 import { Searchbox } from "../components/searchbox/searchbox";
-import {
-  FC,
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-} from "react";
-import {
-  CategoryAttractions,
-  CategoryAttractionsSelectbox,
-} from "../components/selectbox/category-attractions-selectbox";
-import {
-  CityValue,
-  CitySelectbox,
-} from "../components/selectbox/city-selectbox";
-import {
-  MainSection,
-  MainSectionType,
-} from "../components/main-section/main-section";
+import { CategoryAttractionsSelectbox } from "../components/selectbox/category-attractions-selectbox";
+import { CitySelectbox } from "../components/selectbox/city-selectbox";
+import { MainSection } from "../components/main-section/main-section";
 import { MainTitle } from "../components/main-section/main-title";
+import { MainCardHorizontalArea } from "../components/main-section/main-card-horizontal-area";
+import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
 import { Footer } from "../components/footer/footer";
 import { HorizontalScroll } from "../components/horizontal-scroll/horizontal-scroll";
 import { CityGallery } from "../components/city-gallery/city-gallery";
 import { CardHorizontal } from "../components/card/card-horizontal";
-import { MainCardHorizontalArea } from "../components/main-section/main-card-horizontal-area";
-import { MainCardVerticalArea } from "../components/main-section/main-card-vertical-area";
 import { CardVertical } from "../components/card/card-vertical";
-import { IntegratedData } from "../libs/types";
+import { CardDetail } from "../components/card/card-detail";
 import { Modal } from "../components/modal/modal";
-import { CardDetail, CardDetailProps } from "../components/card/card-detail";
 import { Loading } from "../components/loading/loading";
-import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 import { NoData } from "../components/no-data/no-data";
 import { SearchPanel } from "../components/search-panel/search-panel";
+import { ResultSection } from "../components/result/result";
+import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
+
 import { useSearchHistory } from "../utils/useSearchHistory";
 import { useShowSearchPanel } from "../utils/useShowSearchPanel";
-import { ResultSection } from "../components/result/result";
 import { useIntegratedData } from "../utils/useIntegratedData";
-import { ScrollTopButton } from "../components/scroll-top-button/scroll-top-button";
-import { UnsplashPicture } from "../libs/picture-api/picture-types";
-import { getCurrentPicture } from "../libs/picture-api/picture-api";
 import { fetchAttractionsData } from "../utils/getPageData";
 
-/**
- *  Server Side Code
- */
-interface AttractionsPageProps {
-  defaultActivities: IntegratedData[];
-  defaultRestaurants: IntegratedData[];
-  bannerUrl: null | UnsplashPicture;
-  isReady?: boolean;
-}
+import sharedStyle from "../styles/shared.module.scss";
+import bannerImgSrc from "../images/banner-good-weather.png";
 
 /**
  * Attraction Context
@@ -279,6 +258,12 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
 /**
  *  Attractions Page
  */
+interface AttractionsPageProps {
+  defaultActivities: IntegratedData[];
+  defaultRestaurants: IntegratedData[];
+  bannerUrl: null | UnsplashPicture;
+  isReady?: boolean;
+}
 
 const Attractions: NextPage<AttractionsPageProps> = ({
   defaultActivities,
@@ -447,9 +432,8 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   );
 };
 
-Attractions.getInitialProps = async ({ req, pathname }) => {
+Attractions.getInitialProps = async ({ req }) => {
   if (req) {
-    // console.log(`Run Attraction getInitialProps, pathname=${pathname}`);
     try {
       const result = await fetchAttractionsData();
       return {
