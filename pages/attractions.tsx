@@ -440,10 +440,13 @@ const Attractions: NextPage<AttractionsPageProps> = ({
   );
 };
 
-Attractions.getInitialProps = async ({ req }) => {
+Attractions.getInitialProps = async ({ req, query }) => {
   if (req) {
+    const { pid } = query;
     try {
-      const result = await fetchAttractionsData();
+      const result = await fetchAttractionsData(
+        typeof pid === "string" ? pid : undefined
+      );
       return {
         ...result,
         isReady: true,

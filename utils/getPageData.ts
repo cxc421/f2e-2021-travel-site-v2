@@ -1,6 +1,9 @@
 import { IntegratedData } from "../libs/types";
 import { UnsplashPicture } from "../libs/picture-api/picture-types";
-import { getCurrentPicture } from "../libs/picture-api/picture-api";
+import {
+  getCurrentPicture,
+  getPictureById,
+} from "../libs/picture-api/picture-api";
 import { getIntegratedData } from "../libs/integrated-api/integrated-api";
 
 export interface AttractionsData {
@@ -9,10 +12,12 @@ export interface AttractionsData {
   bannerUrl: null | UnsplashPicture;
 }
 
-export const fetchAttractionsData = async (): Promise<AttractionsData> => {
+export const fetchAttractionsData = async (
+  pid?: string
+): Promise<AttractionsData> => {
   const [pictureResponse, activitiesResponse, restaurantsResponse] =
     await Promise.all([
-      getCurrentPicture(),
+      pid ? getPictureById(pid) : getCurrentPicture(),
       getIntegratedData({
         types: ["activity"],
         number: 4,
