@@ -4,10 +4,11 @@ import style from "./banner.module.scss";
 import sloganImgSrc from "./images/slogan.png";
 import { UnsplashPicture } from "../../libs/picture-api/picture-types";
 
+const toUnsplashUrl = (src: string, width: number, quality?: number) =>
+  `${src}&auto=format&fit=max&crop=entropy&q=${quality || 100}&w=${width}`;
+
 const imageLoader: ImageLoader = ({ src, width, quality }) => {
-  return `${src}&auto=format&fit=max&crop=entropy&q=${
-    quality || 100
-  }&w=${width}`;
+  return toUnsplashUrl(src, width, quality);
 };
 export interface Banner {
   bgSrc: StaticImageData;
@@ -24,11 +25,7 @@ export const Banner: FC<Banner> = ({ bgSrc, bgUrl, filterContent }) => {
             <Image
               className={style.bgImg}
               src={bgUrl.url}
-              blurDataURL={imageLoader({
-                src: bgUrl.url,
-                width: 400,
-                quality: 80,
-              })}
+              blurDataURL={toUnsplashUrl(bgUrl.url, 400, 80)}
               alt={bgUrl.alt}
               loader={imageLoader}
               layout="fill"
