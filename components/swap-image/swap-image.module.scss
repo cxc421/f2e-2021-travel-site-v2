@@ -1,0 +1,21 @@
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  > div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+}
+
+.transitionImage {
+  opacity: 0;
+  transition: opacity 1s;
+  &.show {
+    opacity: 1;
+  }
+}

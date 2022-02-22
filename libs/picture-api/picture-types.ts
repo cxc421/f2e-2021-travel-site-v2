@@ -4,4 +4,5 @@ export type UnsplashPicture = {
   url: string;
   alt: string;
   id: string;
+  hash: string | null;
 };

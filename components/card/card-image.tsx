@@ -1,24 +1,13 @@
 import Image from "next/image";
 import type { ImageProps } from "next/image";
-import { FC, useEffect, useRef, useState, RefObject } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import cn from "classnames";
+import { useIsMountRef } from "../../utils/useIsMountRef";
 import style from "./card-image.module.scss";
 import noImgBigSrc from "./images/no-img-144x89.png";
 import noImgSmallSrc from "./images/no-img-68x45.png";
 
 const blackListUrls = ["http://210.69.151.212"];
-
-function useIsMountedRef(): RefObject<boolean> {
-  const isMountedRef = useRef(false);
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
-
-  return isMountedRef;
-}
 
 function useIsDelay(hasError: boolean) {
   const [isDelay, setIsDelay] = useState(true);
@@ -42,7 +31,7 @@ export const CardImage: FC<CardImageProps> = ({
   onError,
   ...otherProps
 }) => {
-  const isMounted = useIsMountedRef().current;
+  const isMounted = useIsMountRef().current;
   const [hasError, setHasError] = useState(
     typeof src !== "string" ||
       src.length === 0 ||
