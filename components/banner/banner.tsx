@@ -7,7 +7,7 @@ import style from "./banner.module.scss";
 import sloganImgSrc from "./images/slogan.png";
 
 const toUnsplashUrl = (src: string, width: number, quality?: number) =>
-  `${src}&auto=format&fit=max&crop=entropy&q=${quality || 100}&w=${width}`;
+  `${src}&auto=format&fit=max&crop=entropy&q=${quality || 60}&w=${width}`;
 
 const imageLoader: ImageLoader = ({ src, width, quality }) => {
   return toUnsplashUrl(src, width, quality);
