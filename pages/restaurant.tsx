@@ -6,6 +6,7 @@ import type { CityValue } from "../components/selectbox/city-selectbox";
 import type { IntegratedData } from "../libs/types";
 import type { MainSectionType } from "../components/main-section/main-section";
 import type { CardDetailProps } from "../components/card/card-detail";
+import type { UnsplashPicture } from "../libs/picture-api/picture-types";
 
 import { createContext, useContext, useState, useRef, useEffect } from "react";
 import { Header } from "../components/header/header";
@@ -35,7 +36,6 @@ import { useShowSearchPanel } from "../utils/useShowSearchPanel";
 import { fetchRestaurantData } from "../utils/getPageData";
 
 import sharedStyle from "../styles/shared.module.scss";
-import bannerImgSrc from "../images/banner-room.png";
 /**
  *  Server Side Code
  */
@@ -265,6 +265,13 @@ const WelcomeSection: FC<WelcomeSectionProps> = ({
 /**
  *  Restaurant Page
  */
+const bgUrl: UnsplashPicture = {
+  url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixid=MnwzMDEyNDl8MHwxfGFsbHx8fHx8fHx8fDE2NDU1MTk4MjU&ixlib=rb-1.2.1",
+  alt: "brown wooden bed frame with white cover beside brown wooden nightstand",
+  id: "FqqiAvJejto",
+  hash: "LNM@Ae00IVxu.8V??bt7VYxvIURi",
+};
+
 const Restaurant: NextPage<RestaurantPageProps> = ({
   defaultHotels,
   defaultRestaurants,
@@ -390,8 +397,7 @@ const Restaurant: NextPage<RestaurantPageProps> = ({
           ref={headerRef}
         />
         <Banner
-          bgSrc={bannerImgSrc}
-          bgUrl={null}
+          bgUrl={bgUrl}
           filterContent={
             <TabletFiler
               onClickSearch={handleSearch}
